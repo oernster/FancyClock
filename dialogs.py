@@ -1,17 +1,18 @@
 import pytz
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QListWidget, QMessageBox, QScrollArea, QLabel
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QListWidget, QMessageBox, QScrollArea, QLabel, QPushButton, QDialogButtonBox
 from datetime import datetime
+from utils import resource_path
 
 def show_timezone_dialog(parent):
     dialog = QDialog(parent)
-    dialog.setWindowTitle("Select Timezone")
+    dialog.setWindowTitle(parent.i18n_manager.get_translation("select_timezone_title"))
     dialog.setMinimumSize(300, 400)
 
     layout = QVBoxLayout()
     dialog.setLayout(layout)
 
     search_box = QLineEdit(dialog)
-    search_box.setPlaceholderText("Search for a timezone...")
+    search_box.setPlaceholderText(parent.i18n_manager.get_translation("search_timezone_placeholder"))
     layout.addWidget(search_box)
 
     list_widget = QListWidget(dialog)
@@ -59,7 +60,7 @@ def show_timezone_dialog(parent):
 
 def show_license_dialog(parent):
     try:
-        with open(parent.resource_path("LICENSE"), "r", encoding="utf-8") as f:
+        with open(resource_path("LICENSE"), "r", encoding="utf-8") as f:
             license_text = f.read()
 
         dialog = QDialog(parent)
@@ -82,16 +83,41 @@ def show_license_dialog(parent):
     except FileNotFoundError:
         QMessageBox.critical(parent, "Error", "LICENSE file not found.")
 
-def show_about_dialog(parent):
-    about_text = """
-    <b>Simple Clock</b>
-    <p>Version 1.0</p>
-    <p>A beautiful but simple clock application.</p>
-    <p><b>Author:</b> Oliver Ernster</p>
-    <p><b>Modules Used:</b></p>
-    <ul>
-        <li>PySide6</li>
-        <li>ntplib</li>
-    </ul>
-    """
-    QMessageBox.about(parent, "About Simple Clock", about_text)
+from localization.i18n_manager import LocalizationManager
+
+class AboutDialog(QDialog):
+    def __init__(self, parent, i18n_manager: LocalizationManager):
+        super().__init__(parent)
+        self.i18n_manager = i18n_manager
+        self.setWindowTitle(self.i18n_manager.get_translation("about_dialog_title", self.i18n_manager.current_locale))
+        self.setMinimumSize(300, 200)
+
+        self.layout = QVBoxLayout(self)
+        self.text_label = QLabel(self)
+        self.layout.addWidget(self.text_label)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        self.button_box.accepted.connect(self.accept)
+        self.layout.addWidget(self.button_box)
+
+        self.refresh_text()
+
+    def refresh_text(self):
+        about_text = f"""
+        <b>{self.i18n_manager.get_translation("app_name", self.i18n_manager.current_locale)}</b>
+        <p>{self.i18n_manager.get_translation("version", self.i18n_manager.current_locale)} 1.0</p>
+        <p>{self.i18n_manager.get_translation("app_description", self.i18n_manager.current_locale)}</p>
+        <p><b>{self.i18n_manager.get_translation("author_label", self.i18n_manager.current_locale)}</b> Oliver Ernster</p>
+        <p><b>{self.i18n_manager.get_translation("about_libraries_used", self.i18n_manager.current_locale)}</b></p>
+        <ul>
+            <li>PySide6</li>
+            <li>ntplib</li>
+        </ul>
+        """
+        self.text_label.setText(about_text)
+
+def show_about_dialog(parent, i18n_manager: LocalizationManager):
+    if not hasattr(parent, 'about_dialog'):
+        parent.about_dialog = AboutDialog(parent, i18n_manager)
+    parent.about_dialog.refresh_text()
+    parent.about_dialog.exec()

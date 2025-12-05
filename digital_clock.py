@@ -1,79 +1,135 @@
-import random
+import math
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QColor, QFont
-from PySide6.QtCore import QDateTime, Qt, QRectF, QPoint
+from PySide6.QtCore import Qt, QDateTime
 
-import math
+from localization.i18n_manager import LocalizationManager
+from effects.galaxy import create_galaxy
 
-class Star:
-    def __init__(self, angle, distance, radius, velocity):
-        self.angle = angle
-        self.distance = distance
-        self.radius = radius
-        self.velocity = velocity
-        self.x = 0
-        self.y = 0
 
 class DigitalClock(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, i18n_manager: LocalizationManager = None):
         super().__init__(parent)
-        self.setFixedHeight(40)
-        self.time = QDateTime.currentDateTime()
-        self.stars = []
 
+        self.i18n_manager = i18n_manager
+        self.time = QDateTime.currentDateTime()
+
+        self.setFixedHeight(80)
+
+        # Galaxy starfield
+        self.stars = []
+        self.galaxy_radius = 50
+        self.galaxy_rect = None   # full interior of the yellow box
+
+    # ----------------------------------------------------------------------
+    # Resize → recompute galaxy parameters (rect + stars)
+    # ----------------------------------------------------------------------
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.stars = [self._create_star() for _ in range(400)]
 
-    def _create_star(self):
-        # The distance should be calculated based on the diagonal to cover the whole area
-        max_dist = math.sqrt(self.width()**2 + self.height()**2) / 2
-        return Star(
-            angle=random.uniform(0, 2 * math.pi),
-            distance=random.uniform(0, max_dist),
-            radius=random.uniform(0.5, 1.5),
-            velocity=random.uniform(0.001, 0.005)
-        )
+        margin = 8
+        self.galaxy_rect = self.rect().adjusted(margin, margin, -margin, -margin)
 
-    def update_stars(self):
-        center_x = self.width() / 2
-        center_y = self.height() / 2
-        for star in self.stars:
-            star.angle += star.velocity
-            star.x = center_x + star.distance * math.cos(star.angle)
-            star.y = center_y + star.distance * math.sin(star.angle)
-            if star.angle > 2 * math.pi:
-                star.angle = 0
+        # galaxy_radius = the base radius that stars generate inside
+        # (we will stretch them into the rectangle later)
+        self.galaxy_radius = min(self.galaxy_rect.width(), self.galaxy_rect.height()) / 2
 
+        self.stars = create_galaxy(500, self.galaxy_radius)
+
+    # ----------------------------------------------------------------------
+    # Legacy compatibility for main.py
+    # ----------------------------------------------------------------------
+    def show_time(self):
+        self.time = QDateTime.currentDateTime()
+        self.update()
+        self.animate()
+
+    # ----------------------------------------------------------------------
+    # Paint the digital clock with full-box galaxy
+    # ----------------------------------------------------------------------
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        
+
         # Background
-        painter.setBrush(QColor(0, 0, 0))
-        painter.drawRect(self.rect())
+        painter.fillRect(self.rect(), QColor(0, 0, 0))
 
-        # Stars
-        painter.setPen(Qt.NoPen)
+        # Yellow bordered box
+        margin = 8
+        box_rect = self.rect().adjusted(margin, margin, -margin, -margin)
+
+        # ------------------------------------------------------------------
+        # Draw GALAXY inside the yellow box only
+        # ------------------------------------------------------------------
+        painter.save()
+        painter.setClipRect(box_rect)
+
+        # Center of the yellow box
+        cx = box_rect.x() + box_rect.width() / 2
+        cy = box_rect.y() + box_rect.height() / 2
+
+        # Dimensions of box interior
+        full_w = box_rect.width()
+        full_h = box_rect.height()
+
+        painter.translate(cx, cy)
+
+        # Stretch galaxy into the rectangular box
         for star in self.stars:
-            alpha = random.randint(100, 255)
-            painter.setBrush(QColor(255, 255, 255, alpha))
-            painter.drawEllipse(QPoint(int(star.x), int(star.y)), star.radius, star.radius)
+            x, y = star.pos()
 
-        # Border
+            # Scale star positions from circular radius → rectangular box
+            sx = x * (full_w / (2 * self.galaxy_radius))
+            sy = y * (full_h / (2 * self.galaxy_radius))
+
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(star.color())
+            painter.drawEllipse(
+                int(sx), int(sy),
+                int(star.size), int(star.size)
+            )
+
+        painter.restore()  # remove clip & translate
+
+        # ------------------------------------------------------------------
+        # Yellow border outline
+        # ------------------------------------------------------------------
+        painter.setPen(QColor(255, 215, 0))
         painter.setBrush(Qt.NoBrush)
-        painter.setPen(QColor(255, 255, 0))
-        painter.drawRoundedRect(self.rect().adjusted(0, 0, -1, -1), 5, 5)
+        painter.drawRoundedRect(box_rect, 10, 10)
 
-        # Time text
+        # ------------------------------------------------------------------
+        # Localized date + time (in one horizontal line)
+        # ------------------------------------------------------------------
+        dt = self.time
+
+        if self.i18n_manager:
+            date_text = self.i18n_manager.format_date_fancy(dt.date())
+            hour = self.i18n_manager.format_number(dt.time().hour())
+            minute = self.i18n_manager.format_number(dt.time().minute())
+            second = self.i18n_manager.format_number(dt.time().second())
+        else:
+            date_text = dt.toString("ddd d MMM")
+            hour = dt.toString("hh")
+            minute = dt.toString("mm")
+            second = dt.toString("ss")
+
+        full_text = f"{date_text}   {hour}:{minute}:{second}"
+
         font = QFont()
-        font.setPointSize(24)
+        font.setPointSize(22)
         font.setBold(True)
         painter.setFont(font)
-        painter.setPen(QColor(173, 216, 230))  # Light Blue
-        
-        time_text = self.time.time().toString("hh:mm:ss")
-        painter.drawText(self.rect(), Qt.AlignCenter, time_text)
+        painter.setPen(QColor(0, 150, 255))
 
-    def show_time(self):
+        painter.drawText(box_rect, Qt.AlignCenter, full_text)
+
+        painter.end()
+
+    # ----------------------------------------------------------------------
+    # High-frequency animation (called ~60 FPS)
+    # ----------------------------------------------------------------------
+    def animate(self):
+        for s in self.stars:
+            s.update()
         self.update()

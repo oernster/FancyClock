@@ -1,7 +1,7 @@
 """
-🌍 Calendifier Localization System - Major International Languages
+🌍 Fancy Clock Localization System - Major International Languages
 
-This module provides comprehensive internationalization support for the Calendifier
+This module provides comprehensive internationalization support for the Fancy Clock
 application with 100% translation coverage across 13 major international languages
 and zero English fallbacks for non-English locales.
 
@@ -28,7 +28,7 @@ except ImportError:
 
 # Core components
 from .i18n_manager import (
-    I18nManager,
+    LocalizationManager,
     MissingTranslationError,
     get_i18n_manager,
     set_i18n_manager,
@@ -77,7 +77,7 @@ def initialize_localization_system(
     ui_dir: Optional[Path] = None,
     locale: str = "en_GB",
     strict_mode: bool = True,
-) -> I18nManager:
+) -> LocalizationManager:
     """
     Initialize the complete localization system.
 
@@ -88,7 +88,7 @@ def initialize_localization_system(
         strict_mode: Enable strict mode (no fallbacks)
 
     Returns:
-        I18nManager: Initialized translation manager
+        LocalizationManager: Initialized translation manager
     """
     global _locale_detector, _translation_validator, _batch_translator
     global _fallback_eliminator, _ui_extractor, _batch_implementation
@@ -118,7 +118,7 @@ def initialize_localization_system(
             )
 
         # Initialize I18n manager
-        i18n_manager = I18nManager(locale, strict_mode, translations_dir)
+        i18n_manager = LocalizationManager(locale, strict_mode, translations_dir)
         set_i18n_manager(i18n_manager)
 
         logger.info("🌍 Localization system initialized successfully")
@@ -442,7 +442,7 @@ BATCH_INFO = {
 # Export all public components
 __all__ = [
     # Core classes
-    "I18nManager",
+    "LocalizationManager",
     "LocaleDetector",
     "TranslationValidator",
     "BatchTranslator",
