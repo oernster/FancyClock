@@ -269,6 +269,7 @@ class I18nManager:
             except (KeyError, ValueError) as e:
                 logger.warning(f"Error formatting translation '{key}': {e}")
                 return translation
+    
 
         return translation
 
