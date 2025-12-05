@@ -15,6 +15,7 @@ from typing import Dict, Any, Optional, List, Union
 from functools import lru_cache
 from datetime import date, datetime
 from .number_formatter import NumberFormatter
+from .timezone_translator import TimezoneTranslator
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +34,30 @@ class I18nManager:
     and runtime language switching.
     """
 
-    def _detect_system_locale(self) -> str:
+    def detect_system_locale(self) -> str:
         """Detect system locale automatically"""
         try:
             import locale as system_locale
 
-            # Get system locale
+            # Try getdefaultlocale first (more reliable on Windows)
+            try:
+                loc = system_locale.getdefaultlocale()
+                if loc and loc:
+                    locale_str = loc
+                    if locale_str and isinstance(locale_str, str):
+                        # Normalize to use underscores
+                        return locale_str.replace("-", "_")
+            except Exception:
+                pass
+
+            # Fallback to getlocale
             loc = system_locale.getlocale()
-            if loc:
-                # Convert from locale format (en_US) to our format
-                return loc.replace("-", "_")
+            if loc and loc:
+                locale_str = loc
+                if locale_str and isinstance(locale_str, str):
+                    # Normalize to use underscores
+                    return locale_str.replace("-", "_")
+                    
         except Exception as e:
             logger.warning(f"Failed to detect system locale: {e}")
 
@@ -65,7 +80,7 @@ class I18nManager:
         """
         # Auto-detect locale if not provided
         if locale is None:
-            locale = self._detect_system_locale()
+            locale = self.detect_system_locale()
 
         self.default_locale = locale
         self._current_locale = locale
@@ -85,6 +100,9 @@ class I18nManager:
 
         # Initialize number formatter
         self.number_formatter = NumberFormatter()
+        
+        # Initialize timezone translator
+        self.timezone_translator = TimezoneTranslator(self.current_locale)
 
         # Load default locale
         self._load_locale(self.default_locale)
@@ -168,6 +186,18 @@ class I18nManager:
         if self._load_locale(locale_code):
             old_locale = self.current_locale
             self._current_locale = locale_code
+            self.timezone_translator.locale = locale_code
+            
+            # Set the system locale for babel to use
+            try:
+                locale.setlocale(locale.LC_TIME, locale_code.replace('_', '-'))
+            except locale.Error:
+                logger.warning(f"Unsupported locale: {locale_code}. Fallback to system default.")
+                try:
+                    locale.setlocale(locale.LC_TIME, "")
+                except locale.Error:
+                    logger.error("Failed to set default system locale.")
+
             logger.info(f"Locale changed from {old_locale} to {locale_code}")
             return True
 
@@ -576,7 +606,6 @@ class I18nManager:
                 f"Error parsing date '{date_str}' for locale {target_locale}: {e}"
             )
             return None
-
 
 # Global instance
 _i18n_manager: Optional[I18nManager] = None
