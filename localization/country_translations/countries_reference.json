@@ -1,0 +1,40 @@
+{
+  "_metadata": {
+    "type": "country_reference",
+    "description": "Reference list of supported countries with codes",
+    "total_countries": 30,
+    "last_updated": "2025-01-07"
+  },
+  "supported_countries": {
+    "US": "United States",
+    "GB": "United Kingdom",
+    "ES": "Spain",
+    "FR": "France",
+    "DE": "Germany",
+    "IT": "Italy",
+    "BR": "Brazil",
+    "RU": "Russia",
+    "CN": "China",
+    "TW": "Taiwan",
+    "JP": "Japan",
+    "KR": "South Korea",
+    "IN": "India",
+    "SA": "Saudi Arabia",
+    "CZ": "Czech Republic",
+    "SE": "Sweden",
+    "NO": "Norway",
+    "DK": "Denmark",
+    "FI": "Finland",
+    "NL": "Netherlands",
+    "PL": "Poland",
+    "PT": "Portugal",
+    "TR": "Turkey",
+    "UA": "Ukraine",
+    "GR": "Greece",
+    "ID": "Indonesia",
+    "VN": "Vietnam",
+    "TH": "Thailand",
+    "IL": "Israel",
+    "RO": "Romania"
+  }
+}
