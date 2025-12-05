@@ -66,7 +66,9 @@ class DigitalClock(QWidget):
         painter.drawRoundedRect(self.rect().adjusted(0, 0, -1, -1), 5, 5)
 
         # Time text
-        font = QFont("Arial", 24, QFont.Bold)
+        font = QFont()
+        font.setPointSize(24)
+        font.setBold(True)
         painter.setFont(font)
         painter.setPen(QColor(173, 216, 230))  # Light Blue
         
