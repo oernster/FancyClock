@@ -1,9 +1,9 @@
 """
-Internationalization (i18n) Manager for Calendifier
+Localization Manager for Fancy Clock
 
-This module provides comprehensive internationalization support for the Calendifier
-calendar application, including translation loading, locale detection, and
-runtime language switching.
+This module provides comprehensive internationalization and localization support
+for the Fancy Clock application, including translation loading, locale detection,
+and runtime language switching.
 """
 
 import json
@@ -16,6 +16,8 @@ from functools import lru_cache
 from datetime import date, datetime
 from .number_formatter import NumberFormatter
 from .timezone_translator import TimezoneTranslator
+from translator import Translator
+from .locale_detector import LocaleDetector
 
 logger = logging.getLogger(__name__)
 
@@ -26,43 +28,13 @@ class MissingTranslationError(Exception):
     pass
 
 
-class I18nManager:
+class LocalizationManager:
     """
-    Manages internationalization for the Calendifier application.
+    Manages internationalization for the Fancy Clock application.
 
     Handles loading translations, locale detection, fallback mechanisms,
     and runtime language switching.
     """
-
-    def detect_system_locale(self) -> str:
-        """Detect system locale automatically"""
-        try:
-            import locale as system_locale
-
-            # Try getdefaultlocale first (more reliable on Windows)
-            try:
-                loc = system_locale.getdefaultlocale()
-                if loc and loc:
-                    locale_str = loc
-                    if locale_str and isinstance(locale_str, str):
-                        # Normalize to use underscores
-                        return locale_str.replace("-", "_")
-            except Exception:
-                pass
-
-            # Fallback to getlocale
-            loc = system_locale.getlocale()
-            if loc and loc:
-                locale_str = loc
-                if locale_str and isinstance(locale_str, str):
-                    # Normalize to use underscores
-                    return locale_str.replace("-", "_")
-                    
-        except Exception as e:
-            logger.warning(f"Failed to detect system locale: {e}")
-
-        # Fallback to English
-        return "en_GB"
 
     def __init__(
         self,
@@ -71,7 +43,7 @@ class I18nManager:
         translations_dir: Optional[Union[str, Path]] = None,
     ):
         """
-        Initialize the I18n Manager.
+        Initialize the Localization Manager.
 
         Args:
             locale: Initial locale to use (auto-detected if None)
@@ -79,11 +51,13 @@ class I18nManager:
             translations_dir: Path to translations directory
         """
         # Auto-detect locale if not provided
+        self.locale_detector = LocaleDetector()
         if locale is None:
-            locale = self.detect_system_locale()
+            locale = self.locale_detector.detect_system_locale()
 
         self.default_locale = locale
         self._current_locale = locale
+        self.translator = Translator(self._current_locale)
         self.fallback_locale = "en_GB"
         self.strict_mode = strict_mode
 
@@ -180,12 +154,15 @@ class I18nManager:
         Returns:
             True if locale was set successfully, False otherwise
         """
-        if locale_code == self.current_locale:
+        if locale_code == self.current_locale and locale_code in self._translations_cache:
             return True
 
+        # Clear cache and reload for the new locale
+        self.clear_cache()
         if self._load_locale(locale_code):
             old_locale = self.current_locale
             self._current_locale = locale_code
+            self.translator.locale_code = locale_code
             self.timezone_translator.locale = locale_code
             
             # Set the system locale for babel to use
@@ -199,6 +176,8 @@ class I18nManager:
                     logger.error("Failed to set default system locale.")
 
             logger.info(f"Locale changed from {old_locale} to {locale_code}")
+            # Reload all translations to ensure a clean state
+            self.reload_translations()
             return True
 
         logger.warning(f"Failed to set locale to {locale_code}")
@@ -250,28 +229,7 @@ class I18nManager:
         """
         target_locale = locale or self.current_locale
 
-        # Try to get translation from target locale
-        translation = self._get_translation_from_locale(key, target_locale)
-
-        # Fallback to default locale if not found
-        if translation is None and target_locale != self.fallback_locale:
-            translation = self._get_translation_from_locale(key, self.fallback_locale)
-
-        # If still not found, raise error or return key
-        if translation is None:
-            logger.warning(f"Translation not found for key: {key}")
-            return key  # Return key as fallback
-
-        # Format string with provided variables
-        if kwargs:
-            try:
-                return translation.format(**kwargs)
-            except (KeyError, ValueError) as e:
-                logger.warning(f"Error formatting translation '{key}': {e}")
-                return translation
-    
-
-        return translation
+        return self.translator.translate(key)
 
     def get_text(self, key: str, **kwargs) -> str:
         """
@@ -286,40 +244,6 @@ class I18nManager:
         """
         return self.get_translation(key, **kwargs)
 
-    def _get_translation_from_locale(self, key: str, locale: str) -> Optional[str]:
-        """
-        Get translation from a specific locale.
-
-        Args:
-            key: Translation key
-            locale: Locale code
-
-        Returns:
-            Translation string or None if not found
-        """
-        # Load locale if not cached
-        if locale not in self._translations_cache:
-            if not self._load_locale(locale):
-                return None
-
-        translations = self._translations_cache[locale]
-
-        # First try direct lookup for flat keys (new flattened structure)
-        if key in translations:
-            value = translations[key]
-            return value if isinstance(value, str) else None
-
-        # Fallback: Support dot notation for nested keys (legacy structure)
-        keys = key.split(".")
-        current = translations
-
-        for k in keys:
-            if isinstance(current, dict) and k in current:
-                current = current[k]
-            else:
-                return None
-
-        return current if isinstance(current, str) else None
 
     def get_locale_info(self, locale: Optional[str] = None) -> Dict[str, Any]:
         """
@@ -436,8 +360,10 @@ class I18nManager:
         target_locale = locale_code or self.current_locale
 
         try:
-            # Extract date if datetime object
-            if isinstance(date_obj, datetime):
+            # Convert QDate to datetime.date if necessary
+            if not isinstance(date_obj, (date, datetime)):
+                date_obj = date(date_obj.year(), date_obj.month(), date_obj.day())
+            elif isinstance(date_obj, datetime):
                 date_obj = date_obj.date()
 
             day = date_obj.day
@@ -542,6 +468,18 @@ class I18nManager:
             logger.warning(f"Failed to format date input {date_obj}: {e}")
             return str(date_obj)
 
+    def convert_numbers(self, text: str, locale_code: str) -> str:
+        """Converts numbers in a string to the appropriate numeral system for the locale."""
+        if locale_code.startswith("ar_"):
+            # Arabic-Indic numerals
+            western_to_arabic = {
+                "0": "٠", "1": "١", "2": "٢", "3": "٣", "4": "٤",
+                "5": "٥", "6": "٦", "7": "٧", "8": "٨", "9": "٩"
+            }
+            return "".join([western_to_arabic.get(char, char) for char in text])
+        # Add other numeral systems here if needed (e.g., for Hindi, Bengali, etc.)
+        return text
+
     def parse_date_from_locale_format(
         self, date_str: str, locale_code: Optional[str] = None
     ) -> Optional[date]:
@@ -608,11 +546,110 @@ class I18nManager:
             )
             return None
 
+    def get_weekday_abbr(self, dt) -> str:
+        """
+        Return localized abbreviated weekday (e.g. "Mon") for a QDate/QDateTime/datetime/date.
+        Accepts PySide QDate/QDateTime (has dayOfWeek()) or Python datetime/date (weekday()).
+        """
+        try:
+            # QDate/QDateTime: dayOfWeek() returns 1=Mon .. 7=Sun
+            if hasattr(dt, "dayOfWeek"):
+                weekday_number = int(dt.dayOfWeek())
+            else:
+                # Python datetime.date: weekday() returns 0=Mon .. 6=Sun
+                weekday_number = int(dt.weekday()) + 1
+            key_map = {
+                1: "calendar.days.monday" if self._has_key("calendar.days.monday") else "monday",
+                2: "calendar.days.tuesday" if self._has_key("calendar.days.tuesday") else "tuesday",
+                3: "calendar.days.wednesday" if self._has_key("calendar.days.wednesday") else "wednesday",
+                4: "calendar.days.thursday" if self._has_key("calendar.days.thursday") else "thursday",
+                5: "calendar.days.friday" if self._has_key("calendar.days.friday") else "friday",
+                6: "calendar.days.saturday" if self._has_key("calendar.days.saturday") else "saturday",
+                7: "calendar.days.sunday" if self._has_key("calendar.days.sunday") else "sunday",
+            }
+            return self.get_translation(key_map.get(weekday_number, "monday"))
+        except Exception:
+            # fallback: english abbreviated weekday
+            try:
+                if hasattr(dt, "dayOfWeek"):
+                    w = int(dt.dayOfWeek())
+                    names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                    return names[w - 1]
+                else:
+                    names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                    return names[dt.weekday()]
+            except Exception:
+                return "—"
+
+    def _has_key(self, key):
+        return key in self._translations_cache.get(self.current_locale, {})
+
+    def get_month_abbr(self, dt) -> str:
+        """
+        Return localized abbreviated month name (e.g. "Jan") for a QDate/QDateTime/datetime/date.
+        """
+        try:
+            month_number = int(dt.month()) if hasattr(dt, "month") else int(dt.month)
+            key_map = {
+                1: "january",
+                2: "february",
+                3: "march",
+                4: "april",
+                5: "may",
+                6: "june",
+                7: "july",
+                8: "august",
+                9: "september",
+                10: "october",
+                11: "november",
+                12: "december",
+            }
+            return self.get_translation(key_map.get(month_number, "january"))
+        except Exception:
+            # fallback
+            try:
+                names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                return names[month_number - 1]
+            except Exception:
+                return "—"
+
+    def format_date_fancy(self, dt) -> str:
+        """
+        Return a localized 'Mon 15 Jan' style string using translation keys.
+        - weekday abbreviation from translations (calendar.days.* keys if present)
+        - day using localized numerals
+        - month abbreviation from translations (january..december)
+        Works for QDate/QDateTime or Python datetime/date.
+        """
+        try:
+            weekday = self.get_weekday_abbr(dt)
+            # day number (int)
+            if hasattr(dt, "day"):
+                day_num = int(dt.day())
+            elif hasattr(dt, "dayOfMonth"):
+                day_num = int(dt.dayOfMonth())
+            else:
+                day_num = int(dt.day)
+            day_str = self.format_number(day_num)
+            month = self.get_month_abbr(dt)
+            # Some translations might want the order different; for now keep "Mon 15 Jan"
+            return f"{weekday} {day_str} {month}"
+        except Exception:
+            # Fallback to naive formatting
+            try:
+                if hasattr(dt, "strftime"):
+                    return dt.strftime("%a %d %b")
+                else:
+                    return f"{self.format_number(dt.day)} {self.format_number(dt.month)} {self.format_number(dt.year)}"
+            except Exception:
+                return ""
+
+
 # Global instance
-_i18n_manager: Optional[I18nManager] = None
+_i18n_manager: Optional[_i18n_manager] = None
 
 
-def get_i18n_manager() -> I18nManager:
+def get_i18n_manager() -> _i18n_manager:
     """
     Get the global I18n manager instance.
 
@@ -621,11 +658,11 @@ def get_i18n_manager() -> I18nManager:
     """
     global _i18n_manager
     if _i18n_manager is None:
-        _i18n_manager = I18nManager()
+        _i18n_manager = _i18n_manager()
     return _i18n_manager
 
 
-def set_i18n_manager(manager: I18nManager):
+def set_i18n_manager(manager: _i18n_manager):
     """
     Set the global I18n manager instance.
 

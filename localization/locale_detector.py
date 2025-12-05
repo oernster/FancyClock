@@ -1,13 +1,16 @@
 """
-Locale Detection System for Calendifier
+Locale Detection System for Fancy Clock
 
 This module provides comprehensive locale detection and management capabilities
-for the Calendifier application, supporting 13 major international languages.
+for the Fancy Clock application, supporting 13 major international languages.
 """
 
 import locale
 import logging
 import os
+import json
+import time
+import tzlocal
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -16,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class LocaleDetector:
     """
-    Detects and manages locale information for the Calendifier application.
+    Detects and manages locale information for the Fancy Clock application.
 
     Supports 32 major international languages with comprehensive
     locale detection, validation, and information retrieval.
@@ -102,6 +105,35 @@ class LocaleDetector:
         """Initialize the locale detector."""
         self._system_locale = None
         self._detected_locale = None
+        self._timezone_map = self._load_timezone_map()
+
+    def _load_timezone_map(self) -> Dict[str, str]:
+        """Loads the timezone-to-locale mapping from the JSON file."""
+        try:
+            map_path = Path(__file__).parent.parent / "timezone_locale_map.json"
+            with open(map_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            logger.error(f"Failed to load timezone map: {e}")
+            return {}
+
+    def get_locale_from_timezone(self, tz_id: Optional[str] = None) -> Optional[str]:
+        """
+        Get the locale from a given timezone or the system's timezone.
+
+        Args:
+            tz_id (Optional[str]): The timezone ID to look up. If None, detects system timezone.
+
+        Returns:
+            Optional[str]: The detected locale code or None.
+        """
+        try:
+            tz_name = tz_id or tzlocal.get_localzone_name()
+            if tz_name in self._timezone_map:
+                return self._timezone_map[tz_name]
+        except Exception as e:
+            logger.warning(f"Could not determine locale from timezone: {e}")
+        return None
 
     def detect_system_locale(self) -> str:
         """
@@ -125,7 +157,11 @@ class LocaleDetector:
             except Exception:
                 pass
 
-            # Method 2: Environment variables
+            # Method 2: Timezone detection
+            if not detected:
+                detected = self.get_locale_from_timezone()
+
+            # Method 3: Environment variables
             if not detected:
                 for env_var in ["LC_ALL", "LC_MESSAGES", "LANG", "LANGUAGE"]:
                     env_locale = os.environ.get(env_var)
@@ -133,7 +169,7 @@ class LocaleDetector:
                         detected = self._normalize_locale(env_locale.split(":")[0])
                         break
 
-            # Method 3: Windows specific
+            # Method 4: Windows specific
             if not detected and os.name == "nt":
                 try:
                     import ctypes
