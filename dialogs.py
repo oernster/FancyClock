@@ -21,6 +21,7 @@ def show_timezone_dialog(parent):
     timezone_items = []
     now = datetime.now()
     original_locale = parent.i18n_manager.current_locale
+
     for tz in all_timezones:
         locale = parent._get_locale_for_timezone(tz)
         parent.i18n_manager.timezone_translator.locale = locale
@@ -103,18 +104,30 @@ class AboutDialog(QDialog):
         self.refresh_text()
 
     def refresh_text(self):
+        locale = self.i18n_manager.current_locale
+
+        # Update window title from JSON on each refresh
+        self.setWindowTitle(
+            self.i18n_manager.get_translation("about_dialog_title", locale)
+        )
+
         about_text = f"""
-        <b>{self.i18n_manager.get_translation("app_name", self.i18n_manager.current_locale)}</b>
-        <p>{self.i18n_manager.get_translation("version", self.i18n_manager.current_locale)} 1.0</p>
-        <p>{self.i18n_manager.get_translation("app_description", self.i18n_manager.current_locale)}</p>
-        <p><b>{self.i18n_manager.get_translation("author_label", self.i18n_manager.current_locale)}</b> Oliver Ernster</p>
-        <p><b>{self.i18n_manager.get_translation("about_libraries_used", self.i18n_manager.current_locale)}</b></p>
+        <b>{self.i18n_manager.get_translation("app_name", locale)}</b>
+        <p>{self.i18n_manager.get_translation("version", locale)} 1.0</p>
+        <p>{self.i18n_manager.get_translation("app_description", locale)}</p>
+        <p><b>{self.i18n_manager.get_translation("author_label", locale)}</b> Oliver Ernster</p>
+        <p><b>{self.i18n_manager.get_translation("about_libraries_used", locale)}</b></p>
         <ul>
             <li>PySide6</li>
             <li>ntplib</li>
         </ul>
         """
         self.text_label.setText(about_text)
+
+        # Optional: localize the OK button label (using the "ok" key)
+        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
+        if ok_btn is not None:
+            ok_btn.setText(self.i18n_manager.get_translation("ok", locale))
 
 def show_about_dialog(parent, i18n_manager: LocalizationManager):
     if not hasattr(parent, 'about_dialog'):
