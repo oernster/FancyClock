@@ -1,5 +1,5 @@
+babel
+pytz
 PySide6
 requests
-pytz
-babel
 tzlocal
