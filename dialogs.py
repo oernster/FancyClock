@@ -1,3 +1,4 @@
+import sys
 import pytz
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QListWidget, QMessageBox, QScrollArea, QLabel, QPushButton, QDialogButtonBox
 from datetime import datetime
@@ -89,6 +90,8 @@ from localization.i18n_manager import LocalizationManager
 class AboutDialog(QDialog):
     def __init__(self, parent, i18n_manager: LocalizationManager):
         super().__init__(parent)
+        self.python_version = sys.version.split()[0]
+
         self.i18n_manager = i18n_manager
         self.setWindowTitle(self.i18n_manager.get_translation("about_dialog_title", self.i18n_manager.current_locale))
         self.setMinimumSize(300, 200)
@@ -116,6 +119,7 @@ class AboutDialog(QDialog):
         <p>{self.i18n_manager.get_translation("version", locale)} 1.0</p>
         <p>{self.i18n_manager.get_translation("app_description", locale)}</p>
         <p><b>{self.i18n_manager.get_translation("author_label", locale)}</b> Oliver Ernster</p>
+        <p>Python version: <b>{self.python_version}</b></p>
         <p><b>{self.i18n_manager.get_translation("about_libraries_used", locale)}</b></p>
         <ul>
             <li>PySide6</li>
