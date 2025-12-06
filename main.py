@@ -27,11 +27,11 @@ from PySide6.QtCore import (
     QSharedMemory,
     QObject,
     Signal,
-    QSettings,
     QCoreApplication,
 )
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
+from settings_store import get_setting, set_setting
 
 from analog_clock import AnalogClock
 from digital_clock import DigitalClock
@@ -193,10 +193,6 @@ class ClockWindow(QMainWindow):
         self.license_dialog.raise_()
         self.license_dialog.activateWindow()
 
-    def _settings(self) -> QSettings:
-        """Convenience accessor for application settings."""
-        return QSettings()
-
     def _find_skin_by_name(self, name: str) -> str | None:
         """Search media/ for an mp4 whose stem matches the given name (case-insensitive)."""
         media_dir = resource_path("media")
@@ -214,26 +210,27 @@ class ClockWindow(QMainWindow):
 
     def _apply_startup_skin(self) -> None:
         """Apply saved skin if present, otherwise default to 'Mesmerize' if available."""
-        settings = self._settings()
-        saved_skin = settings.value("skin_path", None, type=str)
+        saved_name = get_setting("skin_name", None)
 
-        if saved_skin and os.path.isfile(saved_skin):
-            self.analog_clock.set_video_skin(saved_skin)
-            return
+        if isinstance(saved_name, str):
+            path = self._find_skin_by_name(saved_name)
+            if path:
+                self.analog_clock.set_video_skin(path)
+                return
 
         mesmerize = self._find_skin_by_name("mesmerize")
         if mesmerize:
             self.analog_clock.set_video_skin(mesmerize)
-            settings.setValue("skin_path", mesmerize)
+            set_setting("skin_name", "mesmerize")
 
     def _set_skin_and_persist(self, path: str | None) -> None:
-        """Set the current skin and persist it in settings."""
+        """Set the current skin and persist it in JSON settings."""
         self.analog_clock.set_video_skin(path)
-        settings = self._settings()
         if path:
-            settings.setValue("skin_path", path)
+            stem, _ = os.path.splitext(os.path.basename(path))
+            set_setting("skin_name", stem)
         else:
-            settings.remove("skin_path")
+            set_setting("skin_name", None)
 
     def _populate_skins_menu(self):
         """(Re)build the Skins menu from media/*.mp4 files."""
@@ -267,19 +264,17 @@ class ClockWindow(QMainWindow):
             self.skins_menu.addAction(action)
 
     def _restore_locale_and_timezone(self) -> None:
-        """Restore saved locale and timezone from settings, if available."""
-        settings = self._settings()
+        """Restore saved locale and timezone from JSON settings, if available."""
+        saved_tz = get_setting("timezone_id", None)
+        saved_locale = get_setting("locale", None)
 
-        saved_tz = settings.value("timezone_id", None, type=str)
-        saved_locale = settings.value("locale", None, type=str)
-
-        if saved_tz:
+        if isinstance(saved_tz, str) and saved_tz:
             try:
                 self._change_timezone(saved_tz)
             except Exception:
                 pass
 
-        if saved_locale:
+        if isinstance(saved_locale, str) and saved_locale:
             try:
                 self.i18n_manager.set_locale(saved_locale)
                 self.retranslate_ui()
@@ -437,8 +432,7 @@ class ClockWindow(QMainWindow):
 
         # Persist timezone selection
         try:
-            settings = self._settings()
-            settings.setValue("timezone_id", tz)
+            set_setting("timezone_id", tz)
         except Exception:
             pass
 
@@ -448,8 +442,7 @@ class ClockWindow(QMainWindow):
             if locale:
                 self.i18n_manager.set_locale(locale)
                 # Persist the current locale for next launch
-                settings = self._settings()
-                settings.setValue("locale", self.i18n_manager.current_locale)
+                set_setting("locale", self.i18n_manager.current_locale)
         except Exception:
             pass
 
