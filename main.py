@@ -45,7 +45,10 @@ class ClockWindow(QMainWindow):
 
         # i18n manager
         self.i18n_manager = LocalizationManager()
-        self.setWindowTitle(self.i18n_manager.get_translation("app_name"))
+        title = self.i18n_manager.get_translation("app_name")
+        if title == "app_name":  # translation missing
+            title = "Fancy Clock"
+        self.setWindowTitle(title)
 
         # menu
         self._create_menu_bar()

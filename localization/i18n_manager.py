@@ -13,26 +13,44 @@ logger = logging.getLogger(__name__)
 
 
 class LocalizationManager:
-    def __init__(self, default_locale: Optional[str] = None, translations_dir: Optional[Union[str, Path]] = None):
-        # default locale
-        try:
-            default_locale = default_locale or _locale.getdefaultlocale()[0] or "en_GB"
-        except Exception:
-            default_locale = "en_GB"
+    def __init__(
+        self,
+        default_locale: Optional[str] = None,
+        translations_dir: Optional[Union[str, Path]] = None,
+    ):
+        # Use LocaleDetector everywhere so we always normalise things like
+        # "English_United Kingdom" -> "en_GB"
+        self.locale_detector = LocaleDetector()
 
-        self._current_locale = default_locale
+        if default_locale:
+            # Normalise whatever the caller gave us
+            try:
+                normalized_locale = self.locale_detector._normalize_locale(default_locale)
+            except Exception:
+                normalized_locale = self.locale_detector.DEFAULT_LOCALE
+        else:
+            # Detect from system
+            try:
+                normalized_locale = self.locale_detector.detect_system_locale()
+            except Exception:
+                normalized_locale = self.locale_detector.DEFAULT_LOCALE
 
-        # where translations live
-        self.translations_dir = Path(translations_dir) if translations_dir \
+        self._current_locale = normalized_locale
+
+        # Where translations live
+        self.translations_dir = (
+            Path(translations_dir)
+            if translations_dir
             else Path(__file__).parent / "translations"
+        )
 
-        # cache: { locale: translation_dict }
+        # Cache: { locale: translation_dict }
         self._translations_cache: Dict[str, Dict[str, Any]] = {}
 
-        # helpers for timezone and locale detection
-        self.locale_detector = LocaleDetector()
+        # Helpers for timezone / locale-aware strings
         self.timezone_translator = TimezoneTranslator(self._current_locale)
 
+        # Ensure translations for the starting locale are loaded
         self.set_locale(self._current_locale)
 
     @property
@@ -75,9 +93,18 @@ class LocalizationManager:
         if not locale_code:
             return False
 
-        # try full locale
+        # Normalise using LocaleDetector so things like
+        # "English_United Kingdom" / "en-gb" / "en_GB.UTF-8" work.
+        if hasattr(self, "locale_detector") and locale_code:
+            try:
+                locale_code = self.locale_detector._normalize_locale(locale_code)
+            except Exception:
+                # If anything goes wrong, just use the raw code
+                pass
+
+        # Try full locale first (e.g. en_GB, en_US, fr_FR)
         if not self._load_locale_translations(locale_code):
-            # fallback to lang only
+            # Fallback to language-only (e.g. "en", "fr")
             lang = locale_code.split("_")[0]
             if not self._load_locale_translations(lang):
                 logger.warning(f"No translations for locale {locale_code}")
@@ -86,13 +113,14 @@ class LocalizationManager:
 
         self._current_locale = locale_code
 
-        # keep timezone translator in sync with current locale
+        # Keep timezone translator in sync
         if hasattr(self, "timezone_translator"):
             self.timezone_translator.locale = self._current_locale
 
+        # Best-effort: adjust LC_TIME
         try:
             _locale.setlocale(_locale.LC_TIME, locale_code.replace("_", "-"))
-        except:
+        except Exception:
             pass
 
         return True

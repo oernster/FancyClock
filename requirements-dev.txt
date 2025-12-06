@@ -1,2 +1,3 @@
 pytest
 PyInstaller
+pillow
