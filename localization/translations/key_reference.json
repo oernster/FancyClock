@@ -36,5 +36,7 @@
     "tuesday": "Tue",
     "version": "Version",
     "website": "Website",
-    "wednesday": "Wed"
+    "wednesday": "Wed",
+    "select_timezone_title": "Select Timezone",
+    "search_timezone_placeholder": "Search for a timezone..."
 }

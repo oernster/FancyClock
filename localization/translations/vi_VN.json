@@ -40,5 +40,17 @@
     "tuesday": "T3",
     "version": "Phiên bản",
     "website": "Trang web",
-    "wednesday": "T4"
+    "wednesday": "T4",
+    "digits": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    ]
 }
