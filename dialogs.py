@@ -6,7 +6,7 @@ from utils import resource_path
 def show_timezone_dialog(parent):
     dialog = QDialog(parent)
     dialog.setWindowTitle(parent.i18n_manager.get_translation("select_timezone_title"))
-    dialog.setMinimumSize(300, 400)
+    dialog.setMinimumSize(450, 400)
 
     layout = QVBoxLayout()
     dialog.setLayout(layout)

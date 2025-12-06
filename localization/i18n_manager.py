@@ -197,6 +197,14 @@ class LocalizationManager:
     # ----------------------------------------------------------------------
     def format_date_fancy(self, dt: Union[date, datetime]) -> str:
         wd = self.get_weekday_abbr(dt)
+
+        # Ensure weekday is always 3 characters wide
+        if len(wd) > 3:
+            wd = wd[:3]
+        elif len(wd) < 3:
+            wd = wd.ljust(3)
+
         day = self.format_number(dt.day())
         mon = self.get_month_abbr(dt)
         return f"{wd} {day} {mon}"
+
