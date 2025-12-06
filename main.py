@@ -9,9 +9,10 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QSizePolicy,
+    QMessageBox,
 )
 from PySide6.QtGui import (
-    QAction,          # ← FIXED
+    QAction,
     QIcon,
     QGuiApplication,
 )
@@ -23,7 +24,12 @@ from PySide6.QtCore import (
     QEasingCurve,
     QTimeZone,
     QLoggingCategory,
+    QSystemSemaphore,
+    QSharedMemory,
+    QObject,
+    Signal,
 )
+from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
 from analog_clock import AnalogClock
 from digital_clock import DigitalClock
@@ -32,6 +38,146 @@ from localization.i18n_manager import LocalizationManager
 from utils import resource_path
 from dialogs import show_timezone_dialog, show_license_dialog, show_about_dialog
 
+
+class SingleInstanceGuard(QObject):
+    """
+    Cross-platform single-instance guard using QSystemSemaphore + QSharedMemory
+    plus a QLocalServer/QLocalSocket channel so secondary instances can
+    request that the primary instance brings its window to the front.
+    """
+
+    activated = Signal()  # emitted in the *primary* instance when a
+                          # secondary instance asks to be brought to front
+
+    def __init__(self, key: str, parent: QObject | None = None):
+        super().__init__(parent)
+        self._key = key
+        self._sem = None
+        self._mem = None
+        self._is_primary = False
+        self._server: QLocalServer | None = None
+        self._init_ipc()
+
+    # ------------------ public API ------------------
+
+    @property
+    def is_primary(self) -> bool:
+        """True if this process is the first (owning) instance."""
+        return self._is_primary
+
+    def release(self) -> None:
+        """Explicitly release the shared memory segment."""
+        if not self._is_primary:
+            return
+
+        self._sem.acquire()
+        try:
+            if self._mem.isAttached():
+                self._mem.detach()
+        finally:
+            self._sem.release()
+
+        self._is_primary = False
+
+        if self._server is not None:
+            self._server.close()
+            self._server = None
+
+    # Called in a *secondary* instance to tell primary to activate its window.
+    def notify_primary_to_activate(self) -> None:
+        if self._is_primary:
+            return  # nothing to do – we *are* primary
+
+        socket = QLocalSocket()
+        # Same key as the server listens on:
+        socket.connectToServer(self._key)
+        if not socket.waitForConnected(250):
+            socket.abort()
+            return
+
+        try:
+            # We don’t really care about payload; a single byte is enough.
+            socket.write(b"activate")
+            socket.flush()
+            socket.waitForBytesWritten(250)
+        finally:
+            socket.disconnectFromServer()
+            socket.close()
+
+    # Context manager support (RAII-ish)
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.release()
+
+    def __del__(self):
+        try:
+            self.release()
+        except Exception:
+            pass
+
+    # ------------------ internals ------------------
+
+    def _init_ipc(self) -> None:
+        # Separate semaphore key to avoid collisions
+        sem_key = f"{self._key}_sem"
+
+        self._sem = QSystemSemaphore(sem_key, 1)
+        self._mem = QSharedMemory(self._key)
+
+        # Serialize operations on shared memory
+        self._sem.acquire()
+        try:
+            # If a segment already exists and we can attach, another instance is running.
+            if self._mem.attach():
+                self._mem.detach()
+                self._is_primary = False
+                return
+
+            # No existing segment – create a 1-byte block just to mark presence.
+            if not self._mem.create(1):
+                self._is_primary = False
+                return
+
+            self._is_primary = True
+        finally:
+            self._sem.release()
+
+        # If we are primary, also start a local server to listen for
+        # “please activate” requests from secondary instances.
+        if self._is_primary:
+            self._start_server()
+
+    def _start_server(self) -> None:
+        # Clean up any stale server with the same name.
+        try:
+            QLocalServer.removeServer(self._key)
+        except Exception:
+            pass
+
+        self._server = QLocalServer(self)
+        self._server.newConnection.connect(self._on_new_connection)
+
+        if not self._server.listen(self._key):
+            # If listening fails, we still have single-instance behaviour,
+            # just no “raise existing” support.
+            self._server = None
+
+    def _on_new_connection(self) -> None:
+        if self._server is None:
+            return
+        socket = self._server.nextPendingConnection()
+        if socket is None:
+            return
+
+        # Read & discard payload; we only care that *someone* connected.
+        socket.readAll()
+        socket.disconnectFromServer()
+        socket.close()
+
+        # Tell whoever is interested (main window) to bring itself to front.
+        self.activated.emit()
 
 
 class ClockWindow(QMainWindow):
@@ -105,6 +251,23 @@ class ClockWindow(QMainWindow):
 
         icon_path = resource_path("clock.ico")
         self.setWindowIcon(QIcon(icon_path))
+
+    def bring_to_front(self):
+        """
+        Try to make this window visible, un-minimized, and focused on
+        both Windows and Linux (X11/Wayland).
+        """
+        # Ensure it’s at least shown
+        if not self.isVisible():
+            self.show()
+
+        # If minimized, restore it
+        if self.windowState() & Qt.WindowMinimized:
+            self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
+
+        # Make sure it’s the active window in the stack
+        self.raise_()
+        self.activateWindow()
 
     def show(self):
         super().show()
@@ -389,25 +552,39 @@ class ClockWindow(QMainWindow):
         except Exception:
             pass
 
-
-def main():
+def main() -> int:
     # suppress noisy Qt font db warnings
     QLoggingCategory.setFilterRules("qt.text.font.db=false")
 
     if sys.platform == "win32":
         try:
-            myappid = "mycompany.myproduct.subproduct.version"
+            myappid = "uk.codecrafter.FancyClock"
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         except Exception:
             pass
 
     app = QApplication(sys.argv)
 
+    # Single-instance guard (cross-platform).
+    guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
+
+    if not guard.is_primary:
+        # Instead of showing a dialog, ask the primary instance to activate its window
+        guard.notify_primary_to_activate()
+        return 0
+
+    # Keep the guard alive for the lifetime of the app.
+    app.single_instance_guard = guard
+
     window = ClockWindow()
+
+    # When another instance starts and connects, bring this window to the front.
+    guard.activated.connect(window.bring_to_front)
+
     window.show()
 
-    sys.exit(app.exec())
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

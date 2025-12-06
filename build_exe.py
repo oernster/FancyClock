@@ -79,6 +79,7 @@ def build_executable() -> None:
         "--hidden-import=PySide6.QtCore",
         "--hidden-import=PySide6.QtGui",
         "--hidden-import=PySide6.QtWidgets",
+        "--hidden-import=PySide6.QtNetwork",
     ]
 
     print("Building FancyClock executable...")
