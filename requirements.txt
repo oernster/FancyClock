@@ -1,5 +1,7 @@
 babel
 pytz
 PySide6
+shiboken6
 requests
+charset_normalizer==3.3.2
 tzlocal

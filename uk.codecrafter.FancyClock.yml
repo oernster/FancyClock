@@ -1,0 +1,92 @@
+app-id: uk.codecrafter.FancyClock
+runtime: org.kde.Sdk
+runtime-version: '6.8'
+sdk: org.kde.Sdk
+
+command: fancyclock
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=host-etc:ro
+
+modules:
+  # Native dependency that provides libgssapi_krb5.so.2 for QtNetwork/QtMultimedia
+  - name: krb5
+    buildsystem: autotools
+    subdir: src
+    config-opts:
+      - --prefix=/app
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://kerberos.org/dist/krb5/1.21/krb5-1.21.3.tar.gz
+        # SHA-256 from Ubuntu's krb5 1.21.3 source package
+        # https://launchpad.net/ubuntu/+source/krb5/1.21.3-3 
+        sha256: b7a4cd5ead67fb08b980b21abd150ff7217e85ea320c9ed0c6dadd304840ad35
+
+  - name: fancyclock
+    buildsystem: simple
+
+    build-options:
+      env:
+        PIP_DISABLE_PIP_VERSION_CHECK: '1'
+        PIP_NO_CACHE_DIR: '1'
+        PIP_NO_INDEX: '1'
+
+    build-commands:
+      # 1) Install Python deps from local wheels in ./vendor (offline)
+      - python3 -m pip install --no-index --find-links=vendor --prefix=/app -r requirements.txt
+
+      # 2) App files
+      - install -d /app/share/fancyclock
+      - cp -a *.py /app/share/fancyclock/
+      - cp -a effects /app/share/fancyclock/
+      - cp -a localization /app/share/fancyclock/
+      - cp timezone_locale_map.json /app/share/fancyclock/
+
+      # 3) media directory
+      - install -d /app/share/fancyclock/media
+      - cp -a media/. /app/share/fancyclock/media/
+
+      # 4) License
+      - install -d /app/share/licenses/uk.codecrafter.FancyClock
+      - install -m 644 LICENSE /app/share/licenses/uk.codecrafter.FancyClock/LICENSE
+      # Also put a copy next to main.py so the app menu can find it
+      - install -m 644 LICENSE /app/share/fancyclock/LICENSE
+
+      # 5) Icon
+      - install -d /app/share/icons/hicolor/256x256/apps
+      - install -m 644 clock.png /app/share/icons/hicolor/256x256/apps/uk.codecrafter.FancyClock.png
+
+      # 6) Desktop file
+      - install -d /app/share/applications
+      - |
+        cat > /app/share/applications/uk.codecrafter.FancyClock.desktop << 'EOF'
+        [Desktop Entry]
+        Name=Fancy Clock
+        Comment=Cross-platform desktop clock with analog and digital modes
+        Exec=fancyclock
+        Icon=uk.codecrafter.FancyClock
+        Terminal=false
+        Type=Application
+        Categories=Utility;Clock;
+        EOF
+
+      # 7) Launcher script
+      - install -d /app/bin
+      - |
+        cat > /app/bin/fancyclock << 'EOF'
+        #!/usr/bin/env bash
+        set -euo pipefail
+        cd /app/share/fancyclock
+        exec python3 main.py "$@"
+        EOF
+      - chmod +x /app/bin/fancyclock
+
+    sources:
+      - type: dir
+        path: .
+
+

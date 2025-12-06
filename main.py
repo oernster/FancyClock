@@ -1,4 +1,5 @@
 import sys
+import platform
 import os
 import ctypes
 from datetime import datetime, timezone
@@ -29,7 +30,6 @@ from PySide6.QtCore import (
     Signal,
     QCoreApplication,
 )
-from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
 from settings_store import get_setting, set_setting
 
@@ -39,7 +39,6 @@ from ntp_client import NTPClient
 from localization.i18n_manager import LocalizationManager
 from utils import resource_path
 from dialogs import show_timezone_dialog, AboutDialog, LicenseDialog
-from single_instance import SingleInstanceGuard
 
 
 class ClockWindow(QMainWindow):
@@ -139,9 +138,23 @@ class ClockWindow(QMainWindow):
     def _supports_window_opacity(self) -> bool:
         """
         Check whether the platform supports window opacity.
+
+        On Flatpak we explicitly disable this to avoid the
+        "This plugin does not support setting window opacity"
+        spam from the platform plugin.
         """
+        import os
+        import sys
+
+        # Inside Flatpak: don't even try, just say "no"
+        if os.environ.get("FLATPAK_ID") and sys.platform.startswith("linux"):
+            return False
+
+        # Outside Flatpak: probe once
         try:
             self.setWindowOpacity(0.99)
+            # reset to fully opaque just in case
+            self.setWindowOpacity(1.0)
             return True
         except Exception:
             return False
@@ -572,11 +585,13 @@ def main() -> int:
         "qt.multimedia.ffmpeg.*=false\n"
     )
 
+    # Set a stable AppUserModelID on Windows for proper taskbar grouping
     if sys.platform == "win32":
         try:
             myappid = "uk.codecrafter.FancyClock"
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         except Exception:
+            # If this fails for any reason, just continue without it
             pass
 
     app = QApplication(sys.argv)
@@ -585,21 +600,29 @@ def main() -> int:
     QCoreApplication.setOrganizationName("OliverErnster")
     QCoreApplication.setApplicationName("FancyClock")
 
-    # Single-instance guard (cross-platform).
-    guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
+    # -----------------------------------------------------------------------
 
-    if not guard.acquire():
-        # Another instance is already running; notify it and exit.
-        guard.notify_existing_instance()
-        return 0
+    # Disable single-instance guard on Linux only
+    use_single_instance = platform.system() != "Linux"
 
-    # Keep guard alive for the lifetime of the app
+    guard = None
+    if use_single_instance:
+        from single_instance import SingleInstanceGuard
+
+        guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
+        if not guard.acquire():
+            # Another instance is already running; ask it to activate and exit
+            guard.notify_existing_instance()
+            return 0
+
+    # Keep guard alive for the lifetime of the app (where applicable)
     app.single_instance_guard = guard
 
     window = ClockWindow()
 
     # When another instance starts and connects, bring this window to the front.
-    guard.activated.connect(window.bring_to_front)
+    if guard is not None:
+        guard.activated.connect(window.bring_to_front)
 
     window.show()
 
