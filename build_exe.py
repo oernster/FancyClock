@@ -15,6 +15,7 @@ def build_executable() -> None:
     - Bundles the entire `localization` directory so translations work
       when running from the EXE.
     - Bundles timezone_locale_map.json used by the localization layer.
+    - Bundles the `media` directory so video skins are available at runtime.
     """
     project_root = Path(__file__).resolve().parent
 
@@ -24,6 +25,7 @@ def build_executable() -> None:
     icon_ico = project_root / "clock.ico"
     localization_dir = project_root / "localization"
     tz_locale_map = project_root / "timezone_locale_map.json"
+    media_dir = project_root / "media"  # <-- includes video backgrounds
 
     if not main_py.exists():
         print("ERROR: main.py is missing next to build_exe.py.")
@@ -44,6 +46,10 @@ def build_executable() -> None:
     if not tz_locale_map.exists():
         print("WARNING: timezone_locale_map.json is missing. "
               "Localization may not work as expected.")
+
+    if not media_dir.exists():
+        print("WARNING: media/ directory is missing. "
+              "Video skins will not be bundled.")
 
     # PyInstaller uses ';' as the separator on Windows and ':' on POSIX.
     data_sep = ";" if os.name == "nt" else ":"
@@ -69,18 +75,27 @@ def build_executable() -> None:
         f"--add-data={icon_ico}{data_sep}.",
         f"--add-data={icon_png}{data_sep}.",
 
-        # 🔥 IMPORTANT: bundle localization so translations work inside the EXE.
+        # Bundle localization so translations work inside the EXE.
         f"--add-data={localization_dir}{data_sep}localization",
 
         # Bundle timezone_locale_map.json (used by localization / timezone code).
         f"--add-data={tz_locale_map}{data_sep}.",
+    ]
 
-        # Required hidden imports for PySide6.
+    # Bundle the media directory (if present) so resource_path("media") works.
+    if media_dir.exists():
+        args.append(f"--add-data={media_dir}{data_sep}media")
+
+    # Required hidden imports for PySide6.
+    args.extend([
         "--hidden-import=PySide6.QtCore",
         "--hidden-import=PySide6.QtGui",
         "--hidden-import=PySide6.QtWidgets",
         "--hidden-import=PySide6.QtNetwork",
-    ]
+        # If you're using QMediaPlayer / QVideoSink, these may help:
+        # "--hidden-import=PySide6.QtMultimedia",
+        # "--hidden-import=PySide6.QtMultimediaWidgets",
+    ])
 
     print("Building FancyClock executable...")
     print("PyInstaller arguments:\n  " + "\n  ".join(args))

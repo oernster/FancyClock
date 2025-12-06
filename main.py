@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import (
     QAction,
     QIcon,
-    QGuiApplication,
 )
 from PySide6.QtCore import (
     QTimer,
@@ -28,156 +27,19 @@ from PySide6.QtCore import (
     QSharedMemory,
     QObject,
     Signal,
+    QSettings,
+    QCoreApplication,
 )
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
+
 
 from analog_clock import AnalogClock
 from digital_clock import DigitalClock
 from ntp_client import NTPClient
 from localization.i18n_manager import LocalizationManager
 from utils import resource_path
-from dialogs import show_timezone_dialog, show_license_dialog, show_about_dialog
-
-
-class SingleInstanceGuard(QObject):
-    """
-    Cross-platform single-instance guard using QSystemSemaphore + QSharedMemory
-    plus a QLocalServer/QLocalSocket channel so secondary instances can
-    request that the primary instance brings its window to the front.
-    """
-
-    activated = Signal()  # emitted in the *primary* instance when a
-                          # secondary instance asks to be brought to front
-
-    def __init__(self, key: str, parent: QObject | None = None):
-        super().__init__(parent)
-        self._key = key
-        self._sem = None
-        self._mem = None
-        self._is_primary = False
-        self._server: QLocalServer | None = None
-        self._init_ipc()
-
-    # ------------------ public API ------------------
-
-    @property
-    def is_primary(self) -> bool:
-        """True if this process is the first (owning) instance."""
-        return self._is_primary
-
-    def release(self) -> None:
-        """Explicitly release the shared memory segment."""
-        if not self._is_primary:
-            return
-
-        self._sem.acquire()
-        try:
-            if self._mem.isAttached():
-                self._mem.detach()
-        finally:
-            self._sem.release()
-
-        self._is_primary = False
-
-        if self._server is not None:
-            self._server.close()
-            self._server = None
-
-    # Called in a *secondary* instance to tell primary to activate its window.
-    def notify_primary_to_activate(self) -> None:
-        if self._is_primary:
-            return  # nothing to do – we *are* primary
-
-        socket = QLocalSocket()
-        # Same key as the server listens on:
-        socket.connectToServer(self._key)
-        if not socket.waitForConnected(250):
-            socket.abort()
-            return
-
-        try:
-            # We don’t really care about payload; a single byte is enough.
-            socket.write(b"activate")
-            socket.flush()
-            socket.waitForBytesWritten(250)
-        finally:
-            socket.disconnectFromServer()
-            socket.close()
-
-    # Context manager support (RAII-ish)
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.release()
-
-    def __del__(self):
-        try:
-            self.release()
-        except Exception:
-            pass
-
-    # ------------------ internals ------------------
-
-    def _init_ipc(self) -> None:
-        # Separate semaphore key to avoid collisions
-        sem_key = f"{self._key}_sem"
-
-        self._sem = QSystemSemaphore(sem_key, 1)
-        self._mem = QSharedMemory(self._key)
-
-        # Serialize operations on shared memory
-        self._sem.acquire()
-        try:
-            # If a segment already exists and we can attach, another instance is running.
-            if self._mem.attach():
-                self._mem.detach()
-                self._is_primary = False
-                return
-
-            # No existing segment – create a 1-byte block just to mark presence.
-            if not self._mem.create(1):
-                self._is_primary = False
-                return
-
-            self._is_primary = True
-        finally:
-            self._sem.release()
-
-        # If we are primary, also start a local server to listen for
-        # “please activate” requests from secondary instances.
-        if self._is_primary:
-            self._start_server()
-
-    def _start_server(self) -> None:
-        # Clean up any stale server with the same name.
-        try:
-            QLocalServer.removeServer(self._key)
-        except Exception:
-            pass
-
-        self._server = QLocalServer(self)
-        self._server.newConnection.connect(self._on_new_connection)
-
-        if not self._server.listen(self._key):
-            # If listening fails, we still have single-instance behaviour,
-            # just no “raise existing” support.
-            self._server = None
-
-    def _on_new_connection(self) -> None:
-        if self._server is None:
-            return
-        socket = self._server.nextPendingConnection()
-        if socket is None:
-            return
-
-        # Read & discard payload; we only care that *someone* connected.
-        socket.readAll()
-        socket.disconnectFromServer()
-        socket.close()
-
-        # Tell whoever is interested (main window) to bring itself to front.
-        self.activated.emit()
+from dialogs import show_timezone_dialog, AboutDialog, LicenseDialog
+from single_instance import SingleInstanceGuard
 
 
 class ClockWindow(QMainWindow):
@@ -249,6 +111,10 @@ class ClockWindow(QMainWindow):
             self.animation.setEndValue(1.0)
             self.animation.setEasingCurve(QEasingCurve.InOutQuad)
 
+        # Restore saved locale/timezone and apply startup skin
+        self._restore_locale_and_timezone()
+        self._apply_startup_skin()
+
         icon_path = resource_path("clock.ico")
         self.setWindowIcon(QIcon(icon_path))
 
@@ -262,24 +128,177 @@ class ClockWindow(QMainWindow):
             self.show()
 
         # If minimized, restore it
-        if self.windowState() & Qt.WindowMinimized:
-            self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
+        if self.isMinimized():
+            self.showNormal()
 
-        # Make sure it’s the active window in the stack
+        # Raise and activate
         self.raise_()
         self.activateWindow()
+        self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
 
-    def show(self):
-        super().show()
-        if self.animation is not None:
-            self.animation.start()
+    def _supports_window_opacity(self) -> bool:
+        """
+        Check whether the platform supports window opacity.
+        """
+        try:
+            self.setWindowOpacity(0.99)
+            return True
+        except Exception:
+            return False
 
-    # -----------------------
+    def _create_menu_bar(self):
+        menu_bar = self.menuBar()
+
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        # dummy menu to keep corner widget layout behavior consistent
+        menu_bar.addMenu("").addAction(QAction("", self))
+        menu_bar.setCornerWidget(spacer)
+
+        # Timezone action
+        self.timezone_action = QAction(self.i18n_manager.get_translation("timezone"), self)
+        self.timezone_action.triggered.connect(lambda: show_timezone_dialog(self))
+        menu_bar.addAction(self.timezone_action)
+
+        # Skins menu with video backgrounds for the analog clock
+        skins_label = self.i18n_manager.get_translation("skins")
+        if skins_label == "skins":  # translation missing
+            skins_label = "Skins"
+        self.skins_menu = menu_bar.addMenu(skins_label)
+        self._populate_skins_menu()
+
+        # Help menu
+        self.help_menu = menu_bar.addMenu(self.i18n_manager.get_translation("help"))
+        self.about_action = QAction(self.i18n_manager.get_translation("about"), self)
+        self.about_action.triggered.connect(self.show_about_dialog)
+        self.help_menu.addAction(self.about_action)
+
+        self.license_action = QAction(self.i18n_manager.get_translation("license"), self)
+        self.license_action.triggered.connect(self.show_license_dialog)
+        self.help_menu.addAction(self.license_action)
+
+    def show_about_dialog(self):
+        if not hasattr(self, "about_dialog") or self.about_dialog is None:
+            self.about_dialog = AboutDialog(self.i18n_manager, self)
+        self.about_dialog.refresh_text()
+        self.about_dialog.show()
+        self.about_dialog.raise_()
+        self.about_dialog.activateWindow()
+
+    def show_license_dialog(self):
+        if not hasattr(self, "license_dialog") or self.license_dialog is None:
+            self.license_dialog = LicenseDialog(self.i18n_manager, self)
+        self.license_dialog.refresh_text()
+        self.license_dialog.show()
+        self.license_dialog.raise_()
+        self.license_dialog.activateWindow()
+
+    def _settings(self) -> QSettings:
+        """Convenience accessor for application settings."""
+        return QSettings()
+
+    def _find_skin_by_name(self, name: str) -> str | None:
+        """Search media/ for an mp4 whose stem matches the given name (case-insensitive)."""
+        media_dir = resource_path("media")
+        if not os.path.isdir(media_dir):
+            return None
+
+        name = name.lower()
+        for filename in os.listdir(media_dir):
+            if not filename.lower().endswith(".mp4"):
+                continue
+            stem, _ = os.path.splitext(filename)
+            if stem.lower() == name:
+                return os.path.join(media_dir, filename)
+        return None
+
+    def _apply_startup_skin(self) -> None:
+        """Apply saved skin if present, otherwise default to 'Mesmerize' if available."""
+        settings = self._settings()
+        saved_skin = settings.value("skin_path", None, type=str)
+
+        if saved_skin and os.path.isfile(saved_skin):
+            self.analog_clock.set_video_skin(saved_skin)
+            return
+
+        mesmerize = self._find_skin_by_name("mesmerize")
+        if mesmerize:
+            self.analog_clock.set_video_skin(mesmerize)
+            settings.setValue("skin_path", mesmerize)
+
+    def _set_skin_and_persist(self, path: str | None) -> None:
+        """Set the current skin and persist it in settings."""
+        self.analog_clock.set_video_skin(path)
+        settings = self._settings()
+        if path:
+            settings.setValue("skin_path", path)
+        else:
+            settings.remove("skin_path")
+
+    def _populate_skins_menu(self):
+        """(Re)build the Skins menu from media/*.mp4 files."""
+        if not hasattr(self, "skins_menu"):
+            return
+
+        self.skins_menu.clear()
+
+        # First entry: go back to the built-in galaxy background
+        default_label = self.i18n_manager.get_translation("skin_default")
+        if default_label == "skin_default":  # translation missing
+            default_label = "Default (Galaxy)"
+        default_action = QAction(default_label, self)
+        default_action.triggered.connect(lambda: self._set_skin_and_persist(None))
+        self.skins_menu.addAction(default_action)
+
+        media_dir = resource_path("media")
+        if not os.path.isdir(media_dir):
+            return
+
+        # One menu entry per *.mp4 file in the media folder
+        for filename in sorted(os.listdir(media_dir)):
+            if not filename.lower().endswith(".mp4"):
+                continue
+            path = os.path.join(media_dir, filename)
+            nice_name = os.path.splitext(filename)[0].replace("_", " ").title()
+            action = QAction(nice_name, self)
+            action.triggered.connect(
+                lambda checked=False, p=path: self._set_skin_and_persist(p)
+            )
+            self.skins_menu.addAction(action)
+
+    def _restore_locale_and_timezone(self) -> None:
+        """Restore saved locale and timezone from settings, if available."""
+        settings = self._settings()
+
+        saved_tz = settings.value("timezone_id", None, type=str)
+        saved_locale = settings.value("locale", None, type=str)
+
+        if saved_tz:
+            try:
+                self._change_timezone(saved_tz)
+            except Exception:
+                pass
+
+        if saved_locale:
+            try:
+                self.i18n_manager.set_locale(saved_locale)
+                self.retranslate_ui()
+                self.update_time()
+            except Exception:
+                pass
+
     # Window sizing & show
     # -----------------------
     def _set_scaled_initial_size(self, scale: float = 1.5):
         base_w, base_h = 400, 440
         self.resize(int(base_w * scale), int(base_h * scale))
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self.animation is not None:
+            self.animation.setStartValue(0.0)
+            self.animation.setEndValue(1.0)
+            self.animation.start()
 
     # -----------------------
     # Time / NTP helpers
@@ -292,11 +311,14 @@ class ClockWindow(QMainWindow):
         ntp_time = self.ntp_client.get_time()
         if isinstance(ntp_time, datetime):
             local_utc_now = datetime.now(timezone.utc)
+            # offset in seconds
             self.time_offset = (ntp_time - local_utc_now).total_seconds()
+        else:
+            self.time_offset = 0
 
-    def get_current_time(self) -> QDateTime:
+    def _current_time(self) -> QDateTime:
         """
-        Return a QDateTime adjusted using the NTP offset and the selected timezone.
+        Compute the current time with NTP offset and selected timezone.
         """
         qdt = QDateTime.currentDateTimeUtc().addSecs(int(self.time_offset))
         return qdt.toTimeZone(self.time_zone)
@@ -344,11 +366,19 @@ class ClockWindow(QMainWindow):
             except Exception:
                 pass
 
-    def _supports_window_opacity(self) -> bool:
-        name = QGuiApplication.platformName().lower()
-        # Known platforms that support windowOpacity
-        return any(key in name for key in ("windows", "xcb", "cocoa"))
+    def update_time(self):
+        """
+        Slot called by the tick timer once per second.
+        """
+        current_qdatetime = self._current_time()
 
+        # Update both clocks via the helper, so they can evolve independently
+        self._tick_clock(self.analog_clock, current_qdatetime)
+        self._tick_clock(self.digital_clock, current_qdatetime)
+
+    # -----------------------
+    # Animation helpers
+    # -----------------------
     def _animate_clock(self, clock_widget):
         """
         Advance the clock's animation/state for the high-frequency animation loop.
@@ -368,101 +398,24 @@ class ClockWindow(QMainWindow):
             except Exception:
                 pass
 
-        # Backwards-compatible names
-        for name in ("update_galaxy", "update_stars"):
-            if hasattr(clock_widget, name) and callable(getattr(clock_widget, name)):
+        # Backwards-compatible APIs
+        for method_name in ("update_galaxy", "update_stars", "update"):
+            if hasattr(clock_widget, method_name) and callable(getattr(clock_widget, method_name)):
                 try:
-                    getattr(clock_widget, name)()
+                    getattr(clock_widget, method_name)()
                     return
                 except Exception:
-                    pass
-
-        # If nothing else, just request an update (may be cheap)
-        try:
-            clock_widget.update()
-        except Exception:
-            try:
-                clock_widget.repaint()
-            except Exception:
-                pass
-
-    # -----------------------
-    # Timers' slots
-    # -----------------------
-    def update_time(self):
-        """
-        Called once per second. Update both clocks' time.
-        """
-        current_qdt = self.get_current_time()
-        # update analog and digital in a safe robust way
-        self._tick_clock(self.analog_clock, current_qdt)
-        self._tick_clock(self.digital_clock, current_qdt)
+                    continue
 
     def update_animation(self):
         """
-        Called frequently (~60 FPS). Advance animations for both clocks.
+        Slot called by the animation timer roughly 60 times per second.
         """
         self._animate_clock(self.analog_clock)
         self._animate_clock(self.digital_clock)
 
     # -----------------------
-    # Menu / UI
-    # -----------------------
-    def _create_menu_bar(self):
-        menu_bar = self.menuBar()
-
-        spacer = QWidget()
-        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        # dummy menu to keep corner widget layout behavior consistent
-        menu_bar.addMenu("").addAction(QAction("", self))
-        menu_bar.setCornerWidget(spacer)
-
-        # Timezone action
-        self.timezone_action = QAction(self.i18n_manager.get_translation("timezone"), self)
-        self.timezone_action.triggered.connect(lambda: show_timezone_dialog(self))
-        menu_bar.addAction(self.timezone_action)
-
-        # Help menu with About and License
-        self.help_menu = menu_bar.addMenu(self.i18n_manager.get_translation("help"))
-
-        self.about_action = QAction(self.i18n_manager.get_translation("about"), self)
-        self.about_action.triggered.connect(lambda: show_about_dialog(self, self.i18n_manager))
-        self.help_menu.addAction(self.about_action)
-
-        self.license_action = QAction(self.i18n_manager.get_translation("license"), self)
-        self.license_action.triggered.connect(lambda: show_license_dialog(self))
-        self.help_menu.addAction(self.license_action)
-
-    # -----------------------
-    # Mouse dragging window
-    # -----------------------
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            # store global position for dragging
-            try:
-                self.old_pos = event.globalPosition().toPoint()
-            except Exception:
-                # older PySide versions may not have globalPosition()
-                self.old_pos = event.globalPos()
-
-    def mouseMoveEvent(self, event):
-        try:
-            if self.old_pos is not None and event.buttons() == Qt.LeftButton:
-                try:
-                    new_pos = event.globalPosition().toPoint()
-                except Exception:
-                    new_pos = event.globalPos()
-                delta = new_pos - self.old_pos
-                self.move(self.pos() + delta)
-                self.old_pos = new_pos
-        except Exception:
-            pass
-
-    def mouseReleaseEvent(self, event):
-        self.old_pos = None
-
-    # -----------------------
-    # Timezone / Locale helpers
+    # Localization helpers
     # -----------------------
     def _get_locale_for_timezone(self, tz_id):
         """
@@ -475,20 +428,28 @@ class ClockWindow(QMainWindow):
             return "en_US"
 
     def _change_timezone(self, tz):
-        """
-        Public hook called by the timezone dialog (pass tz as timezone id string).
-        This will update the QTimeZone used, set the i18n locale, and retranslate UI.
-        """
+        """Update timezone, locale, persist both, and retranslate the UI."""
         try:
             self.time_zone = QTimeZone(tz.encode("utf-8"))
         except Exception:
             # if invalid tz id, ignore
+            return
+
+        # Persist timezone selection
+        try:
+            settings = self._settings()
+            settings.setValue("timezone_id", tz)
+        except Exception:
             pass
 
+        # Derive and apply a suitable locale for this timezone
         locale = self._get_locale_for_timezone(tz)
         try:
             if locale:
                 self.i18n_manager.set_locale(locale)
+                # Persist the current locale for next launch
+                settings = self._settings()
+                settings.setValue("locale", self.i18n_manager.current_locale)
         except Exception:
             pass
 
@@ -515,46 +476,108 @@ class ClockWindow(QMainWindow):
         except Exception:
             pass
 
-        # Update menu text (preserve behavior of previous implementation)
         try:
-            self.update_menu_text()
-        except Exception:
-            pass
-
-        # Let clocks re-fetch any localized strings if they choose to
-        try:
-            if hasattr(self.digital_clock, "update_localization"):
-                self.digital_clock.update_localization()
+            self.timezone_action.setText(self.i18n_manager.get_translation("timezone"))
         except Exception:
             pass
 
         try:
-            if hasattr(self.analog_clock, "update_localization"):
-                self.analog_clock.update_localization()
+            self.help_menu.setTitle(self.i18n_manager.get_translation("help"))
+            self.about_action.setText(self.i18n_manager.get_translation("about"))
+            self.license_action.setText(self.i18n_manager.get_translation("license"))
         except Exception:
             pass
 
-    def update_menu_text(self, locale=None):
-        """
-        Update menu labels. If 'locale' is provided, request translations for that locale.
-        """
+        # Rebuild skins menu label and items
         try:
-            if locale:
-                self.timezone_action.setText(self.i18n_manager.get_translation("timezone", locale=locale))
-                self.help_menu.setTitle(self.i18n_manager.get_translation("help", locale=locale))
-                self.about_action.setText(self.i18n_manager.get_translation("about", locale=locale))
-                self.license_action.setText(self.i18n_manager.get_translation("license", locale=locale))
-            else:
-                self.timezone_action.setText(self.i18n_manager.get_translation("timezone"))
-                self.help_menu.setTitle(self.i18n_manager.get_translation("help"))
-                self.about_action.setText(self.i18n_manager.get_translation("about"))
-                self.license_action.setText(self.i18n_manager.get_translation("license"))
+            skins_label = self.i18n_manager.get_translation("skins")
+            if skins_label == "skins":
+                skins_label = "Skins"
+            self.skins_menu.setTitle(skins_label)
+            self._populate_skins_menu()
         except Exception:
             pass
 
+        # Refresh about and license dialogs if they are visible
+        try:
+            if hasattr(self, "about_dialog") and self.about_dialog.isVisible():
+                self.about_dialog.refresh_text()
+        except Exception:
+            pass
+
+        try:
+            if hasattr(self, "license_dialog") and self.license_dialog.isVisible():
+                self.license_dialog.refresh_text()
+        except Exception:
+            pass
+
+    # -----------------------
+    # Mouse dragging window
+    # -----------------------
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            # store global position for dragging
+            try:
+                self.old_pos = event.globalPosition().toPoint()
+            except Exception:
+                # older PySide versions may not have globalPosition()
+                self.old_pos = event.globalPos()
+
+    def mouseMoveEvent(self, event):
+        if self.old_pos is not None and event.buttons() & Qt.LeftButton:
+            try:
+                new_pos = event.globalPosition().toPoint()
+            except Exception:
+                new_pos = event.globalPos()
+            delta = new_pos - self.old_pos
+            self.move(self.pos() + delta)
+            self.old_pos = new_pos
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.old_pos = None
+
+
+# -----------------------
+# Single-instance support
+# -----------------------
+class SingleInstanceServer(QObject):
+    activated = Signal()
+
+    def __init__(self, server_name: str, parent=None):
+        super().__init__(parent)
+        self.server = QLocalServer(self)
+        self.server.setSocketOptions(QLocalServer.WorldAccessOption)
+        self.server.newConnection.connect(self.on_new_connection)
+
+        # Clean up any stale socket file on Unix-like systems
+        if os.path.exists(server_name):
+            try:
+                os.remove(server_name)
+            except OSError:
+                pass
+
+        if not self.server.listen(server_name):
+            raise RuntimeError(f"Unable to start single-instance server: {self.server.errorString()}")
+
+    def on_new_connection(self):
+        # A new instance tried to start; notify the main window.
+        socket = self.server.nextPendingConnection()
+        if socket is not None:
+            socket.disconnectFromServer()
+        self.activated.emit()
+
+
+# -----------------------
+# Application entry point
+# -----------------------
 def main() -> int:
-    # suppress noisy Qt font db warnings
-    QLoggingCategory.setFilterRules("qt.text.font.db=false")
+    # suppress noisy Qt logs
+    QLoggingCategory.setFilterRules(
+        "qt.text.font.db=false\n"
+        "qt.multimedia.ffmpeg=false\n"
+        "qt.multimedia.ffmpeg.*=false\n"
+    )
 
     if sys.platform == "win32":
         try:
@@ -565,15 +588,19 @@ def main() -> int:
 
     app = QApplication(sys.argv)
 
+    # Identify organization/app for QSettings (cross-platform persistent settings)
+    QCoreApplication.setOrganizationName("OliverErnster")
+    QCoreApplication.setApplicationName("FancyClock")
+
     # Single-instance guard (cross-platform).
     guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
 
-    if not guard.is_primary:
-        # Instead of showing a dialog, ask the primary instance to activate its window
-        guard.notify_primary_to_activate()
+    if not guard.acquire():
+        # Another instance is already running; notify it and exit.
+        guard.notify_existing_instance()
         return 0
 
-    # Keep the guard alive for the lifetime of the app.
+    # Keep guard alive for the lifetime of the app
     app.single_instance_guard = guard
 
     window = ClockWindow()
