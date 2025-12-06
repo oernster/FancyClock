@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 )
 
 from utils import resource_path
+from version import __version__  # <- centralised version import
 
 
 def show_timezone_dialog(parent):
@@ -165,7 +166,7 @@ class AboutDialog(QDialog):
 
         about_text = f"""
         <b>{app_name}</b>
-        <p>{version_label} 1.0</p>
+        <p>{version_label} {__version__}</p>
         <p>{app_description}</p>
         <p><b>{author_label}</b> Oliver Ernster</p>
         <p>Python version: <b>{python_version}</b></p>
@@ -258,4 +259,3 @@ class LicenseDialog(QDialog):
             license_text = "License file not found."
 
         self.license_text.setText(license_text)
-
