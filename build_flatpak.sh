@@ -13,6 +13,7 @@ MANIFEST="${FLATPAK_DIR}/${APP_ID}.yml"
 DESKTOP_FILE="${FLATPAK_DIR}/${APP_ID}.desktop"
 WRAPPER_SCRIPT="${FLATPAK_DIR}/fancyclock-wrapper.sh"
 BUNDLE_FILE="${FLATPAK_DIR}/${APP_ID}.flatpak"
+MEDIA_DIR="media"      # <--- NEW: media directory in repo root
 
 ##############################################
 # Helpers                                    #
@@ -38,7 +39,7 @@ live_progress() {
         local obj_count
         obj_count=$(find "${FLATPAK_DIR}/repo/objects" -type f 2>/dev/null | wc -l)
 
-        # Bundle size (bytes)
+        # Bundle size
         local size_bytes=0
         if [ -f "$BUNDLE_FILE" ]; then
             size_bytes=$(stat -c%s "$BUNDLE_FILE" 2>/dev/null || echo 0)
@@ -46,18 +47,20 @@ live_progress() {
 
         local now
         now=$(date +%s)
+        local dt=$(( now - prev_time ))
+        if [ "$dt" -le 0 ]; then
+            dt=1
+        fi
+
         local elapsed=$(( now - start_time ))
         if [ "$elapsed" -le 0 ]; then
             elapsed=1
         fi
 
-        # Average rate (bytes/sec)
         local avg_rate_bytes=$(( size_bytes / elapsed ))
 
-        # Instantaneous rate based on delta
-        local dt=$(( now - prev_time ))
-        if [ "$dt" -le 0 ]; then
-            dt=1
+        if [ "$size_bytes" -lt "$prev_size" ]; then
+            prev_size=$size_bytes
         fi
         local delta_bytes=$(( size_bytes - prev_size ))
         if [ "$delta_bytes" -lt 0 ]; then
@@ -112,6 +115,12 @@ live_progress() {
 echo "==> Checking for requirements.txt ..."
 if [ ! -f requirements.txt ]; then
   echo "ERROR: requirements.txt not found in current directory."
+  exit 1
+fi
+
+echo "==> Checking for media directory (${MEDIA_DIR}) ..."
+if [ ! -d "${MEDIA_DIR}" ]; then
+  echo "ERROR: media directory '${MEDIA_DIR}' not found in current directory."
   exit 1
 fi
 
@@ -171,6 +180,7 @@ modules:
     build-commands:
       - install -d /app/FancyClock
       - cp -a . /app/FancyClock
+      - cp -a ${MEDIA_DIR} /app/FancyClock/
       - pip3 install --no-cache-dir --prefix=/app -r requirements.txt
       - install -D flatpak/fancyclock-wrapper.sh /app/bin/fancyclock
       - chmod +x /app/bin/fancyclock
