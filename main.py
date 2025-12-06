@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import (
     QAction,
     QIcon,
+    QGuiApplication,
 )
 from PySide6.QtCore import (
     QTimer,
@@ -30,6 +31,7 @@ from PySide6.QtCore import (
     Signal,
     QCoreApplication,
 )
+
 
 from settings_store import get_setting, set_setting
 
@@ -118,22 +120,29 @@ class ClockWindow(QMainWindow):
         self.setWindowIcon(QIcon(icon_path))
 
     def bring_to_front(self):
-        """
-        Try to make this window visible, un-minimized, and focused on
-        both Windows and Linux (X11/Wayland).
-        """
-        # Ensure it’s at least shown
+        # Ensure it has a window and is visible
         if not self.isVisible():
             self.show()
 
-        # If minimized, restore it
         if self.isMinimized():
             self.showNormal()
 
-        # Raise and activate
+        # Traditional X11-ish ways
         self.raise_()
         self.activateWindow()
-        self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+
+        # Wayland-friendly hint
+        win = self.windowHandle()
+        if win is not None:
+            try:
+                win.requestActivate()
+            except Exception:
+                pass
+
+        # Clear minimized flag and mark as active
+        self.setWindowState(
+            (self.windowState() & ~Qt.WindowMinimized) | Qt.WindowActive
+        )
 
     def _supports_window_opacity(self) -> bool:
         """
@@ -574,9 +583,6 @@ class SingleInstanceServer(QObject):
         self.activated.emit()
 
 
-# -----------------------
-# Application entry point
-# -----------------------
 def main() -> int:
     # suppress noisy Qt logs
     QLoggingCategory.setFilterRules(
@@ -585,47 +591,41 @@ def main() -> int:
         "qt.multimedia.ffmpeg.*=false\n"
     )
 
-    # Set a stable AppUserModelID on Windows for proper taskbar grouping
     if sys.platform == "win32":
         try:
             myappid = "uk.codecrafter.FancyClock"
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         except Exception:
-            # If this fails for any reason, just continue without it
             pass
 
+    QGuiApplication.setDesktopFileName("uk.codecrafter.FancyClock")
     app = QApplication(sys.argv)
 
     # Identify organization/app for QSettings (cross-platform persistent settings)
     QCoreApplication.setOrganizationName("OliverErnster")
     QCoreApplication.setApplicationName("FancyClock")
 
-    # -----------------------------------------------------------------------
+    # --- Single-instance guard on all platforms ---
+    from single_instance import SingleInstanceGuard
 
-    # Disable single-instance guard on Linux only
-    use_single_instance = platform.system() != "Linux"
+    guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
 
-    guard = None
-    if use_single_instance:
-        from single_instance import SingleInstanceGuard
+    # If this is NOT the primary instance:
+    if not guard.acquire():
+        # Ping the existing instance and exit QUIETLY (no dialogs)
+        guard.notify_existing_instance()
+        return 0
+    # ----------------------------------------------
 
-        guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
-        if not guard.acquire():
-            # Another instance is already running; ask it to activate and exit
-            guard.notify_existing_instance()
-            return 0
-
-    # Keep guard alive for the lifetime of the app (where applicable)
+    # Keep guard alive for the lifetime of the app
     app.single_instance_guard = guard
 
     window = ClockWindow()
 
     # When another instance starts and connects, bring this window to the front.
-    if guard is not None:
-        guard.activated.connect(window.bring_to_front)
+    guard.activated.connect(window.bring_to_front)
 
     window.show()
-
     return app.exec()
 
 
