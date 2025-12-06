@@ -1,91 +1,96 @@
-# single_instance.py
-from __future__ import annotations
-
-from dataclasses import dataclass
-from typing import Optional
-
-from PySide6 import QtCore
+from PySide6.QtCore import QObject, Signal
+from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
 
-@dataclass
-class SingleInstanceGuard:
+class SingleInstanceGuard(QObject):
     """
-    Cross-platform single-instance guard using QSystemSemaphore + QSharedMemory.
+    Cross-platform single-instance guard using QLocalServer/QLocalSocket.
 
-    Usage:
-        guard = SingleInstanceGuard("FancyClockSingleton")
-        if not guard.is_primary:
-            # another instance is already running
-            ...
+    Usage in main.py:
 
-    RAII-ish: as long as the object lives, the shared memory segment exists.
-    When the process exits, the segment is detached.
+        guard = SingleInstanceGuard("uk.codecrafter.FancyClock.singleton")
+
+        if not guard.acquire():
+            guard.notify_existing_instance()
+            return 0
+
+        guard.activated.connect(window.bring_to_front)
     """
 
-    key: str
-    _semaphore: QtCore.QSystemSemaphore = None
-    _memory: QtCore.QSharedMemory = None
-    _is_primary: bool = False
+    activated = Signal()  # emitted in the *primary* instance when a 2nd one starts
 
-    def __post_init__(self) -> None:
-        # A separate key for the semaphore avoids clashes with the shared memory key.
-        sem_key = f"{self.key}_sem"
-
-        self._semaphore = QtCore.QSystemSemaphore(sem_key, 1)
-        self._memory = QtCore.QSharedMemory(self.key)
-
-        self._acquire()
-
-    def _acquire(self) -> None:
-        # Serialize operations on the shared memory
-        self._semaphore.acquire()
-        try:
-            # If a segment already exists and we can attach, another instance is running.
-            if self._memory.attach():
-                # We immediately detach again; we only needed to check existence.
-                self._memory.detach()
-                self._is_primary = False
-                return
-
-            # No existing segment – create one byte just to mark presence.
-            if not self._memory.create(1):
-                # Could not create; treat as "another instance is running".
-                self._is_primary = False
-                return
-
-            self._is_primary = True
-        finally:
-            self._semaphore.release()
-
-    @property
-    def is_primary(self) -> bool:
-        """True if this process is the first (and owning) instance."""
-        return self._is_primary
-
-    def release(self) -> None:
-        """Explicitly release the shared memory segment."""
-        if not self._is_primary:
-            return
-
-        self._semaphore.acquire()
-        try:
-            if self._memory.isAttached():
-                self._memory.detach()
-        finally:
-            self._semaphore.release()
+    def __init__(self, server_name: str, parent=None):
+        super().__init__(parent)
+        self._server_name = server_name
+        self._server: QLocalServer | None = None
         self._is_primary = False
 
-    # Context-manager support (RAII style)
-    def __enter__(self) -> "SingleInstanceGuard":
-        return self
+    # ------------------------------------------------------------------ #
+    # Public API expected by main.py
+    # ------------------------------------------------------------------ #
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        self.release()
+    def acquire(self) -> bool:
+        """
+        Try to become the primary (single) instance.
 
-    def __del__(self) -> None:
-        # Best-effort cleanup; Python does not guarantee destructor timing,
-        # but on normal exit this will run.
+        Returns True in the first/primary process, False in later processes.
+        """
+        # Clean up any stale socket from a previous crash
         try:
-            self.release()
+            QLocalServer.removeServer(self._server_name)
         except Exception:
             pass
+
+        server = QLocalServer(self)
+        server.setSocketOptions(QLocalServer.WorldAccessOption)
+
+        if not server.listen(self._server_name):
+            # Another instance is already listening
+            self._server = None
+            self._is_primary = False
+            return False
+
+        server.newConnection.connect(self._on_new_connection)
+        self._server = server
+        self._is_primary = True
+        return True
+
+    def notify_existing_instance(self) -> None:
+        """
+        Called from a *secondary* instance to ping the primary one.
+
+        The primary instance will receive a connection and emit `activated`.
+        """
+        socket = QLocalSocket()
+        socket.connectToServer(self._server_name)
+
+        if socket.waitForConnected(250):
+            try:
+                socket.write(b"activate")
+                socket.flush()
+                socket.waitForBytesWritten(250)
+            except Exception:
+                pass
+            socket.disconnectFromServer()
+
+        socket.close()
+
+    # ------------------------------------------------------------------ #
+    # Internal callbacks
+    # ------------------------------------------------------------------ #
+
+    def _on_new_connection(self) -> None:
+        """
+        Invoked in the primary instance when a secondary instance connects.
+        """
+        if not self._server:
+            return
+
+        socket = self._server.nextPendingConnection()
+        if socket is not None:
+            # We don't actually care about the payload; just close.
+            socket.disconnectFromServer()
+            socket.close()
+
+        # Tell whoever is listening (main window) to bring itself to front
+        self.activated.emit()
