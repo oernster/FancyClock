@@ -186,6 +186,10 @@ class AboutDialog(QDialog):
         <ul>
             <li>Colin Jones</li>
         </ul>
+        <p>Vecteezy.com</p>
+        <ul>
+            <li>Pitsanu Jaroenpipitaphorn</li>
+        
         """
 
         self.text_label.setText(about_text)
