@@ -40,5 +40,17 @@
     "tuesday": "Di",
     "version": "Versie",
     "website": "Website",
-    "wednesday": "Wo"
+    "wednesday": "Wo",
+    "digits": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    ]
 }

@@ -6,7 +6,7 @@
     "app_name": "Необычные часы",
     "april": "Апр.",
     "august": "Авг",
-    "author_label": ".",
+    "author_label": "Автор",
     "author_name": "Оливер Эрнстер",
     "calendar.days.friday": "Пт",
     "calendar.days.monday": "Пн",
@@ -40,5 +40,18 @@
     "tuesday": "Вт",
     "version": "Версия",
     "website": "Сайт",
-    "wednesday": "Ср"
+    "wednesday": "Ср",
+    "digits": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    ],
+    "author": "Автор"
 }
