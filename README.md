@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="fancyclock_screenshot.png" alt="Fancy Clock Screenshot" width="600"/>
+  <img src="./fancyclock_screenshot.png" alt="Fancy Clock Screenshot" width="600" />
 </p>
 
 <p align="center">
-  <img src="clock.png" alt="Fancy Clock Icon" width="120">
+  <img src="./clock.png" alt="Fancy Clock Icon" width="120" />
 </p>
 
 # Fancy Clock
