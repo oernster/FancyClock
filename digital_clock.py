@@ -105,14 +105,19 @@ class DigitalClock(QWidget):
 
         if self.i18n_manager:
             date_text = self.i18n_manager.format_date_fancy(dt.date())
-            hour = self.i18n_manager.format_number(dt.time().hour())
-            minute = self.i18n_manager.format_number(dt.time().minute())
-            second = self.i18n_manager.format_number(dt.time().second())
+
+            # Always pad to 2 digits, then localize digits
+            hour = self.i18n_manager.format_number(f"{dt.time().hour():02d}")
+            minute = self.i18n_manager.format_number(f"{dt.time().minute():02d}")
+            second = self.i18n_manager.format_number(f"{dt.time().second():02d}")
         else:
             date_text = dt.toString("ddd d MMM")
             hour = dt.toString("hh")
             minute = dt.toString("mm")
             second = dt.toString("ss")
+
+        full_text = f"{date_text}   {hour}:{minute}:{second}"
+
 
         full_text = f"{date_text}   {hour}:{minute}:{second}"
 

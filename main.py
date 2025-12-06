@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import (
     QAction,          # ← FIXED
     QIcon,
+    QGuiApplication,
 )
 from PySide6.QtCore import (
     QTimer,
@@ -90,14 +91,22 @@ class ClockWindow(QMainWindow):
         self.anim_timer.timeout.connect(self.update_animation)
         self.anim_timer.start(16)
 
-        # fade-in animation on show
-        self.animation = QPropertyAnimation(self, b"windowOpacity")
-        self.animation.setDuration(1000)
-        self.animation.setStartValue(0.0)
-        self.animation.setEndValue(1.0)
-        self.animation.setEasingCurve(QEasingCurve.InOutQuad)
+        # fade-in animation on show (only if platform supports opacity)
+        self.animation = None
+        if self._supports_window_opacity():
+            self.animation = QPropertyAnimation(self, b"windowOpacity")
+            self.animation.setDuration(1000)
+            self.animation.setStartValue(0.0)
+            self.animation.setEndValue(1.0)
+            self.animation.setEasingCurve(QEasingCurve.InOutQuad)
+
         icon_path = resource_path("clock.ico")
         self.setWindowIcon(QIcon(icon_path))
+
+    def show(self):
+        super().show()
+        if self.animation is not None:
+            self.animation.start()
 
     # -----------------------
     # Window sizing & show
@@ -105,13 +114,6 @@ class ClockWindow(QMainWindow):
     def _set_scaled_initial_size(self, scale: float = 1.5):
         base_w, base_h = 400, 440
         self.resize(int(base_w * scale), int(base_h * scale))
-
-    def show(self):
-        super().show()
-        try:
-            self.animation.start()
-        except Exception:
-            pass
 
     # -----------------------
     # Time / NTP helpers
@@ -175,6 +177,11 @@ class ClockWindow(QMainWindow):
                 clock_widget.repaint()
             except Exception:
                 pass
+
+    def _supports_window_opacity(self) -> bool:
+        name = QGuiApplication.platformName().lower()
+        # Known platforms that support windowOpacity
+        return any(key in name for key in ("windows", "xcb", "cocoa"))
 
     def _animate_clock(self, clock_widget):
         """
