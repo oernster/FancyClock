@@ -26,6 +26,7 @@ def build_executable() -> None:
     localization_dir = project_root / "localization"
     tz_locale_map = project_root / "timezone_locale_map.json"
     media_dir = project_root / "media"  # <-- includes video backgrounds
+    license_file = project_root / "LICENSE"   # ⬅️ NEW
 
     if not main_py.exists():
         print("ERROR: main.py is missing next to build_exe.py.")
@@ -51,15 +52,16 @@ def build_executable() -> None:
         print("WARNING: media/ directory is missing. "
               "Video skins will not be bundled.")
 
-    # PyInstaller uses ';' as the separator on Windows and ':' on POSIX.
+    if not license_file.exists():
+        print("WARNING: LICENSE file is missing — it won't be bundled.")
+
+    # PyInstaller uses ';' as separator on Windows and ':' on POSIX.
     data_sep = ";" if os.name == "nt" else ":"
 
     args = [
         str(main_py),
 
-        # EXE name (file will be FancyClock.exe on Windows)
         "--name=FancyClock",
-
         "--onefile",
         "--windowed",
         "--clean",
@@ -68,33 +70,32 @@ def build_executable() -> None:
         f"--workpath={project_root / 'build'}",
         f"--specpath={project_root}",
 
-        # Use the .ico for the EXE icon on Windows (no Pillow needed).
         f"--icon={icon_ico}",
 
-        # Bundle icon files as data so the app can still load them at runtime.
+        # Bundle icon files
         f"--add-data={icon_ico}{data_sep}.",
         f"--add-data={icon_png}{data_sep}.",
 
-        # Bundle localization so translations work inside the EXE.
+        # Bundle localization directory
         f"--add-data={localization_dir}{data_sep}localization",
 
-        # Bundle timezone_locale_map.json (used by localization / timezone code).
+        # Bundle timezone_locale_map.json
         f"--add-data={tz_locale_map}{data_sep}.",
+
+        # ⬅️ NEW — Bundle the LICENSE file
+        f"--add-data={license_file}{data_sep}.",
     ]
 
-    # Bundle the media directory (if present) so resource_path("media") works.
+    # Bundle media directory (skins)
     if media_dir.exists():
         args.append(f"--add-data={media_dir}{data_sep}media")
 
-    # Required hidden imports for PySide6.
+    # Required hidden imports for PySide6
     args.extend([
         "--hidden-import=PySide6.QtCore",
         "--hidden-import=PySide6.QtGui",
         "--hidden-import=PySide6.QtWidgets",
         "--hidden-import=PySide6.QtNetwork",
-        # If you're using QMediaPlayer / QVideoSink, these may help:
-        # "--hidden-import=PySide6.QtMultimedia",
-        # "--hidden-import=PySide6.QtMultimediaWidgets",
     ])
 
     print("Building FancyClock executable...")

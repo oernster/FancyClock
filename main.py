@@ -242,7 +242,7 @@ class ClockWindow(QMainWindow):
         # First entry: go back to the built-in galaxy background
         default_label = self.i18n_manager.get_translation("skin_default")
         if default_label == "skin_default":  # translation missing
-            default_label = "Default (Galaxy)"
+            default_label = "Starfield"
         default_action = QAction(default_label, self)
         default_action.triggered.connect(lambda: self._set_skin_and_persist(None))
         self.skins_menu.addAction(default_action)
