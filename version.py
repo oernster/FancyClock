@@ -5,4 +5,4 @@ Centralised version information for Fancy Clock.
 Update __version__ here when releasing a new version.
 """
 
-__version__ = "1.2.0"
+__version__ = "1.4.0"
