@@ -182,6 +182,7 @@ class AboutDialog(QDialog):
             <li>vjthex</li>
             <li>TonyDias7</li>
             <li>AlexAntropov86</li>
+            <li>Dulichxedap</li>
         </ul>
         <p>Pexels.com</p>
         <ul>
@@ -190,7 +191,7 @@ class AboutDialog(QDialog):
         <p>Vecteezy.com</p>
         <ul>
             <li>Pitsanu Jaroenpipitaphorn</li>
-        
+        </ul>
         """
 
         self.text_label.setText(about_text)
