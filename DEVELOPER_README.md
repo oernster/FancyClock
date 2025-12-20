@@ -255,7 +255,7 @@ Once you have built the Flatpak bundle, you can install, run, and uninstall it e
 
 ## Install with:
 ```bash
-flatpak install flatpak/uk.codecrafter.FancyClock.flatpak
+flatpak install dist/FancyClock.flatpak
 ```
 
 ## Run with:
