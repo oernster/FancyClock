@@ -74,9 +74,10 @@ class LibreTranslateClient:
         target_lang: str,
     ) -> List[str]:
         """
-        Translate a list of strings from source_lang to target_lang using a single request.
+        Translate a list of strings from source_lang to target_lang using one request.
 
-        LibreTranslate supports multiple values for 'q', returning a list of translated strings.
+        LibreTranslate supports multiple values for 'q', returning a list of translated
+        strings.
         """
         if not texts:
             return []
@@ -99,9 +100,8 @@ class LibreTranslateClient:
                     timeout=self.timeout,
                 )
                 if resp.status_code >= 500:
-                    raise RuntimeError(
-                        f"Server error {resp.status_code}: {resp.text[:200]}"
-                    )
+                    msg = resp.text[:200]
+                    raise RuntimeError(f"Server error {resp.status_code}: {msg}")
                 resp.raise_for_status()
 
                 data = resp.json()
@@ -115,7 +115,9 @@ class LibreTranslateClient:
                 if isinstance(data, dict) and "translatedText" in data:
                     return [data["translatedText"]]
 
-                raise RuntimeError(f"Unexpected response format: {json.dumps(data)[:200]}")
+                raise RuntimeError(
+                    f"Unexpected response format: {json.dumps(data)[:200]}"
+                )
 
             except Exception as exc:  # noqa: BLE001
                 last_exception = exc
@@ -129,6 +131,5 @@ class LibreTranslateClient:
                 time.sleep(backoff)
                 backoff *= 2.0
 
-        raise RuntimeError(
-            f"Translation failed after {self.max_retries} attempts"
-        ) from last_exception
+        msg = f"Translation failed after {self.max_retries} attempts"
+        raise RuntimeError(msg) from last_exception

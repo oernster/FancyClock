@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import os
 from pathlib import Path
 
 # --- CONFIG -------------------------------------------------------------
@@ -105,7 +104,7 @@ SKINS_TRANSLATIONS = {
     # V
     "vi": "Giao diện",
     # Z / Chinese variants
-    "zh": "皮肤",        # generic zh → Simplified
+    "zh": "皮肤",  # generic zh → Simplified
     # If you want to special-case Traditional, we can override later per locale
 }
 
@@ -126,7 +125,7 @@ def get_language_code_from_filename(filename: str) -> str:
     Extract base language code from a filename like 'fr_FR.json' -> 'fr'.
     """
     name = filename.split(".", 1)[0]  # 'fr_FR'
-    return name.split("_", 1)[0]      # 'fr'
+    return name.split("_", 1)[0]  # 'fr'
 
 
 def get_skins_translation(locale_name: str) -> str:

@@ -1,4 +1,6 @@
-import json, os, glob
+import glob
+import json
+import os
 
 BASE = "./localization/translations"
 

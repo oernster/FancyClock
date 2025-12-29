@@ -1,6 +1,5 @@
 import socket
 import struct
-import time
 from datetime import datetime, timezone
 
 
@@ -39,9 +38,9 @@ class NTPClient:
 
         NTP_TIMESTAMP_DELTA = 2208988800
         port = 123
-        timeout = 0.8     # keep VERY short to avoid UI hangs
+        timeout = 0.8  # keep VERY short to avoid UI hangs
 
-        msg = b'\x1b' + 47 * b'\0'
+        msg = b"\x1b" + 47 * b"\0"
 
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:

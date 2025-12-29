@@ -17,8 +17,8 @@ LANGUAGE_FALLBACKS: Dict[str, str] = {
     # Greenlandic (Kalaallisut) -> Danish
     # Google Translate does not support "kl", but Danish ("da") is widely used.
     "kl": "da",
-    "fy": "nl",   # Frisian -> Dutch
-    "lb": "de",   # Luxembourgish -> German
+    "fy": "nl",  # Frisian -> Dutch
+    "lb": "de",  # Luxembourgish -> German
 }
 
 UNSUPPORTED_FALLBACKS: Dict[str, str] = {
@@ -53,9 +53,9 @@ ALL_FALLBACKS: Dict[str, str] = {
 
 @dataclass(frozen=True)
 class LocaleInfo:
-    filename: str    # e.g. "ru_RU.json"
-    locale: str      # e.g. "ru_RU"
-    language: str    # e.g. "ru"
+    filename: str  # e.g. "ru_RU.json"
+    locale: str  # e.g. "ru_RU"
+    language: str  # e.g. "ru"
     region: str | None  # e.g. "RU" or None
 
 

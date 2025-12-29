@@ -33,7 +33,6 @@ TRANSLATIONS_DIR = os.path.join("localization", "translations")
 # corresponding locale JSON file actually exists in TRANSLATIONS_DIR.
 
 REGION_DEFAULT_LANGUAGE = {
-
     # South America
     "AR": "es_AR",
     "CL": "es_CL",
@@ -46,7 +45,6 @@ REGION_DEFAULT_LANGUAGE = {
     "EC": "es_EC",
     "GF": "fr_FR",
     "BR": "pt_BR",
-
     # Central America / Caribbean / North LatAm
     "MX": "es_MX",
     "CR": "es_CR",
@@ -59,7 +57,6 @@ REGION_DEFAULT_LANGUAGE = {
     "PR": "es_PR",
     "CU": "es_CU",
     "BZ": "en_GB",  # Belize - English
-
     # Europe (subset – enough to cover your remaining tzs)
     "ES": "es_ES",
     "PT": "pt_PT",
@@ -78,7 +75,6 @@ REGION_DEFAULT_LANGUAGE = {
     "RO": "ro_RO",
     "UA": "uk_UA",
     "RU": "ru_RU",
-
     # Africa (subset)
     "ZA": "en_ZA",
     "NG": "en_GB",
@@ -91,7 +87,6 @@ REGION_DEFAULT_LANGUAGE = {
     "MG": "fr_FR",
     "MA": "ar_MA",
     "EH": "ar_MA",  # Western Sahara (El_Aaiun etc)
-
     # Middle East / South / East Asia
     "AE": "ar_AE",
     "SA": "ar_SA",
@@ -111,13 +106,11 @@ REGION_DEFAULT_LANGUAGE = {
     "TW": "zh_TW",
     "HK": "zh_HK",
     "SG": "en_GB",
-
     # Oceania
     "AU": "en_AU",
     "NZ": "en_GB",
     "FJ": "en_GB",
     "PF": "fr_FR",
-
     # Antarctica
     "AQ": "en_GB",
 }
@@ -189,8 +182,10 @@ def main():
     }
 
     # Choose default English fallback
-    english_fallback = "en_GB" if "en_GB" in existing_locales else (
-        "en_US" if "en_US" in existing_locales else None
+    english_fallback = (
+        "en_GB"
+        if "en_GB" in existing_locales
+        else ("en_US" if "en_US" in existing_locales else None)
     )
     if not english_fallback:
         print("ERROR: No en_GB or en_US translation found; aborting.")

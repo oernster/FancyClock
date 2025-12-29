@@ -26,6 +26,7 @@ import os
 
 TRANSLATIONS_DIR = os.path.join("localization", "translations")
 
+
 def main():
     if not os.path.isdir(TRANSLATIONS_DIR):
         print("ERROR: translations dir not found at", TRANSLATIONS_DIR)

@@ -1,7 +1,6 @@
-import math
-from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPainter, QColor, QFont
+from PySide6.QtGui import QColor, QFont, QPainter
 from PySide6.QtCore import Qt, QDateTime
+from PySide6.QtWidgets import QWidget
 
 from localization.i18n_manager import LocalizationManager
 from effects.galaxy import create_galaxy
@@ -19,7 +18,7 @@ class DigitalClock(QWidget):
         # Galaxy starfield
         self.stars = []
         self.galaxy_radius = 50
-        self.galaxy_rect = None   # full interior of the yellow box
+        self.galaxy_rect = None  # full interior of the yellow box
 
     # ----------------------------------------------------------------------
     # Resize → recompute galaxy parameters (rect + stars)
@@ -32,7 +31,9 @@ class DigitalClock(QWidget):
 
         # galaxy_radius = the base radius that stars generate inside
         # (we will stretch them into the rectangle later)
-        self.galaxy_radius = min(self.galaxy_rect.width(), self.galaxy_rect.height()) / 2
+        self.galaxy_radius = (
+            min(self.galaxy_rect.width(), self.galaxy_rect.height()) / 2
+        )
 
         self.stars = create_galaxy(500, self.galaxy_radius)
 
@@ -84,10 +85,7 @@ class DigitalClock(QWidget):
 
             painter.setPen(Qt.NoPen)
             painter.setBrush(star.color())
-            painter.drawEllipse(
-                int(sx), int(sy),
-                int(star.size), int(star.size)
-            )
+            painter.drawEllipse(int(sx), int(sy), int(star.size), int(star.size))
 
         painter.restore()  # remove clip & translate
 
@@ -115,9 +113,6 @@ class DigitalClock(QWidget):
             hour = dt.toString("hh")
             minute = dt.toString("mm")
             second = dt.toString("ss")
-
-        full_text = f"{date_text}   {hour}:{minute}:{second}"
-
 
         full_text = f"{date_text}   {hour}:{minute}:{second}"
 

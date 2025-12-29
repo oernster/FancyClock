@@ -28,7 +28,6 @@ REGIONAL_FALLBACKS = {
     "ti_ER": "am_ET",  # Eritrea -> Amharic (Ethiopia)
     "tk_TM": "ru_RU",  # Turkmenistan -> Russian
     "to_TO": "fr_FR",  # Tonga -> generic non-English
-
     "ka_GE": "ru_RU",  # Georgia -> Russian
     "kk_KZ": "ru_RU",  # Kazakhstan -> Russian
     "km_KH": "th_TH",  # Cambodia -> Thai (regional)

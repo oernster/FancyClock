@@ -6,6 +6,7 @@ from copy import deepcopy
 
 BASE = os.path.join("localization", "translations")
 
+
 def main():
     changed_files = []
 
@@ -58,6 +59,7 @@ def main():
             changed_files.append(fname)
 
     print("Updated Arabic locales:", ", ".join(changed_files) or "none")
+
 
 if __name__ == "__main__":
     main()

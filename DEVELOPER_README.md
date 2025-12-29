@@ -92,6 +92,21 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
+Windows PowerShell:
+
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+```
+
+Code quality checks:
+
+```bash
+python -m black .
+python -m flake8 .
+python -m pytest
+```
+
 Upgrade pip:
 
 ```bash

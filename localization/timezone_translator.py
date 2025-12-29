@@ -1,51 +1,38 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
 import pytz
 from babel.dates import get_timezone_name
-from datetime import datetime
 
+
+@dataclass
 class TimezoneTranslator:
-    def __init__(self, locale):
-        self.locale = locale
+    """Resolve localized display names for time zones."""
 
-    def get_display_name(self, tz_id, dt=None):
+    locale: str
+
+    def get_display_name(self, tz_id: str, dt: Optional[datetime] = None) -> str:
+        """Return the localized display name for a time zone.
+
+        Args:
+            tz_id: The time zone ID (e.g. 'America/New_York').
+            dt: Optional datetime to resolve DST vs standard names.
+
+        Returns:
+            Localized time zone name.
         """
-        Get the localized display name for a given timezone ID.
-        :param tz_id: The timezone ID (e.g., 'America/New_York').
-        :param dt: A datetime object to get the current name (DST or standard).
-                   If None, the standard name is returned.
-        :return: The localized timezone name.
-        """
-        # For an accurate name (standard or DST), we need an aware datetime object.
-        aware_dt = datetime.now(pytz.timezone(tz_id))
-        return get_timezone_name(aware_dt, locale=self.locale, width='long')
+        tz = pytz.timezone(tz_id)
 
-# Example usage:
-if __name__ == '__main__':
-    # Define the target time zone ID and a few locales
-    tz_id = 'America/New_York'
-    locales = ['en_US', 'fr_FR', 'de_DE', 'es_ES']
+        if dt is None:
+            aware_dt = datetime.now(tz)
+        else:
+            aware_dt = dt
+            if aware_dt.tzinfo is None:
+                aware_dt = tz.localize(aware_dt)
+            else:
+                aware_dt = aware_dt.astimezone(tz)
 
-    for locale in locales:
-        translator = TimezoneTranslator(locale)
-        
-        # Get the standard name
-        standard_name = translator.get_display_name(tz_id)
-        
-        # Get the current name (which may be DST)
-        now = datetime.now()
-        current_name = translator.get_display_name(tz_id, now)
-        
-        print(f"--- Locale: {locale} ---")
-        print(f"Timezone ID: {tz_id}")
-        print(f"Standard Name: {standard_name}")
-        print(f"Current Name: {current_name}")
-        print("-" * 20)
-
-    # Example for a different timezone
-    tz_id_paris = 'Europe/Paris'
-    translator_fr = TimezoneTranslator('fr_FR')
-    now_paris = datetime.now()
-    current_name_paris = translator_fr.get_display_name(tz_id_paris, now_paris)
-    print(f"--- Locale: fr_FR ---")
-    print(f"Timezone ID: {tz_id_paris}")
-    print(f"Current Name: {current_name_paris}")
-    print("-" * 20)
+        return get_timezone_name(aware_dt, locale=self.locale, width="long")
