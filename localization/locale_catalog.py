@@ -1,0 +1,75 @@
+"""Locale catalog used by the localization subsystem.
+
+Split out of `localization/locale_detector.py` to keep file sizes manageable.
+"""
+
+SUPPORTED_LOCALES = {
+    "en_US": {
+        "name": "English (United States)",
+        "native": "English (US)",
+        "batch": 1,
+    },
+    "en_GB": {
+        "name": "English (United Kingdom)",
+        "native": "English (UK)",
+        "batch": 1,
+    },
+    "es_ES": {"name": "Spanish (Spain)", "native": "Español", "batch": 1},
+    "fr_FR": {"name": "French (France)", "native": "Français", "batch": 1},
+    "de_DE": {"name": "German (Germany)", "native": "Deutsch", "batch": 1},
+    "it_IT": {"name": "Italian (Italy)", "native": "Italiano", "batch": 1},
+    "pt_BR": {
+        "name": "Portuguese (Brazil)",
+        "native": "Português (Brasil)",
+        "batch": 1,
+    },
+    "ru_RU": {"name": "Russian (Russia)", "native": "Русский", "batch": 1},
+    "zh_CN": {"name": "Chinese (Simplified)", "native": "简体中文", "batch": 1},
+    "zh_TW": {"name": "Chinese (Traditional)", "native": "繁體中文", "batch": 1},
+    "ja_JP": {"name": "Japanese (Japan)", "native": "日本語", "batch": 1},
+    "ko_KR": {"name": "Korean (South Korea)", "native": "한국어", "batch": 1},
+    "hi_IN": {"name": "Hindi (India)", "native": "हिन्दी", "batch": 1},
+    "ar_SA": {
+        "name": "Arabic (Saudi Arabia)",
+        "native": "العربية (السعودية)",
+        "batch": 1,
+    },
+    "cs_CZ": {"name": "Czech (Czech Republic)", "native": "Čeština", "batch": 1},
+    "sv_SE": {"name": "Swedish (Sweden)", "native": "Svenska", "batch": 1},
+    "nb_NO": {"name": "Norwegian (Norway)", "native": "Norsk (bokmål)", "batch": 1},
+    "da_DK": {"name": "Danish (Denmark)", "native": "Dansk", "batch": 1},
+    "fi_FI": {"name": "Finnish (Finland)", "native": "Suomi", "batch": 1},
+    "nl_NL": {"name": "Dutch (Netherlands)", "native": "Nederlands", "batch": 1},
+    "pl_PL": {"name": "Polish (Poland)", "native": "Polski", "batch": 1},
+    "pt_PT": {
+        "name": "Portuguese (Portugal)",
+        "native": "Português (Portugal)",
+        "batch": 1,
+    },
+    "tr_TR": {"name": "Turkish (Turkey)", "native": "Türkçe", "batch": 1},
+    "uk_UA": {"name": "Ukrainian (Ukraine)", "native": "Українська", "batch": 1},
+    "el_GR": {"name": "Greek (Greece)", "native": "Ελληνικά", "batch": 1},
+    "id_ID": {
+        "name": "Indonesian (Indonesia)",
+        "native": "Bahasa Indonesia",
+        "batch": 1,
+    },
+    "vi_VN": {"name": "Vietnamese (Vietnam)", "native": "Tiếng Việt", "batch": 1},
+    "th_TH": {"name": "Thai (Thailand)", "native": "ไทย", "batch": 1},
+    "he_IL": {"name": "Hebrew (Israel)", "native": "עברית", "batch": 1},
+    "ro_RO": {"name": "Romanian (Romania)", "native": "Română", "batch": 1},
+    "hu_HU": {"name": "Hungarian (Hungary)", "native": "Magyar", "batch": 1},
+    "hr_HR": {"name": "Croatian (Croatia)", "native": "Hrvatski", "batch": 1},
+    "bg_BG": {"name": "Bulgarian (Bulgaria)", "native": "Български", "batch": 1},
+    "sk_SK": {"name": "Slovak (Slovakia)", "native": "Slovenčina", "batch": 1},
+    "sl_SI": {"name": "Slovenian (Slovenia)", "native": "Slovenščina", "batch": 1},
+    "fr_CA": {
+        "name": "French (Canada)",
+        "native": "Français québécois",
+        "batch": 1,
+    },
+    "ca_ES": {"name": "Catalan (Spain)", "native": "Català", "batch": 1},
+    "et_EE": {"name": "Estonian (Estonia)", "native": "Eesti", "batch": 1},
+    "lv_LV": {"name": "Latvian (Latvia)", "native": "Latviešu", "batch": 1},
+    "lt_LT": {"name": "Lithuanian (Lithuania)", "native": "Lietuvių", "batch": 1},
+}

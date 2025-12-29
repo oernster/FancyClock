@@ -238,7 +238,9 @@ class AnalogClock(QWidget):
         painter.setBrush(QColor(200, 200, 220))
         painter.setPen(Qt.NoPen)
         painter.rotate((t.hour() % 12 + t.minute() / 60.0) * 30.0)
-        painter.drawConvexPolygon(QPolygon([QPoint(7, 8), QPoint(-7, 8), QPoint(0, -50)]))
+        painter.drawConvexPolygon(
+            QPolygon([QPoint(7, 8), QPoint(-7, 8), QPoint(0, -50)])
+        )
         painter.restore()
 
         # Minute hand
@@ -246,7 +248,9 @@ class AnalogClock(QWidget):
         painter.setBrush(QColor(180, 180, 200))
         painter.setPen(Qt.NoPen)
         painter.rotate((t.minute() + t.second() / 60.0) * 6.0)
-        painter.drawConvexPolygon(QPolygon([QPoint(6, 10), QPoint(-6, 10), QPoint(0, -70)]))
+        painter.drawConvexPolygon(
+            QPolygon([QPoint(6, 10), QPoint(-6, 10), QPoint(0, -70)])
+        )
         painter.restore()
 
         # Second hand
@@ -254,5 +258,7 @@ class AnalogClock(QWidget):
         painter.setBrush(QColor(255, 100, 100))
         painter.setPen(Qt.NoPen)
         painter.rotate(t.second() * 6.0)
-        painter.drawConvexPolygon(QPolygon([QPoint(2, 10), QPoint(-2, 10), QPoint(0, -90)]))
+        painter.drawConvexPolygon(
+            QPolygon([QPoint(2, 10), QPoint(-2, 10), QPoint(0, -90)])
+        )
         painter.restore()

@@ -38,7 +38,6 @@ AUTO_MAPPINGS = {
     "America/Argentina/San_Luis": "es_AR",
     "America/Argentina/Tucuman": "es_AR",
     "America/Argentina/Ushuaia": "es_AR",
-
     # Brazil: Araguaina -> Portuguese (Brazil)
     "America/Araguaina": "pt_BR",
 }
@@ -81,7 +80,9 @@ def main():
             if tz_map[tz] == loc:
                 skipped_existing.append((tz, tz_map[tz], "already mapped correctly"))
             else:
-                skipped_existing.append((tz, tz_map[tz], "already mapped to a different locale"))
+                skipped_existing.append(
+                    (tz, tz_map[tz], "already mapped to a different locale")
+                )
             continue
 
         # Only add mappings for tzs that actually exist in pytz.common_timezones

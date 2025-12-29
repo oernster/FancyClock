@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+
 
 def main():
     # Move one directory up from helper_scripts/

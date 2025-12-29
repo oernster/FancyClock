@@ -1,6 +1,6 @@
-"""
-🔢 Number Formatter for Localized Number Systems
-Supports native number systems for different locales
+"""Number formatter for localized number systems.
+
+Supports native number systems for different locales.
 """
 
 import logging
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class NumberFormatter:
-    """Formats numbers according to locale-specific number systems"""
+    """Formats numbers according to locale-specific number systems."""
 
     def __init__(self):
         # Native number systems mapping
@@ -54,11 +54,9 @@ class NumberFormatter:
                 "9": "๙",
             },
             # Persian numerals (used in some Persian contexts)
-            # Note: Modern Persian often uses Arabic-Indic, but traditional Persian numerals exist
-            # Bengali numerals (if we add Bengali support)
-            # 'bn_BD': {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'},
-            # Myanmar numerals (if we add Myanmar support)
-            # 'my_MM': {'0': '၀', '1': '၁', '2': '၂', '3': '၃', '4': '၄', '5': '၅', '6': '၆', '7': '၇', '8': '၈', '9': '၉'},
+            # Note: Modern Persian often uses Arabic-Indic; traditional Persian numerals
+            # exist too.
+            # Bengali/Myanmar numerals could be added later.
         }
 
         # Locales that prefer native number systems in formal contexts
@@ -128,11 +126,16 @@ class NumberFormatter:
                     number_map.get(digit, digit) for digit in number_str
                 )
                 logger.debug(
-                    f"Formatted {number} for {locale}: {number_str} -> {formatted}"
+                    "Formatted %s for %s: %s -> %s",
+                    number,
+                    locale,
+                    number_str,
+                    formatted,
                 )
                 return formatted
 
-            # For locales with specific formatting preferences but using Western Arabic numerals
+            # For locales with specific formatting preferences but using Western Arabic
+            # numerals.
             elif locale in self.western_arabic_locales:
                 # Could add thousand separators, decimal formatting, etc. here
                 return number_str
@@ -141,8 +144,13 @@ class NumberFormatter:
             else:
                 return number_str
 
-        except Exception as e:
-            logger.warning(f"Failed to format number {number} for locale {locale}: {e}")
+        except Exception as exc:
+            logger.warning(
+                "Failed to format number %s for locale %s: %s",
+                number,
+                locale,
+                exc,
+            )
             return str(number)
 
     def format_ordinal(self, number: int, locale: str = "en_US") -> str:
@@ -159,12 +167,17 @@ class NumberFormatter:
         try:
             # For native number system locales, format the number first
             if locale in self.native_number_locales:
-                formatted_number = self.format_number(number, locale, use_native=True)
+                formatted_number = self.format_number(
+                    number,
+                    locale,
+                    use_native=True,
+                )
 
                 # Add locale-specific ordinal patterns
                 if locale == "ar_SA":
                     # Arabic ordinals typically use the number with specific markers
-                    return f"{formatted_number}"  # Arabic ordinals are complex, keeping simple for now
+                    # Arabic ordinals are complex; keep simple for now.
+                    return f"{formatted_number}"
                 elif locale == "hi_IN":
                     # Hindi ordinals
                     return (
@@ -176,14 +189,18 @@ class NumberFormatter:
                     # Thai ordinals
                     return f"ที่ {formatted_number}"
 
-            # For other locales, use Western Arabic numerals with locale-appropriate ordinal patterns
+            # For other locales, use Western Arabic numerals with locale-appropriate
+            # ordinal patterns.
             else:
                 # This will be handled by the translation keys we added
                 return str(number)
 
-        except Exception as e:
+        except Exception as exc:
             logger.warning(
-                f"Failed to format ordinal {number} for locale {locale}: {e}"
+                "Failed to format ordinal %s for locale %s: %s",
+                number,
+                locale,
+                exc,
             )
             return str(number)
 
@@ -201,15 +218,15 @@ _number_formatter = NumberFormatter()
 
 
 def format_number(number: int, locale: str = "en_US", use_native: bool = True) -> str:
-    """Global function to format numbers"""
+    """Global function to format numbers."""
     return _number_formatter.format_number(number, locale, use_native)
 
 
 def format_ordinal(number: int, locale: str = "en_US") -> str:
-    """Global function to format ordinals"""
+    """Global function to format ordinals."""
     return _number_formatter.format_ordinal(number, locale)
 
 
 def is_native_number_locale(locale: str) -> bool:
-    """Global function to check if locale uses native numbers"""
+    """Global function to check if locale uses native numbers."""
     return _number_formatter.is_native_number_locale(locale)

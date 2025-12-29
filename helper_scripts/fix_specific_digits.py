@@ -20,13 +20,10 @@ TRANSLATIONS_DIR = os.path.join("localization", "translations")
 DIGIT_SETS = {
     # Arabic-Indic digits for Urdu (Pakistan)
     "ur_PK": ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"],
-
     # Khmer digits for Cambodia
     "km_KH": ["០", "១", "២", "៣", "៤", "៥", "៦", "៧", "៨", "៩"],
-
     # Lao digits for Laos
     "lo_LA": ["໐", "໑", "໒", "໓", "໔", "໕", "໖", "໗", "໘", "໙"],
-
     # Burmese digits for Myanmar
     "my_MM": ["၀", "၁", "၂", "၃", "၄", "၅", "၆", "၇", "၈", "၉"],
 }

@@ -6,9 +6,11 @@ from copy import deepcopy
 BASE = os.path.join("localization", "translations")
 KEY_REF_FILE = os.path.join(BASE, "key_reference.json")
 
+
 def load_json(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def english_fraction(data, ref):
     same = total = 0
@@ -18,6 +20,7 @@ def english_fraction(data, ref):
             if data[k] == v_en:
                 same += 1
     return (same, total, same / total if total else 0.0)
+
 
 def main():
     # 1) Load English reference
@@ -43,6 +46,7 @@ def main():
     # 3) For each language prefix (pt, es, nl, etc.), pick a canonical locale
     #    that is NOT mostly English (fraction < 0.9).
     from collections import defaultdict
+
     langs = defaultdict(list)
     for loc, (same, total, frac) in fractions.items():
         lang = loc.split("_")[0]
@@ -76,7 +80,9 @@ def main():
             if base_loc == loc:
                 continue  # don't overwrite the canonical itself
 
-            print(f"Using {base_loc} as fallback for {loc} (English fraction={frac:.2f})")
+            print(
+                f"Using {base_loc} as fallback for {loc} (English fraction={frac:.2f})"
+            )
             base_data = locales[base_loc]
 
             # Shallow copy of the base translations
@@ -99,6 +105,7 @@ def main():
             print("  -", loc)
     else:
         print("\nNo locales needed fallback updates.")
+
 
 if __name__ == "__main__":
     main()

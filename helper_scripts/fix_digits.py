@@ -1,29 +1,55 @@
-import json, os, glob, ast
+import ast
+import glob
+import json
+import os
 
 BASE = os.path.join("localization", "translations")
 
 ARABIC_INDIC = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"]
-DEVANAGARI   = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"]
-THAI         = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"]
-BENGALI      = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"]
-KHMER        = ["០", "១", "២", "៣", "៤", "៥", "៦", "៧", "៨", "៩"]
-LAO          = ["໐", "໑", "໒", "໓", "໔", "໕", "໖", "໗", "໘", "໙"]
-BURMESE      = ["၀", "၁", "၂", "၃", "၄", "၅", "၆", "၇", "၈", "၉"]
+DEVANAGARI = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"]
+THAI = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"]
+BENGALI = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"]
+KHMER = ["០", "១", "២", "៣", "៤", "៥", "៦", "៧", "៨", "៩"]
+LAO = ["໐", "໑", "໒", "໓", "໔", "໕", "໖", "໗", "໘", "໙"]
+BURMESE = ["၀", "၁", "၂", "၃", "၄", "၅", "၆", "၇", "၈", "၉"]
 
 DEVANAGARI_LOCALES = {"hi_IN", "ne_NP"}
 ARABIC_LOCALES = {
-    "fa_AF", "fa_IR", "ur_PK",
+    "fa_AF",
+    "fa_IR",
+    "ur_PK",
     # all ar_* locales
-    *[f"ar_{cc}" for cc in [
-        "AE","BH","DZ","EG","IQ","JO","KW","LB","LY","MA","MR",
-        "OM","PS","QA","SA","SD","SY","TN","YE",
-    ]],
+    *[
+        f"ar_{cc}"
+        for cc in [
+            "AE",
+            "BH",
+            "DZ",
+            "EG",
+            "IQ",
+            "JO",
+            "KW",
+            "LB",
+            "LY",
+            "MA",
+            "MR",
+            "OM",
+            "PS",
+            "QA",
+            "SA",
+            "SD",
+            "SY",
+            "TN",
+            "YE",
+        ]
+    ],
 }
-THAI_LOCALES   = {"th_TH"}
+THAI_LOCALES = {"th_TH"}
 BENGALI_LOCALES = {"bn_BD"}
-KHMER_LOCALES   = {"km_KH"}
-LAO_LOCALES     = {"lo_LA"}
+KHMER_LOCALES = {"km_KH"}
+LAO_LOCALES = {"lo_LA"}
 BURMESE_LOCALES = {"my_MM"}
+
 
 def choose_digits(locale):
     if locale in ARABIC_LOCALES:
@@ -41,7 +67,8 @@ def choose_digits(locale):
     if locale in BURMESE_LOCALES:
         return BURMESE
     # Western Arabic numerals for everything else
-    return ["0","1","2","3","4","5","6","7","8","9"]
+    return ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
 
 for path in glob.glob(os.path.join(BASE, "*.json")):
     fname = os.path.basename(path)

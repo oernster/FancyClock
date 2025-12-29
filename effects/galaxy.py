@@ -27,11 +27,7 @@ class GalaxyStar:
         self.size = random.uniform(1.0, 2.0)
 
         # Color variations (cool blues, warm whites)
-        base = random.choice([
-            (255, 255, 255),
-            (220, 220, 255),
-            (255, 240, 190)
-        ])
+        base = random.choice([(255, 255, 255), (220, 220, 255), (255, 240, 190)])
         self.r, self.g, self.b = base
 
     def update(self):

@@ -25,7 +25,9 @@ class LocalizationManager:
         if default_locale:
             # Normalise whatever the caller gave us
             try:
-                normalized_locale = self.locale_detector._normalize_locale(default_locale)
+                normalized_locale = self.locale_detector._normalize_locale(
+                    default_locale
+                )
             except Exception:
                 normalized_locale = self.locale_detector.DEFAULT_LOCALE
         else:
@@ -165,7 +167,9 @@ class LocalizationManager:
 
         return None
 
-    def format_number(self, value: Union[int, str, float], locale_code: Optional[str] = None) -> str:
+    def format_number(
+        self, value: Union[int, str, float], locale_code: Optional[str] = None
+    ) -> str:
         s = str(value)
 
         digit_map = self._get_digit_map(locale_code)
@@ -193,7 +197,7 @@ class LocalizationManager:
                 wd = dt.weekday() + 1
             else:
                 wd = dt.weekday() + 1
-        except:
+        except Exception:
             wd = 1
 
         keys = {
@@ -210,12 +214,22 @@ class LocalizationManager:
     def get_month_abbr(self, dt: Union[date, datetime]) -> str:
         try:
             m = dt.month() if hasattr(dt, "month") else dt.month
-        except:
+        except Exception:
             m = 1
 
         names = [
-            "january","february","march","april","may","june",
-            "july","august","september","october","november","december"
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december",
         ]
         key = names[m - 1]
         return self.get_translation(key)
@@ -235,4 +249,3 @@ class LocalizationManager:
         day = self.format_number(dt.day())
         mon = self.get_month_abbr(dt)
         return f"{wd} {day} {mon}"
-

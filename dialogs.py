@@ -103,9 +103,11 @@ def show_timezone_dialog(parent):
     cancel_button = QPushButton(parent.i18n_manager.get_translation("cancel"))
 
     ok_button.clicked.connect(
-        lambda: on_item_selected(list_widget.currentItem())
-        if list_widget.currentItem()
-        else None
+        lambda: (
+            on_item_selected(list_widget.currentItem())
+            if list_widget.currentItem()
+            else None
+        )
     )
     cancel_button.clicked.connect(dialog.reject)
 
@@ -151,16 +153,12 @@ class AboutDialog(QDialog):
 
         app_name = self.i18n_manager.get_translation("app_name", locale)
         version_label = self.i18n_manager.get_translation("version", locale)
-        app_description = self.i18n_manager.get_translation(
-            "app_description", locale
-        )
+        app_description = self.i18n_manager.get_translation("app_description", locale)
         author_label = self.i18n_manager.get_translation("author_label", locale)
         about_libs_label = self.i18n_manager.get_translation(
             "about_libraries_used", locale
         )
-        credits_media_label = self.i18n_manager.get_translation(
-            "credits_media", locale
-        )
+        credits_media_label = self.i18n_manager.get_translation("credits_media", locale)
 
         python_version = sys.version.split()[0]
 
@@ -207,9 +205,7 @@ class LicenseDialog(QDialog):
         super().__init__(parent)
         self.i18n_manager = i18n_manager
 
-        self.setWindowTitle(
-            self.i18n_manager.get_translation("license_dialog_title")
-        )
+        self.setWindowTitle(self.i18n_manager.get_translation("license_dialog_title"))
         self.setMinimumSize(500, 400)
 
         layout = QVBoxLayout(self)
