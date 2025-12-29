@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>uk.codecrafter.FancyClock</id>
+  <name>Fancy Clock</name>
+  <summary>Cross-platform desktop clock with analog and digital modes</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <description>
+    <p>
+      Fancy Clock is a lightweight desktop clock with analog and digital modes,
+      automatic timezone localization, and multiple skins.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">uk.codecrafter.FancyClock.desktop</launchable>
+  <provides>
+    <binary>fancyclock</binary>
+  </provides>
+
+  <categories>
+    <category>Utility</category>
+    <category>Clock</category>
+  </categories>
+</component>

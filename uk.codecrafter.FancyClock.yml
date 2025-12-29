@@ -42,6 +42,7 @@ modules:
       # 2) App files
       - install -d /app/share/fancyclock
       - cp -a *.py /app/share/fancyclock/
+      - cp -a fancyclock /app/share/fancyclock/
       - cp -a effects /app/share/fancyclock/
       - cp -a localization /app/share/fancyclock/
       - cp timezone_locale_map.json /app/share/fancyclock/
@@ -74,19 +75,24 @@ modules:
         Categories=Utility;Clock;
         EOF
 
+      # 6b) AppStream metadata (removes "No appstream data" warnings)
+      - install -d /app/share/metainfo
+      - install -m 644 uk.codecrafter.FancyClock.metainfo.xml /app/share/metainfo/uk.codecrafter.FancyClock.metainfo.xml
+
       # 7) Launcher script
       - install -d /app/bin
       - |
         cat > /app/bin/fancyclock << 'EOF'
         #!/usr/bin/env bash
         set -euo pipefail
+        # Ensure our in-tree package is importable.
+        export PYTHONPATH="/app/share/fancyclock:${PYTHONPATH:-}"
+        # Keep CWD inside the app so relative resource lookups (media/, effects/, etc.) work.
         cd /app/share/fancyclock
-        exec python3 main.py "$@"
+        exec python3 /app/share/fancyclock/main.py "$@"
         EOF
       - chmod +x /app/bin/fancyclock
 
     sources:
       - type: dir
         path: .
-
-
