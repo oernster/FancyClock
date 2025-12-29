@@ -8,6 +8,8 @@
 
 # Fancy Clock
 
+Developer docs: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md:1)
+
 ## English
 Fancy Clock is a cross‑platform desktop clock with analog and digital modes, automatic timezone localization, and multiple UI skins including Starfield.  
 It is lightweight, clear, and designed to stay unobtrusive on any desktop.
