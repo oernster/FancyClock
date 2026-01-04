@@ -38,7 +38,7 @@ Fancy Clock एक क्रॉस‑प्लेटफ़ॉर्म डेस
 ## Arabic
 Fancy Clock هو تطبيق ساعة لسطح المكتب يعمل عبر الأنظمة، بوضعيه التناظري والرقمي، مع تحديد تلقائي للمنطقة الزمنية وواجهات متعددة تشمل Starfield.  
 إنه خفيف وواضح ومصمم ليبقى غير ملحوظ على سطح المكتب.  
-### إذا أعجبك، يرجى أن تشتري لي قهوة: [رابط التبرع](https://www.paypal.com/ncp/payment/7XYN6DCYK24VY)
+### إذا أعجبك، يرجى أن تشتري لي قهوة: [رابط التبرع](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
 ## French
 Fancy Clock est une horloge de bureau multiplateforme avec modes analogique et numérique, localisation automatique du fuseau horaire et plusieurs habillages dont Starfield.  
@@ -123,7 +123,7 @@ Fancy Clock — це кросплатформовий настільний го�
 ## Persian
 Fancy Clock یک ساعت رومیزی چندسکویی با حالت‌های آنالوگ و دیجیتال، بومی‌سازی خودکار منطقه زمانی و چندین پوسته از جمله Starfield است.  
 سبک، واضح و طوری طراحی شده است که روی دسکتاپ مزاحم نباشد.  
-### اگر دوستش دارید، لطفاً برای من یک قهوه بخرید: [لینک حمایت](https://www.paypal.com/ncp/payment/7XYN6DCYK24VY)
+### اگر دوستش دارید، لطفاً برای من یک قهوه بخرید: [لینک حمایت](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
 ## Romanian
 Fancy Clock este un ceas de desktop multiplatformă cu moduri analogic și digital, localizare automată a fusului orar și mai multe teme precum Starfield.  
