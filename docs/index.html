@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Fancy Clock: Free desktop analog and digital clock | Offline, cross-platform, 70+ languages</title>
+    <meta name="description" content="A free, private desktop clock with analog and digital modes, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, Windows, macOS and Linux.">
+    <meta name="keywords" content="desktop clock, analog clock app, digital clock, world clock, timezone clock, animated clock, starfield clock, always on top clock, transparent clock, offline clock, open source clock, cross platform clock, Windows macOS Linux clock, multilingual clock">
+    <meta name="author" content="Oliver Ernster">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://oernster.github.io/FancyClock/">
+
+    <!-- Theme / app identity -->
+    <meta name="theme-color" content="#05060a">
+    <meta name="color-scheme" content="dark">
+    <meta name="application-name" content="Fancy Clock">
+    <meta name="apple-mobile-web-app-title" content="Fancy Clock">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Icons / manifest -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fancy Clock: Free desktop analog and digital clock">
+    <meta property="og:description" content="A calm, unobtrusive desktop clock with analog and digital modes, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, free and open source.">
+    <meta property="og:image" content="https://oernster.github.io/FancyClock/fancyclock-512.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Fancy Clock app icon">
+    <meta property="og:url" content="https://oernster.github.io/FancyClock/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fancy Clock">
+    <meta property="og:locale" content="en_GB">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fancy Clock: Free desktop analog and digital clock">
+    <meta name="twitter:description" content="A calm desktop clock with analog and digital modes, automatic timezone localization, animated skins and adjustable opacity. Offline and cross-platform.">
+    <meta name="twitter:image" content="https://oernster.github.io/FancyClock/fancyclock-512.png">
+    <meta name="twitter:image:alt" content="Fancy Clock app icon">
+
+    <style>
+        :root {
+            --bg: #05060a;
+            --text: #e8eaed;
+            --muted: #9aa3b2;
+            --faint: #6b7280;
+            --panel: #12141d;
+            --panel-2: #161a26;
+            --border: #262c3c;
+            --blue: #3b5bdb;
+            --blue-hover: #4a68d6;
+            --accent: #7aa2ff;
+            --accent-soft: #9fb8ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background:
+                radial-gradient(1100px 620px at 50% -10%, rgba(59, 91, 219, 0.16), transparent 60%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 96px 20px 64px;
+            text-align: center;
+        }
+
+        .hero-icon {
+            display: block;
+            width: 176px;
+            height: 176px;
+            border-radius: 38px;
+            margin: 0 auto 26px;
+            box-shadow: 0 26px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        h1 {
+            font-size: 44px;
+            margin: 0 0 14px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            display: flex;
+            width: fit-content;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 14px;
+            margin: 0 auto 22px;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--muted);
+            margin: 0 auto 28px;
+            max-width: 760px;
+        }
+
+        .actions a {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .primary { background: var(--blue); color: #fff; }
+        .primary:hover { background: var(--blue-hover); transform: translateY(-1px); }
+
+        .secondary { border: 1px solid var(--border); color: var(--text); }
+        .secondary:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+        .minor-detail {
+            margin-top: 28px;
+            font-size: 14px;
+            color: var(--faint);
+        }
+
+        .hero-shot {
+            margin: 40px auto 0;
+            max-width: 340px;
+        }
+
+        .hero-shot img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-shot figcaption {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--faint);
+        }
+
+        .pitch {
+            max-width: 860px;
+            margin: 44px auto 0;
+            padding: 30px 30px;
+            background: var(--panel-2);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 14px;
+            text-align: left;
+        }
+
+        .pitch p {
+            margin: 0;
+            font-size: 22px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .pitch strong { color: var(--accent); }
+        .pitch em { color: var(--muted); font-style: italic; }
+
+        .section { margin-top: 42px; }
+
+        .section h2 {
+            font-size: 24px;
+            margin: 0 0 10px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .section .lead {
+            color: var(--muted);
+            max-width: 720px;
+            margin: 0 auto 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 28px;
+            text-align: left;
+        }
+
+        .grid.small {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            text-align: center;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 20px;
+            transition: border-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+        .card h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        #features .card h3,
+        #skins .card h3 {
+            color: var(--accent);
+        }
+
+        .prose {
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .prose p { color: var(--muted); margin: 0 0 14px; }
+        .prose strong { color: var(--text); }
+
+        .faq {
+            max-width: 760px;
+            margin: 28px auto 0;
+            text-align: left;
+        }
+
+        .faq-item {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+        }
+
+        .faq-item h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+        .faq-item p { margin: 0; font-size: 14px; color: var(--muted); }
+
+        footer {
+            margin-top: 48px;
+            padding: 28px 20px 8px;
+            border-top: 1px solid var(--border);
+            color: var(--faint);
+            font-size: 13px;
+        }
+
+        footer a { color: var(--muted); text-decoration: none; }
+        footer a:hover { color: var(--accent); }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="hero">
+        <img src="fancyclock-512.png" class="hero-icon" width="176" height="176"
+             alt="Fancy Clock app icon" fetchpriority="high" decoding="async">
+
+        <div class="badge"><span class="badge-dot"></span> Windows · macOS · Linux</div>
+
+        <h1>Fancy Clock</h1>
+
+        <p class="subtitle">
+            A calm desktop clock that stays out of the way. Analog or digital, with
+            <strong style="color:var(--text)">automatic timezone localization</strong>,
+            animated skins and adjustable opacity, so the time is always there without ever demanding attention.
+        </p>
+
+        <div class="actions">
+            <a class="primary" href="https://github.com/oernster/FancyClock/releases">Download</a>
+            <a class="secondary" href="https://github.com/oernster/FancyClock">View source</a>
+        </div>
+
+        <p class="minor-detail">
+            Free and open source. Local-first. No account, no telemetry, no cloud.
+        </p>
+
+        <figure class="hero-shot">
+            <img src="fancyclock-screenshot.png" width="340" height="394" loading="lazy" decoding="async"
+                 alt="Fancy Clock running on the desktop in analog mode with an animated skin behind the dial">
+            <figcaption>Analog mode with an animated skin behind the dial.</figcaption>
+        </figure>
+    </header>
+
+    <main>
+
+        <section class="pitch" aria-label="What makes Fancy Clock different">
+            <p>
+                Most desktop clocks are either <em>a bare number in a tray</em> or a heavyweight widget that clutters the screen.
+                Fancy Clock is <strong>a clock you actually want on the desktop</strong>: frameless, draggable, dimmable, and
+                <strong>quietly correct</strong> about the time, wherever in the world you are.
+            </p>
+        </section>
+
+        <!-- What it does -->
+        <section class="section" id="features" aria-labelledby="features-h">
+            <h2 id="features-h">What Fancy Clock does</h2>
+            <p class="lead">A focused set of things a desktop clock should get right, and nothing it should not.</p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Analog and digital modes</h3>
+                    <p>Switch between a clean sweeping analog dial and a crisp digital readout. The mode you pick is remembered between sessions.</p>
+                </div>
+                <div class="card">
+                    <h3>Automatic timezone localization</h3>
+                    <p>Reads your system timezone and shows the correct local time, with region and city names translated into your own language.</p>
+                </div>
+                <div class="card">
+                    <h3>Accurate to real time</h3>
+                    <p>An optional NTP time source keeps the display honest, so the clock is right even when the machine clock has drifted.</p>
+                </div>
+                <div class="card">
+                    <h3>Animated video skins</h3>
+                    <p>Ten backdrops from a subtle Starfield to a spinning galaxy, koi carp, waves and a wormhole. Or run it plain and quiet.</p>
+                </div>
+                <div class="card">
+                    <h3>Adjustable opacity</h3>
+                    <p>Dial the window from solid down to a faint ghost, so it can sit over a wallpaper or float above your work without getting in the way.</p>
+                </div>
+                <div class="card">
+                    <h3>Frameless and draggable</h3>
+                    <p>No title bar, no chrome. Grab it anywhere and place it exactly where you want it on any monitor. A single instance, never a stack of windows.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skins -->
+        <section class="section" id="skins" aria-labelledby="skins-h">
+            <h2 id="skins-h">Ten skins, one clock</h2>
+            <p class="lead">Pick a mood. Every skin sits behind the same clear dial, and your choice is saved.</p>
+
+            <div class="grid small">
+                <div class="card"><h3>Starfield</h3></div>
+                <div class="card"><h3>Mesmerize</h3></div>
+                <div class="card"><h3>Spinning Galaxy</h3></div>
+                <div class="card"><h3>Wormhole</h3></div>
+                <div class="card"><h3>Koi Carp</h3></div>
+                <div class="card"><h3>Waves</h3></div>
+                <div class="card"><h3>Spiral</h3></div>
+                <div class="card"><h3>Spiral Clock</h3></div>
+                <div class="card"><h3>Flower Tunnel</h3></div>
+                <div class="card"><h3>Fancy Circles</h3></div>
+            </div>
+        </section>
+
+        <!-- Languages -->
+        <section class="section" id="languages" aria-labelledby="languages-h">
+            <h2 id="languages-h">Speaks your language</h2>
+            <p class="lead">
+                The interface and the timezone names are translated across more than 70 languages and over 240 regional
+                locales, from Arabic and Bengali to Vietnamese and Welsh. Numbers follow your locale too. Fancy Clock
+                picks the right one from your system automatically, and you can override it whenever you like.
+            </p>
+        </section>
+
+        <!-- Why it exists -->
+        <section class="section" id="why" aria-labelledby="why-h">
+            <h2 id="why-h">Why it exists</h2>
+            <div class="prose">
+                <p>
+                    A clock on a desktop has one job, and most of them do it either too loudly or not at all.
+                    A tray digit is easy to miss; a busy widget is easy to resent. <strong>Neither is calm.</strong>
+                </p>
+                <p>
+                    Fancy Clock is built around staying present without being noisy. It is frameless so it blends in,
+                    dimmable so it never competes with your work, and correct about the time and the timezone so you
+                    can trust a glance instead of a double-check.
+                </p>
+                <p>
+                    It is the clock I wanted on my own desktop: something pleasant to look at, honest about the time,
+                    and happy to fade into the background until the moment I need it.
+                </p>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section" id="faq" aria-labelledby="faq-h">
+            <h2 id="faq-h">Frequently asked questions</h2>
+            <div class="faq">
+                <div class="faq-item">
+                    <h3>Is Fancy Clock free?</h3>
+                    <p>Yes. Fancy Clock is free and open source, released under the GNU LGPL-3.0 licence.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Does Fancy Clock work offline?</h3>
+                    <p>Yes. It is local-first and runs entirely offline. The only optional network use is fetching accurate time from an NTP server, which you can leave off.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Which platforms does Fancy Clock run on?</h3>
+                    <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable, and Linux is available as a Flatpak.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I make the clock semi-transparent or keep it out of the way?</h3>
+                    <p>Yes. The window is frameless and draggable, and its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Does it handle different timezones and languages?</h3>
+                    <p>Yes. Fancy Clock detects your system timezone and language, shows the correct local time, and translates region names and numbers across more than 70 languages and 240 regional locales.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Runs everywhere -->
+        <section class="section" id="platforms" aria-labelledby="platforms-h">
+            <h2 id="platforms-h">Runs everywhere, stores nothing remotely</h2>
+            <p class="lead">One PySide6 codebase, native on all three platforms. Nothing about you ever leaves the machine.</p>
+
+            <div class="grid small">
+                <div class="card"><h3>Windows</h3><p>Standalone executable</p></div>
+                <div class="card"><h3>macOS</h3><p>From source</p></div>
+                <div class="card"><h3>Linux</h3><p>Flatpak</p></div>
+            </div>
+
+            <div class="actions" style="margin-top:28px;">
+                <a class="primary" href="https://github.com/oernster/FancyClock/releases">Get the latest release</a>
+            </div>
+        </section>
+
+    </main>
+
+    <p class="sr-only">
+        Fancy Clock is a free, private, local-first desktop clock for Windows, macOS and Linux. It offers analog and
+        digital modes, automatic system timezone localization with region names and numbers translated across more than
+        70 languages and 240 regional locales, optional NTP time accuracy, ten animated video skins including Starfield,
+        adjustable window opacity and a frameless draggable window. Built with Python and PySide6, it runs entirely
+        offline with no cloud dependency, and is open source under the LGPL-3.0 licence.
+    </p>
+
+    <footer>
+        Created by Oliver Ernster &nbsp;·&nbsp; Python and PySide6 &nbsp;·&nbsp;
+        <a href="https://github.com/oernster/FancyClock/blob/main/LICENSE">LGPL-3.0</a> &nbsp;·&nbsp;
+        <a href="https://github.com/oernster/FancyClock">Source on GitHub</a> &nbsp;·&nbsp;
+        <a href="https://github.com/oernster/FancyClock/releases">Releases</a>
+    </footer>
+
+</div>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://oernster.github.io/FancyClock/#website",
+            "url": "https://oernster.github.io/FancyClock/",
+            "name": "Fancy Clock",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, automatic timezone localization, animated skins and adjustable opacity.",
+            "inLanguage": "en-GB",
+            "publisher": { "@id": "https://oernster.github.io/FancyClock/#oliver" }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://oernster.github.io/FancyClock/#oliver",
+            "name": "Oliver Ernster",
+            "url": "https://www.crankthecode.com",
+            "sameAs": [
+                "https://github.com/oernster",
+                "https://www.crankthecode.com",
+                "https://www.narratex.co.uk"
+            ]
+        },
+        {
+            "@type": "SoftwareApplication",
+            "@id": "https://oernster.github.io/FancyClock/#app",
+            "name": "Fancy Clock",
+            "alternateName": "FancyClock",
+            "applicationCategory": "UtilitiesApplication",
+            "applicationSubCategory": "Desktop clock and world clock",
+            "operatingSystem": "Windows, macOS, Linux",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, automatic system timezone localization, optional NTP time accuracy, ten animated video skins, adjustable opacity and a frameless draggable window. Translated across more than 70 languages.",
+            "url": "https://oernster.github.io/FancyClock/",
+            "downloadUrl": "https://github.com/oernster/FancyClock/releases",
+            "installUrl": "https://github.com/oernster/FancyClock/releases",
+            "releaseNotes": "https://github.com/oernster/FancyClock/releases",
+            "softwareHelp": "https://github.com/oernster/FancyClock#readme",
+            "softwareVersion": "<!--VERSION-->1.5.3<!--/VERSION-->",
+            "inLanguage": "en-GB",
+            "image": "https://oernster.github.io/FancyClock/fancyclock-512.png",
+            "screenshot": "https://oernster.github.io/FancyClock/fancyclock-screenshot.png",
+            "isAccessibleForFree": true,
+            "license": "https://www.gnu.org/licenses/lgpl-3.0.html",
+            "author": { "@id": "https://oernster.github.io/FancyClock/#oliver" },
+            "creator": { "@id": "https://oernster.github.io/FancyClock/#oliver" },
+            "publisher": { "@id": "https://oernster.github.io/FancyClock/#oliver" },
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+            "featureList": [
+                "Analog and digital clock modes",
+                "Automatic system timezone localization",
+                "Region names and numbers translated across 70+ languages and 240+ locales",
+                "Optional NTP time accuracy",
+                "Ten animated video skins including Starfield",
+                "Adjustable window opacity",
+                "Frameless, draggable, single-instance window",
+                "Local-first, fully offline, no cloud dependency"
+            ]
+        },
+        {
+            "@type": "FAQPage",
+            "@id": "https://oernster.github.io/FancyClock/#faq",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "Is Fancy Clock free?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. Fancy Clock is free and open source, released under the GNU LGPL-3.0 licence." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does Fancy Clock work offline?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is local-first and runs entirely offline. The only optional network use is fetching accurate time from an NTP server, which you can leave off." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Which platforms does Fancy Clock run on?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable, and Linux is available as a Flatpak." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Can I make the clock semi-transparent or keep it out of the way?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. The window is frameless and draggable, and its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does it handle different timezones and languages?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. Fancy Clock detects your system timezone and language, shows the correct local time, and translates region names and numbers across more than 70 languages and 240 regional locales." }
+                }
+            ]
+        }
+    ]
+}
+</script>
+
+</body>
+</html>
