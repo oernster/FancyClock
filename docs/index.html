@@ -28,7 +28,6 @@
     <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="sitemap" type="application/xml" href="sitemap.xml">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Fancy Clock: Free desktop analog and digital clock">
@@ -258,6 +257,8 @@
 
         .prose p { color: var(--muted); margin: 0 0 14px; }
         .prose strong { color: var(--text); }
+        .prose a { color: var(--accent-soft); text-decoration: none; }
+        .prose a:hover { color: var(--accent); text-decoration: underline; }
 
         .faq {
             max-width: 760px;
@@ -427,7 +428,7 @@
         <section class="pitch" aria-label="What makes Fancy Clock different">
             <p>
                 Most desktop clocks are either <em>a bare number in a tray</em> or a heavyweight widget that clutters the screen.
-                Fancy Clock is <strong>a clock you actually want on the desktop</strong>: frameless, draggable, dimmable, and
+                Fancy Clock is <strong>a clock you actually want on the desktop</strong>: frameless, draggable, dimmable and
                 <strong>quietly correct</strong> about the time, wherever in the world you are.
             </p>
         </section>
@@ -435,7 +436,7 @@
         <!-- What it does -->
         <section class="section" id="features" aria-labelledby="features-h">
             <h2 id="features-h">What Fancy Clock does</h2>
-            <p class="lead">A focused set of things a desktop clock should get right, and nothing it should not.</p>
+            <p class="lead">A focused set of things a desktop clock should get right and nothing it should not.</p>
 
             <div class="grid">
                 <div class="card">
@@ -468,7 +469,7 @@
         <!-- Skins -->
         <section class="section" id="skins" aria-labelledby="skins-h">
             <h2 id="skins-h">Ten skins, one clock</h2>
-            <p class="lead">Pick a mood. Every skin sits behind the same clear dial, and your choice is saved.</p>
+            <p class="lead">Pick a mood. Every skin sits behind the same clear dial and your choice is saved.</p>
 
             <div class="grid small">
                 <div class="card"><h3>Starfield</h3></div>
@@ -490,27 +491,28 @@
             <p class="lead">
                 The interface and the timezone names are translated across more than 70 languages and over 240 regional
                 locales, from Arabic and Bengali to Vietnamese and Welsh. Numbers follow your locale too. Fancy Clock
-                picks the right one from your system automatically, and you can override it whenever you like.
+                picks the right one from your system automatically; you can override it whenever you like.
             </p>
         </section>
 
         <!-- Why it exists -->
         <section class="section" id="why" aria-labelledby="why-h">
-            <h2 id="why-h">Why it exists</h2>
+            <h2 id="why-h">Why this exists</h2>
             <div class="prose">
                 <p>
-                    A clock on a desktop has one job, and most of them do it either too loudly or not at all.
+                    A clock on a desktop has one job and most of them do it either too loudly or not at all.
                     A tray digit is easy to miss; a busy widget is easy to resent. <strong>Neither is calm.</strong>
                 </p>
                 <p>
                     Fancy Clock is built around staying present without being noisy. It is frameless so it blends in,
-                    dimmable so it never competes with your work, and correct about the time and the timezone so you
+                    dimmable so it never competes with your work and correct about the time and the timezone so you
                     can trust a glance instead of a double-check.
                 </p>
                 <p>
-                    It is the clock I wanted on my own desktop: something pleasant to look at, honest about the time,
+                    It is the clock I wanted on my own desktop: something pleasant to look at, honest about the time
                     and happy to fade into the background until the moment I need it.
                 </p>
+                <p>Full reasoning at <a href="https://www.crankthecode.com/posts/fancy-clock">crankthecode.com</a>.</p>
             </div>
         </section>
 
@@ -528,15 +530,15 @@
                 </div>
                 <div class="faq-item">
                     <h3>Which platforms does Fancy Clock run on?</h3>
-                    <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable, and Linux is available as a Flatpak.</p>
+                    <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable and Linux is available as a Flatpak.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Can I make the clock semi-transparent or keep it out of the way?</h3>
-                    <p>Yes. The window is frameless and draggable, and its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything.</p>
+                    <p>Yes. The window is frameless and draggable; its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Does it handle different timezones and languages?</h3>
-                    <p>Yes. Fancy Clock detects your system timezone and language, shows the correct local time, and translates region names and numbers across more than 70 languages and 240 regional locales.</p>
+                    <p>Yes. Fancy Clock detects your system timezone and language, shows the correct local time and translates region names and numbers across more than 70 languages and 240 regional locales.</p>
                 </div>
             </div>
         </section>
@@ -597,7 +599,7 @@
         digital modes, automatic system timezone localization with region names and numbers translated across more than
         70 languages and 240 regional locales, optional NTP time accuracy, ten animated video skins including Starfield,
         adjustable window opacity and a frameless draggable window. Built with Python and PySide6, it runs entirely
-        offline with no cloud dependency, and is open source under the LGPL-3.0 licence.
+        offline with no cloud dependency and is open source under the LGPL-3.0 licence.
     </p>
 
     <footer>
@@ -685,17 +687,17 @@
                 {
                     "@type": "Question",
                     "name": "Which platforms does Fancy Clock run on?",
-                    "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable, and Linux is available as a Flatpak." }
+                    "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable and Linux is available as a Flatpak." }
                 },
                 {
                     "@type": "Question",
                     "name": "Can I make the clock semi-transparent or keep it out of the way?",
-                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. The window is frameless and draggable, and its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything." }
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. The window is frameless and draggable; its opacity is adjustable from fully solid down to a faint overlay, so it can sit unobtrusively over anything." }
                 },
                 {
                     "@type": "Question",
                     "name": "Does it handle different timezones and languages?",
-                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. Fancy Clock detects your system timezone and language, shows the correct local time, and translates region names and numbers across more than 70 languages and 240 regional locales." }
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. Fancy Clock detects your system timezone and language, shows the correct local time and translates region names and numbers across more than 70 languages and 240 regional locales." }
                 }
             ]
         }
@@ -706,9 +708,9 @@
 <script>
     // The download buttons never go stale: each points at GitHub's releases/latest/download
     // redirect, which always serves the newest release's asset (the asset names are version-free
-    // by design). This script only decorates the page with live details: the version chip, the
-    // release date and each download's size, fetched from the GitHub API. If the call fails
-    // (offline, rate-limited), the static text above stands on its own.
+    // by design). This script only decorates the page with live details: the version chip and
+    // each download's size, fetched from the GitHub API. If the call fails (offline,
+    // rate-limited), the static text above stands on its own.
     (function () {
         var api = 'https://api.github.com/repos/oernster/FancyClock/releases/latest';
         fetch(api).then(function (r) {
@@ -717,12 +719,7 @@
         }).then(function (rel) {
             var version = (rel.tag_name || '').replace(/^v/, '');
             if (version) {
-                var when = '';
-                if (rel.published_at) {
-                    when = ' · ' + new Date(rel.published_at).toLocaleDateString(undefined,
-                        {day: 'numeric', month: 'long', year: 'numeric'});
-                }
-                document.getElementById('dl-version').textContent = 'Version ' + version + when;
+                document.getElementById('dl-version').textContent = 'Version ' + version;
             }
             if (rel.html_url) {
                 document.getElementById('dl-whats-new').href = rel.html_url;
