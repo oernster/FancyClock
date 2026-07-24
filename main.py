@@ -1,5 +1,4 @@
-from fancyclock.entrypoint import main
-
+from fancyclock import main
 
 if __name__ == "__main__":
     raise SystemExit(main())

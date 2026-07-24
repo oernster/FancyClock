@@ -1,5 +1,19 @@
 # Development Notes
 
+## Build entry points
+
+| Target | Command | Output |
+|---|---|---|
+| Windows app bundle | `python buildexe.py` | `dist-pyinstaller/FancyClock/` |
+| Windows installer | `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
+| macOS DMG (run on a Mac) | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
+| Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
+| Icon assets | `python generate_icons.py` | `assets/` from the `fancyclock.png` master |
+
+The Windows and macOS builds stamp the canonical VERSION into the static
+docs first via `stamp_version.py`; run `python stamp_version.py` directly
+after a version bump.
+
 ## Flatpak (local/offline)
 
 This repo includes a Flatpak manifest at [`uk.codecrafter.FancyClock.yml`](uk.codecrafter.FancyClock.yml:1) and a build script at [`build_flatpak.sh`](build_flatpak.sh:1).

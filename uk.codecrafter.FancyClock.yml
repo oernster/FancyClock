@@ -41,11 +41,12 @@ modules:
 
       # 2) App files
       - install -d /app/share/fancyclock
-      - cp -a *.py /app/share/fancyclock/
+      - cp main.py /app/share/fancyclock/
       - cp -a fancyclock /app/share/fancyclock/
-      - cp -a effects /app/share/fancyclock/
       - cp -a localization /app/share/fancyclock/
+      - cp -a assets /app/share/fancyclock/
       - cp timezone_locale_map.json /app/share/fancyclock/
+      - cp VERSION /app/share/fancyclock/
 
       # 3) media directory
       - install -d /app/share/fancyclock/media
@@ -57,9 +58,8 @@ modules:
       # Also put a copy next to main.py so the app menu can find it
       - install -m 644 LICENSE /app/share/fancyclock/LICENSE
 
-      # 5) Icon
-      - install -d /app/share/icons/hicolor/256x256/apps
-      - install -m 644 clock.png /app/share/icons/hicolor/256x256/apps/uk.codecrafter.FancyClock.png
+      # 5) Icons (full hicolor set from the generated assets)
+      - for size in 16 24 32 48 64 96 128 256 512; do install -Dm644 "assets/fancyclock_icon_${size}.png" "/app/share/icons/hicolor/${size}x${size}/apps/uk.codecrafter.FancyClock.png"; done
 
       # 6) Desktop file
       - install -d /app/share/applications

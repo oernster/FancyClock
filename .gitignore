@@ -209,3 +209,18 @@ __marimo__/
 # flatpak
 flatpak/
 vendor/
+build-flatpak/
+
+# Windows build outputs
+dist-pyinstaller/
+dist-installer/
+dist-installer.build/
+installer/payload/payload.zip
+installer/payload/manifest.json
+
+# macOS build outputs
+_dmg_staging/
+*.dmg
+
+# Local release notes (deliberately untracked; conceptual release notes live here)
+NOTES.md
