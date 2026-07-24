@@ -372,3 +372,11 @@ def test_new_alarm_id_uses_the_injected_factory() -> None:
     service, _, _ = make_service(utc(2026, 7, 3, 6, 0))
     assert service.new_alarm_id() == "id-1"
     assert service.new_alarm_id() == "id-2"
+
+
+def test_now_in_converts_to_the_requested_timezone() -> None:
+    service, _, _ = make_service(utc(2026, 7, 3, 6, 0))
+    local = service.now_in("Europe/London")
+    assert (local.hour, local.minute) == (7, 0)
+    fallback = service.now_in("Nowhere/Bad")
+    assert (fallback.hour, fallback.minute) == (6, 0)
