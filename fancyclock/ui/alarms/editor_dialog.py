@@ -30,6 +30,7 @@ from fancyclock.domain.alarms import (
     SOUND_NAMES,
     Alarm,
 )
+from fancyclock.ui import theme
 from fancyclock.ui.alarms.formatting import WEEKDAY_KEYS, duration_text
 from fancyclock.ui.alarms.time_picker import TimePicker
 from fancyclock.ui.alarms.tz_picker import pick_timezone
@@ -37,6 +38,15 @@ from fancyclock.ui.alarms.tz_picker import pick_timezone
 SWATCH_SIZE_PX = 28
 DAY_CHIP_MIN_WIDTH_PX = 44
 PREVIEW_VOLUME = 0.6
+
+DAY_CHIP_STYLE = (
+    f"QPushButton {{ background-color: {theme.PANEL}; color: {theme.TEXT};"
+    f" border: 1px solid {theme.PANEL_BORDER}; border-radius: 6px;"
+    f" padding: 4px 8px; }}"
+    f" QPushButton:enabled:hover {{ border: 1px solid {theme.ACCENT}; }}"
+    f" QPushButton:checked {{ background-color: {theme.ACCENT};"
+    f" color: {theme.ON_ACCENT}; font-weight: bold; }}"
+)
 
 
 def _swatch_style(hex_value: str, selected: bool) -> str:
@@ -97,6 +107,7 @@ class AlarmEditorDialog(QDialog):
             chip = QPushButton(i18n.get_translation(key), self)
             chip.setCheckable(True)
             chip.setMinimumWidth(DAY_CHIP_MIN_WIDTH_PX)
+            chip.setStyleSheet(DAY_CHIP_STYLE)
             chip.toggled.connect(self._validate)
             days_row.addWidget(chip)
             self._day_chips.append(chip)

@@ -6,12 +6,14 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
+from fancyclock.ui import theme
+
 TOAST_DURATION_MS = 5000
 TOAST_MARGIN_PX = 24
 TOAST_PADDING_PX = 14
 ACCENT_BAR_PX = 4
-TOAST_BG = "#1d2230"
-TOAST_FG = "#f2f4f8"
+TOAST_BG = theme.PANEL
+TOAST_FG = theme.TEXT
 
 
 def _toast_style(accent_hex: str) -> str:
