@@ -154,12 +154,14 @@ class AlarmManagerDialog(QDialog):
     # Actions
     # ------------------------------------------------------------------
     def _new(self) -> None:
+        now = self._service.now_in(self._default_tz_id)
         dialog = AlarmEditorDialog(
             self._i18n,
             self._timezone_service,
             self._sound_player,
             alarm_id=self._service.new_alarm_id(),
             default_tz_id=self._default_tz_id,
+            default_time=(now.hour, now.minute),
             parent=self,
         )
         if dialog.exec() == QDialog.DialogCode.Accepted:

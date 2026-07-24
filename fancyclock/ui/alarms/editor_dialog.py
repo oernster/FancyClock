@@ -58,6 +58,7 @@ class AlarmEditorDialog(QDialog):
         alarm_id: str,
         default_tz_id: str,
         alarm: Alarm | None = None,
+        default_time: tuple[int, int] | None = None,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
@@ -168,17 +169,21 @@ class AlarmEditorDialog(QDialog):
         layout.addWidget(self._buttons)
 
         self._repeat_radio.toggled.connect(self._mode_changed)
-        self._populate(alarm)
+        self._populate(alarm, default_time)
         self._mode_changed()
 
     # ------------------------------------------------------------------
     # Population and state
     # ------------------------------------------------------------------
-    def _populate(self, alarm: Alarm | None) -> None:
+    def _populate(
+        self, alarm: Alarm | None, default_time: tuple[int, int] | None
+    ) -> None:
         if alarm is None:
             self._repeat_radio.setChecked(True)
             for chip in self._day_chips:
                 chip.setChecked(True)
+            if default_time is not None:
+                self._time_picker.set_time(*default_time)
             self._select_color(next(iter(self._color_buttons)))
             self._enabled_check.setChecked(True)
             self._select_snooze(self._snooze_combo, None)

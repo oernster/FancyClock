@@ -98,6 +98,10 @@ class AlarmService:
         except Exception:
             return timezone.utc
 
+    def now_in(self, tz_id: str) -> datetime:
+        """Return the NTP-corrected current time in ``tz_id``."""
+        return self.now_utc().astimezone(self._resolve_tz(tz_id))
+
     def alarms(self) -> tuple[Alarm, ...]:
         """Return every alarm sorted by time then label."""
         return tuple(
