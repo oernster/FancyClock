@@ -16,6 +16,7 @@ from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSpinBox, QVBoxLayout, QWidget
 
 from fancyclock.domain.alarms import HOURS_PER_DAY, MINUTES_PER_HOUR
+from fancyclock.ui import theme
 
 DIAL_SIZE_PX = 230
 OUTER_RADIUS_PX = 96
@@ -29,10 +30,10 @@ MINUTE_LABEL_STEP = 5
 DEGREES_PER_TURN = 360.0
 DEGREES_AT_TWELVE = 90.0
 
-DIAL_BG = QColor("#1d2230")
-DIAL_FG = QColor("#e8ecf4")
-DIAL_MUTED = QColor("#8b93a7")
-DIAL_ACCENT = QColor("#F59E0B")
+DIAL_BG = QColor(theme.PANEL)
+DIAL_FG = QColor(theme.TEXT)
+DIAL_MUTED = QColor(theme.TEXT_MUTED)
+DIAL_ACCENT = QColor(theme.ACCENT)
 
 MODE_HOURS = 0
 MODE_MINUTES = 1
@@ -116,7 +117,7 @@ class ClockDial(QWidget):
     def _paint_label(
         self, painter: QPainter, text: str, at: QPointF, selected: bool
     ) -> None:
-        painter.setPen(QColor("#101319") if selected else DIAL_FG)
+        painter.setPen(QColor(theme.ON_ACCENT) if selected else DIAL_FG)
         box = KNOB_RADIUS_PX
         painter.drawText(
             int(at.x() - box),

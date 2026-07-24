@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from fancyclock.domain.alarms import SNOOZE_PRESET_MINUTES, color_hex
+from fancyclock.ui import theme
 from fancyclock.ui.alarms.formatting import duration_text, time_text
 
 WINDOW_MIN_WIDTH = 380
@@ -27,7 +28,7 @@ def _header_style(hex_value: str) -> str:
     return (
         f"QWidget#FiringHeader {{ background-color: {hex_value};"
         f" border-radius: 8px; }}"
-        f" QLabel {{ color: #101319; }}"
+        f" QLabel {{ color: {theme.ON_ACCENT}; }}"
     )
 
 

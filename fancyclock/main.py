@@ -13,7 +13,7 @@ import uuid
 from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, QLoggingCategory
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtGui import QColor, QGuiApplication, QIcon, QPalette
 from PySide6.QtWidgets import QApplication
 
 from fancyclock.application.alarms import AlarmService
@@ -52,6 +52,7 @@ from fancyclock.infrastructure.system_locale_probe import EnvironmentLocaleProbe
 from fancyclock.infrastructure.timezone_catalog import PytzTimezoneCatalog
 from fancyclock.infrastructure.timezone_locale_map import JsonTimezoneLocaleMap
 from fancyclock.infrastructure.translations_repo import JsonTranslationsRepository
+from fancyclock.ui import theme
 from fancyclock.ui.window import ClockWindow
 
 APP_ID = "uk.codecrafter.FancyClock"
@@ -143,6 +144,18 @@ def main() -> int:
 
     QGuiApplication.setDesktopFileName(APP_ID)
     app = QApplication(sys.argv)
+
+    # Application-wide icon: every window and dialog (alarms manager, editor,
+    # firing window, About, ...) inherits it rather than each setting its own.
+    app.setWindowIcon(QIcon(get_app_icon_path()))
+
+    # Application-wide selection colours: the native light-blue highlight is
+    # near-invisible under white text, so selections use the house amber
+    # accent with dark text everywhere (lists, calendar, combos, editors).
+    palette = app.palette()
+    palette.setColor(QPalette.ColorRole.Highlight, QColor(theme.ACCENT))
+    palette.setColor(QPalette.ColorRole.HighlightedText, QColor(theme.ON_ACCENT))
+    app.setPalette(palette)
 
     QCoreApplication.setOrganizationName(ORGANIZATION_NAME)
     QCoreApplication.setApplicationName(APPLICATION_NAME)
