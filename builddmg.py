@@ -15,7 +15,6 @@ Optional env vars:
 from __future__ import annotations
 
 import os
-import platform
 import shutil
 import subprocess
 import sys
@@ -23,7 +22,7 @@ import tempfile
 from pathlib import Path
 
 import stamp_version
-from build_utils import require, run, section
+from build_utils import require, require_materialized, require_module, run, section
 from dmg_icon import png_to_icns, set_volume_icon
 
 
@@ -40,8 +39,8 @@ APP_NAME = "FancyClock"
 APP_DISPLAY_NAME = "Fancy Clock"
 APP_VERSION = _read_version()
 BUNDLE_ID = "uk.codecrafter.FancyClock"
-# Arch-tagged so users do not reinstall a stale same-named DMG from Downloads.
-FINAL_DMG = f"fancyclock-macos-{platform.machine()}.dmg"
+# Written to the repository root (the build's working directory) on completion.
+FINAL_DMG = f"{APP_NAME}.dmg"
 RW_DMG = "_fancyclock_rw.dmg"
 VOLUME_NAME = f"Install {APP_DISPLAY_NAME}"
 
@@ -99,9 +98,13 @@ def check_platform() -> None:
         ["sw_vers", "-productVersion"], capture_output=True, text=True
     )
     print(f"  macOS {result.stdout.strip()}")
-    require("pyinstaller", "pyinstaller")
+    # Check PyInstaller against the interpreter the build uses (sys.executable),
+    # not a PATH executable: build_app_bundle runs `sys.executable -m PyInstaller`.
+    require_module("PyInstaller")
     require("create-dmg", "create-dmg")
     require("codesign")
+    # Fail early rather than bundle unresolved git-LFS pointer stubs as skins.
+    require_materialized(Path(__file__).parent / "media")
     print("  All tools present.")
 
 

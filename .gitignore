@@ -222,5 +222,8 @@ installer/payload/manifest.json
 _dmg_staging/
 *.dmg
 
+# macOS Finder metadata
+.DS_Store
+
 # Local release notes (deliberately untracked; conceptual release notes live here)
 NOTES.md
