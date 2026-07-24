@@ -26,6 +26,11 @@ DATA_FILES = (
     "LICENSE",
 )
 
+# Third-party packages the app imports at runtime. A PyInstaller run from an
+# environment missing one of these only WARNS (in the build warn file) and
+# ships a broken exe, so we read that file and fail the build instead.
+REQUIRED_BUNDLED_PACKAGES = ("PySide6", "pytz", "tzlocal")
+
 
 def build_exe() -> int:
     """Create the onedir bundle wrapped later by buildinstaller.py."""
@@ -40,14 +45,6 @@ def build_exe() -> int:
     build_dir = root / "build"
     spec_file = root / f"{APP_NAME}.spec"
 
-    pyinstaller_exe = shutil.which("pyinstaller")
-    if not pyinstaller_exe:
-        print(
-            "Error: pyinstaller not found. "
-            "Activate the venv and install requirements-dev.txt"
-        )
-        return 1
-
     if spec_file.exists():
         spec_file.unlink()
 
@@ -57,8 +54,12 @@ def build_exe() -> int:
     if build_dir.exists():
         shutil.rmtree(build_dir)
 
+    # Always build with the interpreter running this script, so the analysed
+    # environment is the venv that actually has the app's dependencies.
     cmd = [
-        pyinstaller_exe,
+        sys.executable,
+        "-m",
+        "PyInstaller",
         f"--name={APP_NAME}",
         "--onedir",
         "--windowed",
@@ -78,13 +79,28 @@ def build_exe() -> int:
         return 1
 
     exe_path = dist_dir / APP_NAME / f"{APP_NAME}.exe"
-    if exe_path.exists():
-        print(f"[OK] EXE created: {exe_path}")
-        print(f"Size: {exe_path.stat().st_size / (1024 * 1024):.1f} MB")
-        return 0
+    if not exe_path.exists():
+        print("EXE not found after build")
+        return 1
 
-    print("EXE not found after build")
-    return 1
+    warn_file = build_dir / APP_NAME / f"warn-{APP_NAME}.txt"
+    warn_text = warn_file.read_text(encoding="utf-8") if warn_file.exists() else ""
+    missing = [
+        name
+        for name in REQUIRED_BUNDLED_PACKAGES
+        if f"missing module named {name} -" in warn_text
+    ]
+    if missing:
+        print(
+            "Error: bundle is missing required packages: "
+            + ", ".join(missing)
+            + ". Check the environment running this build."
+        )
+        return 1
+
+    print(f"[OK] EXE created: {exe_path}")
+    print(f"Size: {exe_path.stat().st_size / (1024 * 1024):.1f} MB")
+    return 0
 
 
 if __name__ == "__main__":

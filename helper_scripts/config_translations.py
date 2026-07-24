@@ -8,9 +8,9 @@ Contains:
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Dict, Set
-
 
 # Your explicit fallbacks
 LANGUAGE_FALLBACKS: Dict[str, str] = {
