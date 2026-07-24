@@ -16,7 +16,6 @@ from typing import Dict, List, Sequence
 
 import requests
 
-
 LOG = logging.getLogger("libretranslate_client")
 
 
