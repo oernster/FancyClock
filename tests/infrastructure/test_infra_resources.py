@@ -9,9 +9,11 @@ from fancyclock.infrastructure.resources import (
     APP_ICON_ICO,
     APP_ICON_PNG_256,
     ASSETS_DIR_NAME,
+    SOUNDS_DIR_NAME,
     find_license_file,
     get_about_icon_path,
     get_app_icon_path,
+    get_sounds_dir_path,
     resource_path,
 )
 
@@ -57,3 +59,11 @@ def test_about_icon_path_points_into_assets(tmp_path, monkeypatch) -> None:
     path = get_about_icon_path()
     assert ASSETS_DIR_NAME in path
     assert path.endswith(APP_ICON_PNG_256)
+
+
+def test_sounds_dir_path_points_into_assets(tmp_path, monkeypatch) -> None:
+    monkeypatch.delattr(sys, "_MEIPASS", raising=False)
+    monkeypatch.chdir(tmp_path)
+    path = get_sounds_dir_path()
+    assert ASSETS_DIR_NAME in path
+    assert path.endswith(SOUNDS_DIR_NAME)

@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
+RUN_VALUE_NAME = "FancyClock"
+
 
 @dataclass(frozen=True, slots=True)
 class UninstallEntry:
@@ -25,6 +28,7 @@ class UninstallEntry:
 
     shortcut_desktop: Optional[bool] = None
     shortcut_start_menu: Optional[bool] = None
+    start_on_signin: Optional[bool] = None
     installer_path: Optional[str] = None
 
 
@@ -70,6 +74,7 @@ def read_uninstall_entry(uninstall_key: str) -> Optional[UninstallEntry]:
                 publisher=_q("Publisher"),
                 shortcut_desktop=_parse_bool(_q("ShortcutDesktop")),
                 shortcut_start_menu=_parse_bool(_q("ShortcutStartMenu")),
+                start_on_signin=_parse_bool(_q("StartOnSignIn")),
                 installer_path=_q("InstallerPath"),
             )
     except FileNotFoundError:
@@ -87,6 +92,7 @@ def write_uninstall_entry(
     publisher: Optional[str] = None,
     shortcut_desktop: Optional[bool] = None,
     shortcut_start_menu: Optional[bool] = None,
+    start_on_signin: Optional[bool] = None,
     installer_path: Optional[str] = None,
 ) -> None:
     _require_windows()
@@ -122,6 +128,10 @@ def write_uninstall_entry(
                 0,
                 winreg.REG_SZ,
                 "1" if shortcut_start_menu else "0",
+            )
+        if start_on_signin is not None:
+            winreg.SetValueEx(
+                k, "StartOnSignIn", 0, winreg.REG_SZ, "1" if start_on_signin else "0"
             )
         if installer_path:
             winreg.SetValueEx(k, "InstallerPath", 0, winreg.REG_SZ, installer_path)
@@ -159,6 +169,31 @@ def try_read_install_location(uninstall_key: str) -> Optional[Path]:
                 return None
     except FileNotFoundError:
         return None
+
+
+def set_run_at_signin(command: str) -> None:
+    """Write the per-user Run value that launches the app at sign-in."""
+    _require_windows()
+
+    import winreg  # noqa: WPS433 (stdlib, windows-only)
+
+    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, RUN_KEY) as k:
+        winreg.SetValueEx(k, RUN_VALUE_NAME, 0, winreg.REG_SZ, command)
+
+
+def clear_run_at_signin() -> None:
+    """Remove the per-user Run value, if present."""
+    _require_windows()
+
+    import winreg  # noqa: WPS433 (stdlib, windows-only)
+
+    try:
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_SET_VALUE
+        ) as k:
+            winreg.DeleteValue(k, RUN_VALUE_NAME)
+    except OSError:
+        return
 
 
 def _parse_bool(v: Optional[str]) -> Optional[bool]:

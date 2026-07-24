@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 ASSETS_DIR_NAME = "assets"
+SOUNDS_DIR_NAME = "sounds"
 APP_ICON_ICO = "fancyclock.ico"
 APP_ICON_PNG_256 = "fancyclock_icon_256.png"
 ABOUT_ICON_PNG = "fancyclock_icon_256.png"
@@ -45,3 +46,8 @@ def get_app_icon_path() -> str:
 def get_about_icon_path() -> str:
     """Return the About dialog badge PNG path."""
     return str(Path(resource_path(ASSETS_DIR_NAME)) / ABOUT_ICON_PNG)
+
+
+def get_sounds_dir_path() -> str:
+    """Return the bundled alarm sounds directory path."""
+    return str(Path(resource_path(ASSETS_DIR_NAME)) / SOUNDS_DIR_NAME)

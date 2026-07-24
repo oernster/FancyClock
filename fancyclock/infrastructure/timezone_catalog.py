@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, tzinfo
+from zoneinfo import ZoneInfo
 
 import pytz
 
@@ -19,3 +20,12 @@ class PytzTimezoneCatalog:
         tz = pytz.timezone(tz_id)
         local_now = datetime.now(pytz.utc).astimezone(tz)
         return local_now.utcoffset().total_seconds()
+
+    def tzinfo_for(self, tz_id: str) -> tzinfo:
+        """Return a fold-aware tzinfo for ``tz_id``; raises when unknown.
+
+        Alarm scheduling uses PEP 495 fold semantics for its DST policy,
+        which pytz timezones do not honour, so this resolves through
+        ``zoneinfo`` (the identifiers are the same IANA names).
+        """
+        return ZoneInfo(tz_id)

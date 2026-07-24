@@ -23,3 +23,6 @@ class WindowTimeMixin:
         current_qdatetime = self._current_time()
         self.analog_clock.tick(current_qdatetime)
         self.digital_clock.tick(current_qdatetime)
+        controller = getattr(self, "alarms_controller", None)
+        if controller is not None:
+            controller.tick()

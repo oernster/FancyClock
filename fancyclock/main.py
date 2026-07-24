@@ -9,19 +9,34 @@ from __future__ import annotations
 
 import ctypes
 import sys
+import uuid
 from pathlib import Path
 
 from PySide6.QtCore import QCoreApplication, QLoggingCategory
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import QApplication
 
+from fancyclock.application.alarms import AlarmService
 from fancyclock.application.localization import LocalizationService
+from fancyclock.application.ports import AutostartManager
 from fancyclock.application.resources import ResourcePaths
 from fancyclock.application.settings import SettingsService
 from fancyclock.application.skins import SkinService
 from fancyclock.application.time_service import TimeService
 from fancyclock.application.timezones import TimezoneService
+from fancyclock.infrastructure.autostart import (
+    LaunchAgentAutostart,
+    NullAutostart,
+    WindowsRunKeyAutostart,
+    WinRegRunKey,
+    XdgAutostart,
+    is_flatpak,
+)
 from fancyclock.infrastructure.clock import SystemClock
+from fancyclock.infrastructure.json_alarm_store import (
+    JsonAlarmPorter,
+    JsonAlarmStore,
+)
 from fancyclock.infrastructure.json_settings_store import JsonSettingsStore
 from fancyclock.infrastructure.media_library import FilesystemMediaLibrary
 from fancyclock.infrastructure.ntp_time_source import NtpTimeSource
@@ -29,6 +44,7 @@ from fancyclock.infrastructure.resources import (
     find_license_file,
     get_about_icon_path,
     get_app_icon_path,
+    get_sounds_dir_path,
     resource_path,
 )
 from fancyclock.infrastructure.single_instance import SingleInstanceGuard
@@ -52,6 +68,26 @@ LOG_FILTER_RULES = (
 )
 
 
+def _launch_command() -> tuple[str, ...]:
+    """Return the argv that relaunches this app for autostart entries."""
+    if getattr(sys, "frozen", False):
+        return (sys.executable,)
+    entry = Path(__file__).resolve().parent.parent / "main.py"
+    return (sys.executable, str(entry))
+
+
+def _build_autostart() -> AutostartManager:
+    """Pick the start-on-sign-in adapter for this platform."""
+    if is_flatpak():
+        return NullAutostart()
+    command = _launch_command()
+    if sys.platform == "win32":
+        return WindowsRunKeyAutostart(command, WinRegRunKey())
+    if sys.platform == "darwin":
+        return LaunchAgentAutostart(command, Path.home())
+    return XdgAutostart(command, Path.home())
+
+
 def _build_window() -> ClockWindow:
     """Wire infrastructure into application services and build the window."""
     i18n_manager = LocalizationService(
@@ -61,16 +97,27 @@ def _build_window() -> ClockWindow:
         tz_locale_map=JsonTimezoneLocaleMap(Path(resource_path(TIMEZONE_MAP_FILENAME))),
         system_probe=EnvironmentLocaleProbe(),
     )
-    time_service = TimeService(source=NtpTimeSource(), clock=SystemClock())
+    clock = SystemClock()
+    time_service = TimeService(source=NtpTimeSource(), clock=clock)
     settings = SettingsService(store=JsonSettingsStore())
     skin_service = SkinService(
         media=FilesystemMediaLibrary(Path(resource_path(MEDIA_RELATIVE_DIR)))
     )
-    timezone_service = TimezoneService(catalog=PytzTimezoneCatalog())
+    catalog = PytzTimezoneCatalog()
+    timezone_service = TimezoneService(catalog=catalog)
+    alarm_service = AlarmService(
+        store=JsonAlarmStore(),
+        catalog=catalog,
+        clock=clock,
+        time_service=time_service,
+        id_factory=lambda: uuid.uuid4().hex,
+        porter=JsonAlarmPorter(),
+    )
     resources = ResourcePaths(
         app_icon=get_app_icon_path(),
         about_icon_png=get_about_icon_path(),
         license_file=find_license_file(),
+        sounds_dir=get_sounds_dir_path(),
     )
     return ClockWindow(
         i18n_manager=i18n_manager,
@@ -79,6 +126,8 @@ def _build_window() -> ClockWindow:
         skin_service=skin_service,
         timezone_service=timezone_service,
         resources=resources,
+        alarm_service=alarm_service,
+        autostart=_build_autostart(),
     )
 
 

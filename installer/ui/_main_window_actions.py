@@ -128,6 +128,8 @@ def refresh_state(window: InstallerMainWindow) -> None:
             window._desktop_cb.setChecked(entry.shortcut_desktop)
         if entry.shortcut_start_menu is not None:
             window._startmenu_cb.setChecked(entry.shortcut_start_menu)
+        if entry.start_on_signin is not None:
+            window._signin_cb.setChecked(entry.start_on_signin)
 
         # On upgrade/reinstall, default directory to current install dir.
         window._install_dir_edit.setText(str(entry.install_location))
@@ -207,6 +209,7 @@ def current_selections(window: InstallerMainWindow) -> UiSelections:
         install_dir=p,
         shortcut_desktop=bool(window._desktop_cb.isChecked()),
         shortcut_start_menu=bool(window._startmenu_cb.isChecked()),
+        start_on_signin=bool(window._signin_cb.isChecked()),
     )
 
 
@@ -356,6 +359,7 @@ def operation_callable(
                     target_dir=selections.install_dir,
                     create_desktop_shortcut=selections.shortcut_desktop,
                     create_start_menu_shortcut=selections.shortcut_start_menu,
+                    start_on_signin=selections.start_on_signin,
                 ),
             },
         )
@@ -372,6 +376,7 @@ def operation_callable(
                     target_dir=selections.install_dir,
                     create_desktop_shortcut=selections.shortcut_desktop,
                     create_start_menu_shortcut=selections.shortcut_start_menu,
+                    start_on_signin=selections.start_on_signin,
                 ),
             },
         )
@@ -384,6 +389,7 @@ def operation_callable(
                 "opts": RepairOptions(
                     restore_desktop_shortcut=selections.shortcut_desktop,
                     restore_start_menu_shortcut=selections.shortcut_start_menu,
+                    restore_start_on_signin=selections.start_on_signin,
                 ),
             },
         )

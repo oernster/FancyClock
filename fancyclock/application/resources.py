@@ -10,10 +10,12 @@ class ResourcePaths:
     """Absolute paths of UI resources resolved at startup.
 
     ``app_icon`` is the window and taskbar icon, ``about_icon_png`` is the
-    About dialog badge and ``license_file`` is the licence text shown in the
-    licence dialog (``None`` when no licence file was found).
+    About dialog badge, ``license_file`` is the licence text shown in the
+    licence dialog (``None`` when no licence file was found) and
+    ``sounds_dir`` is the directory of bundled alarm sounds.
     """
 
     app_icon: str
     about_icon_png: str
     license_file: str | None
+    sounds_dir: str

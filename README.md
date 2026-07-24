@@ -3,18 +3,32 @@
 </p>
 
 <p align="center">
+  <img src="./docs/fancyclock-alarms-screenshot.png" alt="Fancy Clock Alarms" width="400" />
+</p>
+
+<p align="center">
   <img src="./assets/fancyclock_icon_256.png" alt="Fancy Clock Icon" width="120" />
 </p>
 
 # Fancy Clock
 
-Version <!--VERSION-->1.6.0<!--/VERSION-->
+Version <!--VERSION-->2.0.0<!--/VERSION-->
 
-Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield. It is lightweight, clear and designed to stay unobtrusive on any desktop.
+Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, multiple UI skins including Starfield and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
 
-**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are. It is not a scheduling tool, an alarm app or a widget platform.
+**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's. It is not a calendar, a timer or stopwatch, or a widget platform.
 
 Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
+
+## Alarms
+
+- Weekly-repeating or one-off alarms with a clock-face time picker, per-alarm labels, colours and timezone.
+- Five bundled sounds (Beep, Chime, Bell, Pulse, Marimba) with preview and a global volume.
+- Snooze with per-alarm duration, an Android-style snooze budget (1, 3, 5 or unlimited per ring) and a re-pickable duration on every snooze.
+- A persistent firing window plus a best-effort system notification; a missed-alarms summary covers anything that fired while the machine was asleep or the app was closed.
+- System tray icon with next-alarm tooltip, master switch and close-to-tray; optional start at sign-in (installer checkbox on Windows, in-app toggle everywhere it is supported).
+- Alarms fire on the same NTP-corrected time the clocks display and handle DST transitions correctly; import and export as JSON.
+- Honest limits: a suspended or powered-off machine is never woken; missed alarms are reported on the next launch or wake instead.
 
 ## Downloads
 

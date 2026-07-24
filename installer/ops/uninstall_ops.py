@@ -80,6 +80,15 @@ def uninstall(identity, opts: UninstallOptions) -> None:  # noqa: ANN001 (identi
     # shortcut flags.
     remove_taskbar_pin(sp.taskbar_lnk)
 
+    # Remove the start-on-sign-in Run value (best effort; also covers a value
+    # the app's own Alarms menu toggle created).
+    from installer.state.registry import clear_run_at_signin
+
+    try:
+        clear_run_at_signin()
+    except Exception:
+        pass
+
     # Remove registry first (best effort).
     try:
         delete_uninstall_entry(identity.uninstall_key)

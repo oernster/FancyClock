@@ -14,6 +14,7 @@ def test_resource_paths_is_frozen() -> None:
         app_icon="assets/fancyclock.ico",
         about_icon_png="assets/fancyclock_icon_256.png",
         license_file=None,
+        sounds_dir="assets/sounds",
     )
     assert paths.license_file is None
     with pytest.raises(dataclasses.FrozenInstanceError):

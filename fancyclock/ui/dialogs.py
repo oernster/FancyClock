@@ -34,9 +34,21 @@ LICENCE_MAX_WIDTH = 900
 
 ABOUT_CREDITS = (
     ("PySide6", "Qt for Python, LGPL-3.0"),
+    ("shiboken6", "Qt for Python bindings generator, LGPL-3.0"),
     ("Python", "PSF licence"),
     ("pytz", "MIT"),
     ("tzlocal", "MIT"),
+    ("tzdata", "IANA time zone data for Python, Apache-2.0"),
+    ("FFmpeg", "media playback via Qt Multimedia, LGPL-2.1+"),
+    ("PyInstaller", "packaging, GPL-2.0 with bootloader exception"),
+    ("Pillow", "icon generation, MIT-CMU"),
+    ("pytest / pytest-cov", "test suite, MIT"),
+    ("black / flake8 / ruff", "formatting and linting, MIT"),
+    ("psutil", "installer process checks, BSD-3-Clause"),
+    ("platformdirs", "installer paths, MIT"),
+    ("packaging", "version handling, Apache-2.0 / BSD"),
+    ("pywin32", "Windows integration, PSF"),
+    ("create-dmg", "macOS disk images, MIT"),
 )
 
 MEDIA_CREDITS = (
