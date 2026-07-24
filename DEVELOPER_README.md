@@ -104,8 +104,13 @@ Code quality checks:
 ```bash
 python -m black .
 python -m flake8 .
+python -m ruff check .
 python -m pytest
 ```
+
+The test suite carries a 100% coverage gate over the domain, application and
+infrastructure layers plus structural tests enforcing the architecture; see
+[`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Upgrade pip:
 
@@ -134,24 +139,16 @@ mkdir -p vendor
 pip download -r requirements.txt -d vendor
 ```
 
-### 4.1 Fix charset_normalizer incompatibility
-
-The Flatpak runtime uses **Python 3.12**, so if pip downloaded a CPython-specific
-wheel for `charset_normalizer`, replace it with a universal sdist:
-
-```bash
-rm vendor/charset_normalizer-*.whl
-pip download --no-binary=charset_normalizer "charset_normalizer<4,>=2" -d vendor
-```
+The Flatpak runtime uses **Python 3.12**, so run the download with a Python
+whose wheels are compatible (or pass `--python-version 3.12`).
 
 After this, `vendor/` should contain:
 
 - PySide6 wheels  
 - shiboken6 wheels  
-- pyside6-addons & essentials  
-- babel, pytz, requests, idna, urllib3, certifi  
-- tzlocal  
-- charset_normalizer (as `.tar.gz`)
+- pyside6-addons and essentials  
+- pytz  
+- tzlocal
 
 ---
 
@@ -211,17 +208,9 @@ git lfs fetch --all
 git lfs checkout
 ```
 
-### 7.2 Missing charset_normalizer
+### 7.2 Build cannot reach PyPI
 
-Ensure the universal sdist exists:
-
-```bash
-ls vendor/charset_normalizer-*.tar.gz
-```
-
-### 7.3 Build cannot reach PyPI
-
-Correct — this is intentional.  
+Correct: this is intentional.  
 Rebuild your `vendor/` directory following Section 4.
 
 ---
@@ -234,7 +223,6 @@ Before running `./build_flatpak.sh`:
 - [ ] Real MP4 files present (not pointer files)  
 - [ ] Python venv created  
 - [ ] `vendor/` generated with `pip download`  
-- [ ] charset_normalizer sdist included  
 - [ ] Flatpak runtimes installed (SDK + Platform 6.8)  
 
 Then:
@@ -254,8 +242,6 @@ To fully regenerate:
 rm -rf vendor
 source venv/bin/activate
 pip download -r requirements.txt -d vendor
-rm vendor/charset_normalizer-*.whl
-pip download --no-binary=charset_normalizer "charset_normalizer<4,>=2" -d vendor
 ```
 
 ---

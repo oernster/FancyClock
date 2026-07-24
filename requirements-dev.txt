@@ -1,5 +1,12 @@
 pytest
+pytest-cov
 black
 flake8
+ruff
 PyInstaller
 pillow
+requests
+psutil
+platformdirs
+packaging
+pywin32

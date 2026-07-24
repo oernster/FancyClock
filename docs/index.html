@@ -530,7 +530,7 @@
                 </div>
                 <div class="faq-item">
                     <h3>Which platforms does Fancy Clock run on?</h3>
-                    <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable and Linux is available as a Flatpak.</p>
+                    <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an installer, macOS as a DMG and Linux as a Flatpak.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Can I make the clock semi-transparent or keep it out of the way?</h3>
@@ -549,8 +549,8 @@
             <p class="lead">One PySide6 codebase, native on all three platforms. Nothing about you ever leaves the machine.</p>
 
             <div class="grid small">
-                <div class="card"><h3>Windows</h3><p>Standalone executable</p></div>
-                <div class="card"><h3>macOS</h3><p>From source</p></div>
+                <div class="card"><h3>Windows</h3><p>Installer (.exe)</p></div>
+                <div class="card"><h3>macOS</h3><p>DMG</p></div>
                 <div class="card"><h3>Linux</h3><p>Flatpak</p></div>
             </div>
 
@@ -568,10 +568,19 @@
                     <div class="ico">🪟</div>
                     <h3>Windows</h3>
                     <p class="req">Windows 10 or 11, 64-bit</p>
-                    <a class="primary" href="https://github.com/oernster/FancyClock/releases/latest/download/FancyClock.exe">
+                    <a class="primary" href="https://github.com/oernster/FancyClock/releases/latest/download/FancyClockSetup.exe">
                         Download for Windows</a>
-                    <p class="meta" data-asset="FancyClock.exe">Portable executable (.exe)</p>
-                    <p class="how">No installer: save it anywhere and run it.</p>
+                    <p class="meta" data-asset="FancyClockSetup.exe">Setup wizard (.exe)</p>
+                    <p class="how">Per-user install, no admin needed. Uninstall any time from Settings &gt; Apps.</p>
+                </div>
+                <div class="dl-card">
+                    <div class="ico">🍎</div>
+                    <h3>macOS</h3>
+                    <p class="req">Apple Silicon</p>
+                    <a class="primary" href="https://github.com/oernster/FancyClock/releases/latest/download/fancyclock-macos-arm64.dmg">
+                        Download for macOS</a>
+                    <p class="meta" data-asset="fancyclock-macos-arm64.dmg">Disk image (.dmg)</p>
+                    <p class="how">Open the DMG and drag Fancy Clock to Applications.</p>
                 </div>
                 <div class="dl-card">
                     <div class="ico">🐧</div>
@@ -649,7 +658,7 @@
             "installUrl": "https://github.com/oernster/FancyClock/releases",
             "releaseNotes": "https://github.com/oernster/FancyClock/releases",
             "softwareHelp": "https://github.com/oernster/FancyClock#readme",
-            "softwareVersion": "<!--VERSION-->1.5.3<!--/VERSION-->",
+            "softwareVersion": "1.6.0",
             "inLanguage": "en-GB",
             "image": "https://ernster.dev/FancyClock/fancyclock-512.png",
             "screenshot": "https://ernster.dev/FancyClock/fancyclock-screenshot.png",
@@ -687,7 +696,7 @@
                 {
                     "@type": "Question",
                     "name": "Which platforms does Fancy Clock run on?",
-                    "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an executable and Linux is available as a Flatpak." }
+                    "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an installer, macOS as a DMG and Linux as a Flatpak." }
                 },
                 {
                     "@type": "Question",

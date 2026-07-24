@@ -1,0 +1,15 @@
+[run]
+source = fancyclock
+
+[report]
+show_missing = True
+skip_covered = False
+fail_under = 100
+
+omit =
+    fancyclock/main.py
+    fancyclock/ui/*
+    fancyclock/application/ports.py
+    fancyclock/infrastructure/single_instance.py
+    */__pycache__/*
+    */venv/*

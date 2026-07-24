@@ -1,18 +1,46 @@
 <p align="center">
-  <img src="./fancyclock_screenshot.png" alt="Fancy Clock Screenshot" width="600" />
+  <img src="./docs/fancyclock-screenshot.png" alt="Fancy Clock Screenshot" width="400" />
 </p>
 
 <p align="center">
-  <img src="./clock.png" alt="Fancy Clock Icon" width="120" />
+  <img src="./assets/fancyclock_icon_256.png" alt="Fancy Clock Icon" width="120" />
 </p>
 
 # Fancy Clock
 
-Developer docs: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md:1)
+Version <!--VERSION-->1.6.0<!--/VERSION-->
+
+Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield. It is lightweight, clear and designed to stay unobtrusive on any desktop.
+
+**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are. It is not a scheduling tool, an alarm app or a widget platform.
+
+Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
+
+## Downloads
+
+| Platform | Package | Notes |
+|---|---|---|
+| Windows | `FancyClockSetup.exe` | Setup wizard; per-user install, no admin; uninstall from Settings > Apps |
+| macOS | `fancyclock-macos-arm64.dmg` | Open and drag Fancy Clock to Applications |
+| Linux | `FancyClock.flatpak` | `flatpak install FancyClock.flatpak` |
+
+All packages are on the [releases page](https://github.com/oernster/FancyClock/releases).
+
+## Development
+
+The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+python -m pytest
+python main.py
+```
+
+Build entry points: `buildexe.py` plus `buildinstaller.py` (Windows installer), `builddmg.py` (macOS DMG), `build_flatpak.sh` (Linux Flatpak), `generate_icons.py` (regenerate every icon asset from the `fancyclock.png` master). Flatpak prerequisites: [`DEVELOPER_README.md`](DEVELOPER_README.md); local Flatpak install notes: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md).
 
 ## English
-Fancy Clock is a cross‑platform desktop clock with analog and digital modes, automatic timezone localization, and multiple UI skins including Starfield.  
-It is lightweight, clear, and designed to stay unobtrusive on any desktop.
+Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield.  
+It is lightweight, clear and designed to stay unobtrusive on any desktop.
 ### If you like it please buy me a coffee: [Donation link](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
 ## Mandarin Chinese (Simplified)
@@ -56,7 +84,7 @@ Fancy Clock é um relógio de desktop multiplataforma com modos analógico e dig
 ### Se você gostar, por favor me compre um café: [Link de doação](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
 ## Russian
-Fancy Clock — кроссплатформенные настольные часы с аналоговым и цифровым режимами, автоматической локализацией часового пояса и различными оформлениями, включая Starfield.  
+Fancy Clock: кроссплатформенные настольные часы с аналоговым и цифровым режимами, автоматической локализацией часового пояса и различными оформлениями, включая Starfield.  
 Они лёгкие, понятные и созданы для незаметной работы на рабочем столе.  
 ### Если вам нравится, пожалуйста, купите мне кофе: [Ссылка для пожертвования](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
@@ -116,7 +144,7 @@ Den är lätt, tydlig och utformad för att vara diskret på skrivbordet.
 ### Om du gillar den, får du gärna bjuda mig på en kaffe: [Donationslänk](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
 ## Ukrainian
-Fancy Clock — це кросплатформовий настільний годинник з аналоговим і цифровим режимами, автоматичною локалізацією часових поясів та кількома оформленнями, включно зі Starfield.  
+Fancy Clock: це кросплатформовий настільний годинник з аналоговим і цифровим режимами, автоматичною локалізацією часових поясів та кількома оформленнями, включно зі Starfield.  
 Він легкий, зрозумілий і створений для непомітної роботи на робочому столі.  
 ### Якщо вам подобається, будь ласка, пригостіть мене кавою: [Посилання для донату](https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6)
 
