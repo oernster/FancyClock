@@ -17,6 +17,10 @@ class WindowMenuMixin:
 
     def _create_menu_bar(self) -> None:
         menu_bar = self.menuBar()
+        # Render the menu inside the window on every platform. macOS otherwise
+        # uses the native global menu bar, which drops the bare Timezone action
+        # (only submenus survive there), hiding the internationalisation entry.
+        menu_bar.setNativeMenuBar(False)
 
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
