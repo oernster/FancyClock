@@ -9,6 +9,7 @@
 | macOS DMG (run on a Mac) | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
 | Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
 | Icon assets | `python generate_icons.py` | `assets/` from the `fancyclock.png` master |
+| Alarm sounds | `python generate_sounds.py` | `assets/sounds/` (deterministic stdlib synthesis) |
 
 The Windows and macOS builds stamp the canonical VERSION into the static
 docs first via `stamp_version.py`; run `python stamp_version.py` directly
@@ -66,8 +67,8 @@ Flatpak still requires the relevant runtime(s) to be installed on the machine. I
 
 ### Uninstall
 
-Use the uninstall helper script [`cleanupflatpak.sh`](cleanupflatpak.sh:1):
+Use the uninstall helper script [`cleanup_flatpak.sh`](cleanup_flatpak.sh:1):
 
 ```bash
-./cleanupflatpak.sh
+./cleanup_flatpak.sh
 ```
