@@ -53,8 +53,11 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   the dialogs and the alarm suite (`ui/alarms/`: controller, tray icon,
   manager and editor dialogs, the clock-face time picker, the persistent
   firing window, the missed-alarms summary, toasts and the sound player).
-  The UI talks only to application services; resource locations arrive as
-  a `ResourcePaths` value built by the composition root.
+  Shared colours live in `ui/theme.py`: one amber accent with dark
+  on-accent text, applied application-wide through the QApplication
+  palette by the composition root. The UI talks only to application
+  services; resource locations arrive as a `ResourcePaths` value built by
+  the composition root.
 - **Composition root** (`fancyclock/main.py`): the only module that imports
   infrastructure. It builds every implementation, injects it into the
   services and hands those to `ClockWindow`. The repo-root `main.py` is a
@@ -119,4 +122,7 @@ app identity constants shared with the Windows installer.
 | Linux | `build_flatpak.sh` | `dist/FancyClock.flatpak` |
 
 All icon assets derive from the 1024px master `fancyclock.png` via
-`generate_icons.py` into `assets/`.
+`generate_icons.py` into `assets/`. The five alarm sounds are synthesised
+deterministically by `generate_sounds.py` into `assets/sounds/`; every
+packaging path ships the `assets/` directory wholesale, so icons and
+sounds ride along without per-platform wiring.

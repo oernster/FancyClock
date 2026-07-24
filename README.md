@@ -50,7 +50,7 @@ python -m pytest
 python main.py
 ```
 
-Build entry points: `buildexe.py` plus `buildinstaller.py` (Windows installer), `builddmg.py` (macOS DMG), `build_flatpak.sh` (Linux Flatpak), `generate_icons.py` (regenerate every icon asset from the `fancyclock.png` master). Flatpak prerequisites: [`DEVELOPER_README.md`](DEVELOPER_README.md); local Flatpak install notes: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md).
+Build entry points: `buildexe.py` plus `buildinstaller.py` (Windows installer), `builddmg.py` (macOS DMG), `build_flatpak.sh` (Linux Flatpak), `generate_icons.py` (regenerate every icon asset from the `fancyclock.png` master), `generate_sounds.py` (regenerate the alarm sounds deterministically). Flatpak prerequisites: [`DEVELOPER_README.md`](DEVELOPER_README.md); local Flatpak install notes: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md).
 
 ## English
 Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield.  

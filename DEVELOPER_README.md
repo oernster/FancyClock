@@ -148,7 +148,8 @@ After this, `vendor/` should contain:
 - shiboken6 wheels  
 - pyside6-addons and essentials  
 - pytz  
-- tzlocal
+- tzlocal  
+- tzdata (IANA data backing `zoneinfo`, used by alarm scheduling)
 
 ---
 
