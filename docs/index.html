@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Fancy Clock: Free desktop analog and digital clock | Offline, cross-platform, 70+ languages</title>
-    <meta name="description" content="A free, private desktop clock with analog and digital modes, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, Windows, macOS and Linux.">
-    <meta name="keywords" content="desktop clock, analog clock app, digital clock, world clock, timezone clock, animated clock, starfield clock, always on top clock, transparent clock, offline clock, open source clock, cross platform clock, Windows macOS Linux clock, multilingual clock">
+    <title>Fancy Clock: Free desktop clock with alarms | Offline, cross-platform, 70+ languages</title>
+    <meta name="description" content="A free, private desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, Windows, macOS and Linux.">
+    <meta name="keywords" content="desktop clock, alarm clock app, desktop alarm, analog clock app, digital clock, world clock, timezone clock, animated clock, starfield clock, always on top clock, transparent clock, offline clock, open source clock, cross platform clock, Windows macOS Linux clock, multilingual clock, snooze alarm">
     <meta name="author" content="Oliver Ernster">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large">
@@ -30,8 +30,8 @@
     <link rel="manifest" href="site.webmanifest">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Fancy Clock: Free desktop analog and digital clock">
-    <meta property="og:description" content="A calm, unobtrusive desktop clock with analog and digital modes, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, free and open source.">
+    <meta property="og:title" content="Fancy Clock: Free desktop clock with alarms">
+    <meta property="og:description" content="A calm, unobtrusive desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, free and open source.">
     <meta property="og:image" content="https://ernster.dev/FancyClock/fancyclock-512.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="512">
@@ -44,8 +44,8 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Fancy Clock: Free desktop analog and digital clock">
-    <meta name="twitter:description" content="A calm desktop clock with analog and digital modes, automatic timezone localization, animated skins and adjustable opacity. Offline and cross-platform.">
+    <meta name="twitter:title" content="Fancy Clock: Free desktop clock with alarms">
+    <meta name="twitter:description" content="A calm desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated skins and adjustable opacity. Offline and cross-platform.">
     <meta name="twitter:image" content="https://ernster.dev/FancyClock/fancyclock-512.png">
     <meta name="twitter:image:alt" content="Fancy Clock app icon">
 
@@ -403,6 +403,7 @@
 
         <p class="subtitle">
             A calm desktop clock that stays out of the way. Analog or digital, with
+            <strong style="color:var(--text)">alarms</strong>,
             <strong style="color:var(--text)">automatic timezone localization</strong>,
             animated skins and adjustable opacity, so the time is always there without ever demanding attention.
         </p>
@@ -462,6 +463,49 @@
                 <div class="card">
                     <h3>Frameless and draggable</h3>
                     <p>No title bar, no chrome. Grab it anywhere and place it exactly where you want it on any monitor. A single instance, never a stack of windows.</p>
+                </div>
+                <div class="card">
+                    <h3>Alarms that behave like a phone's</h3>
+                    <p>Weekly or one-off alarms with labels, colours, five sounds, snooze budgets and a missed-alarm summary. Set on a clock-face picker; runs from the system tray.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alarms -->
+        <section class="section" id="alarms" aria-labelledby="alarms-h">
+            <h2 id="alarms-h">Proper alarms, on your desktop</h2>
+            <p class="lead">The alarm experience you expect from a phone, without the phone.</p>
+
+            <figure class="hero-shot">
+                <img src="fancyclock-alarms-screenshot.png" width="340" height="300" loading="lazy" decoding="async"
+                     alt="The Fancy Clock alarms manager with colour-coded alarms and a clock-face time picker">
+                <figcaption>Colour-coded alarms with a clock-face time picker.</figcaption>
+            </figure>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Set it like a clock</h3>
+                    <p>Pick the time on a clock-face dial or type it. Repeat on any weekdays or fire once on a chosen date, in any timezone you like.</p>
+                </div>
+                <div class="card">
+                    <h3>Snooze on your terms</h3>
+                    <p>Per-alarm snooze from 5 minutes to 24 hours, a budget of 1, 3, 5 or unlimited snoozes per ring and a re-pickable duration every time you snooze.</p>
+                </div>
+                <div class="card">
+                    <h3>Five sounds, your colours</h3>
+                    <p>Beep, Chime, Bell, Pulse or Marimba, previewable in the editor, with a colour per alarm so you know which one is ringing at a glance.</p>
+                </div>
+                <div class="card">
+                    <h3>Lives in the tray</h3>
+                    <p>Close to the system tray and the alarms keep watching. The tray shows your next alarm; an optional setting starts Fancy Clock when you sign in.</p>
+                </div>
+                <div class="card">
+                    <h3>Never silently loses one</h3>
+                    <p>Machine asleep or the app closed when an alarm was due? You get a missed-alarms summary the moment it is back, every time.</p>
+                </div>
+                <div class="card">
+                    <h3>Honest about time</h3>
+                    <p>Alarms fire on the same NTP-corrected time the clocks display and daylight-saving transitions are handled correctly, not approximately.</p>
                 </div>
             </div>
         </section>
@@ -540,6 +584,14 @@
                     <h3>Does it handle different timezones and languages?</h3>
                     <p>Yes. Fancy Clock detects your system timezone and language, shows the correct local time and translates region names and numbers across more than 70 languages and 240 regional locales.</p>
                 </div>
+                <div class="faq-item">
+                    <h3>Does Fancy Clock have alarms?</h3>
+                    <p>Yes. Weekly-repeating or one-off alarms with labels, colours, five sounds, per-alarm snooze durations and snooze budgets, set on a clock-face time picker. The app can live in the system tray and optionally start when you sign in, and anything that fired while the machine was asleep or the app was closed appears in a missed-alarms summary.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Will an alarm wake my computer from sleep?</h3>
+                    <p>No, deliberately. Fancy Clock never wakes a suspended or powered-off machine. If an alarm's time passes while the machine is asleep, it rings on wake when recent or is reported in the missed-alarms summary.</p>
+                </div>
             </div>
         </section>
 
@@ -605,10 +657,11 @@
 
     <p class="sr-only">
         Fancy Clock is a free, private, local-first desktop clock for Windows, macOS and Linux. It offers analog and
-        digital modes, automatic system timezone localization with region names and numbers translated across more than
-        70 languages and 240 regional locales, optional NTP time accuracy, ten animated video skins including Starfield,
-        adjustable window opacity and a frameless draggable window. Built with Python and PySide6, it runs entirely
-        offline with no cloud dependency and is open source under the LGPL-3.0 licence.
+        digital modes, alarms with snooze budgets, colours, five sounds and a missed-alarms summary, automatic system
+        timezone localization with region names and numbers translated across more than 70 languages and 240 regional
+        locales, optional NTP time accuracy, ten animated video skins including Starfield, adjustable window opacity, a
+        system tray mode with optional start at sign-in and a frameless draggable window. Built with Python and PySide6,
+        it runs entirely offline with no cloud dependency and is open source under the LGPL-3.0 licence.
     </p>
 
     <footer>
@@ -629,7 +682,7 @@
             "@id": "https://ernster.dev/FancyClock/#website",
             "url": "https://ernster.dev/FancyClock/",
             "name": "Fancy Clock",
-            "description": "A free, private, local-first desktop clock with analog and digital modes, automatic timezone localization, animated skins and adjustable opacity.",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated skins and adjustable opacity.",
             "inLanguage": "en-GB",
             "publisher": { "@id": "https://ernster.dev/FancyClock/#oliver" }
         },
@@ -652,13 +705,13 @@
             "applicationCategory": "UtilitiesApplication",
             "applicationSubCategory": "Desktop clock and world clock",
             "operatingSystem": "Windows, macOS, Linux",
-            "description": "A free, private, local-first desktop clock with analog and digital modes, automatic system timezone localization, optional NTP time accuracy, ten animated video skins, adjustable opacity and a frameless draggable window. Translated across more than 70 languages.",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze budgets and five sounds, automatic system timezone localization, optional NTP time accuracy, ten animated video skins, adjustable opacity and a frameless draggable window. Translated across more than 70 languages.",
             "url": "https://ernster.dev/FancyClock/",
             "downloadUrl": "https://github.com/oernster/FancyClock/releases",
             "installUrl": "https://github.com/oernster/FancyClock/releases",
             "releaseNotes": "https://github.com/oernster/FancyClock/releases",
             "softwareHelp": "https://github.com/oernster/FancyClock#readme",
-            "softwareVersion": "1.6.0",
+            "softwareVersion": "2.0.0",
             "inLanguage": "en-GB",
             "image": "https://ernster.dev/FancyClock/fancyclock-512.png",
             "screenshot": "https://ernster.dev/FancyClock/fancyclock-screenshot.png",
@@ -670,6 +723,10 @@
             "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
             "featureList": [
                 "Analog and digital clock modes",
+                "Weekly and one-off alarms with labels, colours and five sounds",
+                "Snooze with per-alarm durations and budgets",
+                "Missed-alarms summary after sleep or restart",
+                "System tray mode with optional start at sign-in",
                 "Automatic system timezone localization",
                 "Region names and numbers translated across 70+ languages and 240+ locales",
                 "Optional NTP time accuracy",
@@ -707,6 +764,16 @@
                     "@type": "Question",
                     "name": "Does it handle different timezones and languages?",
                     "acceptedAnswer": { "@type": "Answer", "text": "Yes. Fancy Clock detects your system timezone and language, shows the correct local time and translates region names and numbers across more than 70 languages and 240 regional locales." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does Fancy Clock have alarms?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. Weekly-repeating or one-off alarms with labels, colours, five sounds, per-alarm snooze durations and snooze budgets, set on a clock-face time picker. The app can live in the system tray and optionally start when you sign in, and anything that fired while the machine was asleep or the app was closed appears in a missed-alarms summary." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Will an alarm wake my computer from sleep?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "No, deliberately. Fancy Clock never wakes a suspended or powered-off machine. If an alarm's time passes while the machine is asleep, it rings on wake when recent or is reported in the missed-alarms summary." }
                 }
             ]
         }

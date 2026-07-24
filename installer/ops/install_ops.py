@@ -53,6 +53,7 @@ class InstallOptions:
     target_dir: Path
     create_desktop_shortcut: bool
     create_start_menu_shortcut: bool
+    start_on_signin: bool = False
 
 
 def _installer_staging_root() -> Path:
@@ -146,6 +147,7 @@ def _register_uninstall(
     installer_copy: Path,
     shortcut_desktop: bool,
     shortcut_start_menu: bool,
+    start_on_signin: bool,
 ) -> None:
     exe = install_dir / APP_EXE_NAME
     uninstall_cmd = f'"{installer_copy}" --uninstall'
@@ -166,6 +168,7 @@ def _register_uninstall(
         publisher=APP_AUTHOR,
         shortcut_desktop=shortcut_desktop,
         shortcut_start_menu=shortcut_start_menu,
+        start_on_signin=start_on_signin,
         installer_path=str(installer_copy),
     )
 
@@ -230,12 +233,14 @@ def install_new(
             installer_copy=installer_copy,
             shortcut_desktop=opts.create_desktop_shortcut,
             shortcut_start_menu=opts.create_start_menu_shortcut,
+            start_on_signin=opts.start_on_signin,
         )
 
         _progress(progress, pct=90, message="Creating shortcuts...")
         _check_cancel(cancel_event)
         logger.info("Applying shortcuts")
         _apply_shortcuts(identity, target_dir, opts)
+        _apply_autostart(target_dir, opts.start_on_signin)
 
         _progress(progress, pct=100, message="Completed")
     finally:
@@ -297,17 +302,35 @@ def upgrade_or_reinstall(
             installer_copy=installer_copy,
             shortcut_desktop=opts.create_desktop_shortcut,
             shortcut_start_menu=opts.create_start_menu_shortcut,
+            start_on_signin=opts.start_on_signin,
         )
 
         _progress(progress, pct=90, message="Updating shortcuts...")
         _check_cancel(cancel_event)
         logger.info("Applying shortcuts")
         _apply_shortcuts(identity, target_dir, opts)
+        _apply_autostart(target_dir, opts.start_on_signin)
 
         _progress(progress, pct=100, message="Completed")
     finally:
         if staging_dir.exists():
             shutil.rmtree(staging_dir, ignore_errors=True)
+
+
+def _apply_autostart(install_dir: Path, enable: bool) -> None:
+    """Write or remove the per-user Run value for start-on-sign-in.
+
+    The value name matches the one the app's own Alarms menu toggle
+    manages, so the installer and the app never disagree.
+    """
+    from installer.state.registry import clear_run_at_signin, set_run_at_signin
+
+    exe = install_dir / APP_EXE_NAME
+    logger.info("Applying start-on-sign-in: %s", enable)
+    if enable:
+        set_run_at_signin(f'"{exe}"')
+    else:
+        clear_run_at_signin()
 
 
 def _apply_shortcuts(

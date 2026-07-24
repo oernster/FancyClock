@@ -1,6 +1,6 @@
 # FancyClock Architecture
 
-Version: <!--VERSION-->1.6.0<!--/VERSION-->
+Version: <!--VERSION-->2.0.0<!--/VERSION-->
 
 ## Invariants
 
@@ -26,22 +26,35 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
 
 - **Domain** (`fancyclock/domain/`): pure rules and values. Locale
   normalisation and the supported-locale catalog, digit translation,
-  date-presentation rules, skin naming, timezone entry formatting and
-  clock-offset arithmetic. Stdlib only; no I/O, no Qt, no wall clock.
+  date-presentation rules, skin naming, timezone entry formatting,
+  clock-offset arithmetic and the alarm model (`alarms.py`: the frozen
+  `Alarm`, `SnoozeState` and `AlarmsState` value objects with the colour,
+  sound and snooze presets; `alarm_schedule.py`: pure occurrence math with
+  the DST policy, tick-window evaluation with the missed-alarm grace and
+  the next-alarm summary). Stdlib only; no I/O, no Qt, no wall clock.
 - **Application** (`fancyclock/application/`): services and ports.
   `LocalizationService`, `TimeService`, `SettingsService`, `SkinService`,
-  `TimezoneService` and the `ResourcePaths` value object. Ports are
-  `typing.Protocol` interfaces in `ports.py`; services receive their
+  `TimezoneService`, `AlarmService` (CRUD, tick evaluation and its
+  consequences, snooze episodes with budgets, import/export, the
+  NTP-corrected now) and the `ResourcePaths` value object. Ports are
+  `typing.Protocol` interfaces in `ports.py` (including `AlarmStore`,
+  `AlarmPorter` and `AutostartManager`); services receive their
   dependencies by constructor injection.
 - **Infrastructure** (`fancyclock/infrastructure/`): implementations of the
   ports. NTP over UDP with a system-clock fallback, the JSON settings store,
-  the per-locale translation repository, the timezone-to-locale map, the
-  system locale probe, the pytz timezone catalog, the media library, the
-  resource path resolver and the Qt single-instance guard.
+  the JSON alarm store and porter (tolerant load, strict import), the
+  per-OS autostart adapters (HKCU Run key, macOS LaunchAgent, XDG
+  autostart, null under Flatpak), the per-locale translation repository,
+  the timezone-to-locale map, the system locale probe, the pytz timezone
+  catalog (fold-aware tzinfo via zoneinfo for alarm scheduling), the media
+  library, the resource path resolver and the Qt single-instance guard.
 - **UI** (`fancyclock/ui/`): PySide6 widgets. The clock window and its
-  behaviour mixins, the analog and digital clock widgets, the galaxy effect
-  and the dialogs. The UI talks only to application services; resource
-  locations arrive as a `ResourcePaths` value built by the composition root.
+  behaviour mixins, the analog and digital clock widgets, the galaxy effect,
+  the dialogs and the alarm suite (`ui/alarms/`: controller, tray icon,
+  manager and editor dialogs, the clock-face time picker, the persistent
+  firing window, the missed-alarms summary, toasts and the sound player).
+  The UI talks only to application services; resource locations arrive as
+  a `ResourcePaths` value built by the composition root.
 - **Composition root** (`fancyclock/main.py`): the only module that imports
   infrastructure. It builds every implementation, injects it into the
   services and hands those to `ClockWindow`. The repo-root `main.py` is a
@@ -63,7 +76,10 @@ app identity constants shared with the Windows installer.
    saved locale, timezone and skin, then starts a 1 s tick timer and a
    16 ms animation timer.
 6. Each tick computes UTC plus the NTP offset, converts to the selected
-   timezone and pushes the result to both clock widgets via `tick()`.
+   timezone and pushes the result to both clock widgets via `tick()`; the
+   same tick drives `AlarmService.tick()`, which evaluates the window since
+   the previous tick and surfaces ringing and missed alarms through the
+   alarms UI controller.
 
 ## Design decisions
 
@@ -76,6 +92,13 @@ app identity constants shared with the Windows installer.
 | pytz (not zoneinfo) for the timezone catalog | The timezone dialog and the offset labels match the shipped behaviour; migration is possible but out of scope for the refactor |
 | `SettingsService` mirrors Qt's AppConfigLocation layout | The installer's uninstall can remove the same per-user tree via platformdirs |
 | Coverage omits `ui/*`, `main.py`, `ports.py` and the single-instance guard | UI and Qt IPC are deliberately untested (no Qt mocking); Protocol bodies and the composition root have no behaviour of their own |
+| Alarm scheduling uses zoneinfo fold semantics, not pytz | The DST policy (nonexistent wall times step to the first valid instant; ambiguous times fire once, on the earlier instant) needs PEP 495 folds, which pytz ignores; the catalog resolves the same IANA ids through zoneinfo for alarms only |
+| Alarms fire on the NTP-corrected clock | The firing instant must match what the on-screen clocks show, so `AlarmService.now_utc()` applies the same offset the display uses |
+| One missed-alarm mechanism covers sleep, quit and crash | The store persists a `last_evaluated_utc` watermark (throttled to one write a minute); every tick evaluates `(watermark, now]`, so wake-from-suspend and machine-off-between-runs are the same code path |
+| Snooze state is separate from alarm config and survives restarts | `SnoozeState` (episode budget, last-used duration, wakeup instant) persists beside the frozen `Alarm`; ad-hoc snooze picks never mutate configured defaults and reset when the episode ends |
+| A first launch evaluates an empty window | A fresh store has no watermark, so historical occurrences can never fire on install |
+| The tray degrades to a plain window | `QSystemTrayIcon.isSystemTrayAvailable()` is false on some Linux desktops (vanilla GNOME); close-to-tray disables rather than hiding an unrecoverable window |
+| The installer and the app share one Run value | Both write `HKCU\...\Run\FancyClock`, so the sign-in checkbox and the Alarms menu toggle can never disagree |
 
 ## Quality enforcement
 

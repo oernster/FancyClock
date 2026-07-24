@@ -5,6 +5,9 @@ from __future__ import annotations
 from typing import Any
 
 from fancyclock.application.settings import (
+    ALARM_VOLUME_KEY,
+    CLOSE_TO_TRAY_KEY,
+    DEFAULT_ALARM_VOLUME,
     LOCALE_KEY,
     SKIN_NAME_KEY,
     TIMEZONE_ID_KEY,
@@ -69,3 +72,41 @@ def test_locale_roundtrip_and_empty_is_none() -> None:
 
     store.data[LOCALE_KEY] = ""
     assert service.locale() is None
+
+
+def test_alarm_volume_default_roundtrip_and_clamping() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    assert service.alarm_volume() == DEFAULT_ALARM_VOLUME
+    service.set_alarm_volume(0.25)
+    assert service.alarm_volume() == 0.25
+    assert store.data[ALARM_VOLUME_KEY] == 0.25
+
+    service.set_alarm_volume(3.0)
+    assert service.alarm_volume() == 1.0
+    service.set_alarm_volume(-1.0)
+    assert service.alarm_volume() == 0.0
+
+
+def test_alarm_volume_ignores_invalid_stored_values() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    store.data[ALARM_VOLUME_KEY] = "loud"
+    assert service.alarm_volume() == DEFAULT_ALARM_VOLUME
+    store.data[ALARM_VOLUME_KEY] = 7.5
+    assert service.alarm_volume() == DEFAULT_ALARM_VOLUME
+
+
+def test_close_to_tray_default_and_roundtrip() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    assert service.close_to_tray() is False
+    service.set_close_to_tray(True)
+    assert service.close_to_tray() is True
+    assert store.data[CLOSE_TO_TRAY_KEY] is True
+
+    store.data[CLOSE_TO_TRAY_KEY] = "yes"
+    assert service.close_to_tray() is False

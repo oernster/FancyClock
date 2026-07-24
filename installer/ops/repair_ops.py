@@ -30,6 +30,7 @@ def _sha256_file(path: Path) -> str:
 class RepairOptions:
     restore_desktop_shortcut: bool
     restore_start_menu_shortcut: bool
+    restore_start_on_signin: bool = False
 
 
 def repair(
@@ -89,6 +90,15 @@ def repair(
         if not sp.start_menu_lnk.exists():
             create_shortcut(exe, sp.start_menu_lnk, working_dir=install_dir)
 
+    from installer.state.registry import clear_run_at_signin, set_run_at_signin
+
+    if progress:
+        progress("Restoring start-on-sign-in setting...")
+    if opts.restore_start_on_signin:
+        set_run_at_signin(f'"{exe}"')
+    else:
+        clear_run_at_signin()
+
     # Restore uninstall metadata.
     uninstall_cmd = entry.uninstall_string
     if progress:
@@ -103,5 +113,6 @@ def repair(
         publisher=APP_AUTHOR,
         shortcut_desktop=opts.restore_desktop_shortcut,
         shortcut_start_menu=opts.restore_start_menu_shortcut,
+        start_on_signin=opts.restore_start_on_signin,
         installer_path=entry.installer_path or "",
     )

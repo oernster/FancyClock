@@ -9,3 +9,4 @@ class UiSelections:
     install_dir: Path
     shortcut_desktop: bool
     shortcut_start_menu: bool
+    start_on_signin: bool

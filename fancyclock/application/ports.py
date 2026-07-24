@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, tzinfo
+from pathlib import Path
 from typing import Any, Protocol
+
+from fancyclock.domain.alarms import Alarm, AlarmsState
 
 
 class Clock(Protocol):
@@ -67,6 +70,54 @@ class TimezoneCatalog(Protocol):
 
     def utc_offset_seconds(self, tz_id: str) -> float:
         """Return the current UTC offset of ``tz_id`` in seconds."""
+        ...
+
+    def tzinfo_for(self, tz_id: str) -> tzinfo:
+        """Return a fold-aware tzinfo for ``tz_id``; raises when unknown."""
+        ...
+
+
+class AlarmStore(Protocol):
+    """Persists the whole alarm document."""
+
+    def load(self) -> AlarmsState:
+        """Return the persisted state, or an empty state."""
+        ...
+
+    def save(self, state: AlarmsState) -> None:
+        """Persist ``state`` atomically."""
+        ...
+
+
+class AlarmPorter(Protocol):
+    """Imports and exports alarms as a versioned JSON document."""
+
+    def export_alarms(self, path: Path, alarms: tuple[Alarm, ...]) -> None:
+        """Write ``alarms`` to ``path``."""
+        ...
+
+    def import_alarms(self, path: Path) -> tuple[Alarm, ...]:
+        """Read alarms from ``path``; raises ``AlarmImportError`` on bad data."""
+        ...
+
+
+class AutostartManager(Protocol):
+    """Controls launching the app when the user signs in."""
+
+    def is_supported(self) -> bool:
+        """Return whether autostart can be managed on this platform."""
+        ...
+
+    def is_enabled(self) -> bool:
+        """Return whether autostart is currently enabled."""
+        ...
+
+    def enable(self) -> None:
+        """Enable start-on-sign-in."""
+        ...
+
+    def disable(self) -> None:
+        """Disable start-on-sign-in."""
         ...
 
 

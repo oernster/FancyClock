@@ -114,8 +114,11 @@ def build_installer_main_window_ui(window: Any) -> None:
     window._desktop_cb.setChecked(True)
     window._startmenu_cb = QCheckBox("Create Start menu shortcut")
     window._startmenu_cb.setChecked(True)
+    window._signin_cb = QCheckBox("Start Fancy Clock when you sign in")
+    window._signin_cb.setChecked(False)
     outer.addWidget(window._desktop_cb)
     outer.addWidget(window._startmenu_cb)
+    outer.addWidget(window._signin_cb)
 
     outer.addSpacing(10)
 

@@ -6,12 +6,14 @@ from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, QTimeZo
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QMainWindow, QSizePolicy, QVBoxLayout, QWidget
 
+from fancyclock.application.alarms import AlarmService
 from fancyclock.application.localization import LocalizationService
 from fancyclock.application.resources import ResourcePaths
 from fancyclock.application.settings import SettingsService
 from fancyclock.application.skins import SkinService
 from fancyclock.application.time_service import TimeService
 from fancyclock.application.timezones import TimezoneService
+from fancyclock.ui.alarms.controller import AlarmsUiController
 from fancyclock.ui.analog_clock import AnalogClock
 from fancyclock.ui.digital_clock import DigitalClock
 from fancyclock.ui.window_animation import WindowAnimationMixin
@@ -52,6 +54,8 @@ class ClockWindow(
         skin_service: SkinService,
         timezone_service: TimezoneService,
         resources: ResourcePaths,
+        alarm_service: AlarmService | None = None,
+        autostart=None,
         parent: QWidget | None = None,
     ):
         super().__init__(parent)
@@ -73,9 +77,21 @@ class ClockWindow(
             title = FALLBACK_WINDOW_TITLE
         self.setWindowTitle(title)
 
-        self._create_menu_bar()
-
         self.time_zone = QTimeZone.systemTimeZone()
+
+        self.alarms_controller = None
+        if alarm_service is not None:
+            self.alarms_controller = AlarmsUiController(
+                window=self,
+                alarm_service=alarm_service,
+                settings=settings,
+                autostart=autostart,
+                i18n=i18n_manager,
+                timezone_service=timezone_service,
+                resources=resources,
+            )
+
+        self._create_menu_bar()
         try:
             self.synchronize_time()
         except Exception:
@@ -116,6 +132,9 @@ class ClockWindow(
         self._restore_locale_and_timezone()
         self._apply_startup_skin()
 
+        if self.alarms_controller is not None:
+            self.alarms_controller.start()
+
     def bring_to_front(self) -> None:
         if not self.isVisible():
             self.show()
@@ -146,3 +165,10 @@ class ClockWindow(
             self.animation.setStartValue(FADE_START_OPACITY)
             self.animation.setEndValue(FADE_END_OPACITY)
             self.animation.start()
+
+    def closeEvent(self, event):  # noqa: N802 (Qt override)
+        if self.alarms_controller is not None:
+            self.alarms_controller.handle_close(event)
+            if not event.isAccepted():
+                return
+        super().closeEvent(event)
