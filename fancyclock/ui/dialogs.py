@@ -85,9 +85,6 @@ def show_timezone_dialog(parent, timezone_service: TimezoneService):
 
     entries = timezone_service.entries()
 
-    for entry in entries:
-        list_widget.addItem(entry.display)
-
     def filter_timezones(text: str):
         list_widget.clear()
         search_text = text.lower()
@@ -98,7 +95,12 @@ def show_timezone_dialog(parent, timezone_service: TimezoneService):
                 or search_text in entry.tz_id.lower()
             ):
                 list_widget.addItem(entry.display)
+        # Focus the first match so OK, Enter and double click act on it
+        # without an extra click.
+        if list_widget.count() > 0:
+            list_widget.setCurrentRow(0)
 
+    filter_timezones("")
     search_box.textChanged.connect(filter_timezones)
 
     def on_item_selected(item):
