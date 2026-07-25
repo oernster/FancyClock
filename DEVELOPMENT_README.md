@@ -8,7 +8,7 @@
 | Windows installer | `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
 | macOS DMG (run on a Mac) | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
 | Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
-| Icon assets | `python generate_icons.py` | `assets/` from the `fancyclock.png` master |
+| Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus `assets/` from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/` (deterministic stdlib synthesis) |
 
 The Windows and macOS builds stamp the canonical VERSION into the static

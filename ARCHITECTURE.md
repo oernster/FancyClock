@@ -49,10 +49,17 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   catalog (fold-aware tzinfo via zoneinfo for alarm scheduling), the media
   library, the resource path resolver and the Qt single-instance guard.
 - **UI** (`fancyclock/ui/`): PySide6 widgets. The clock window and its
-  behaviour mixins, the analog and digital clock widgets, the galaxy effect,
-  the dialogs and the alarm suite (`ui/alarms/`: controller, tray icon,
-  manager and editor dialogs, the clock-face time picker, the persistent
-  firing window, the missed-alarms summary, toasts and the sound player).
+  behaviour mixins (menu, skin, time, animation, locale, drag and the
+  View-menu opacity control with its Ctrl shortcuts), the analog and
+  digital clock widgets, the galaxy effect, the dialogs and the alarm
+  suite (`ui/alarms/`: controller, tray icon, manager and editor dialogs,
+  the clock-face time picker, the persistent firing window, the
+  missed-alarms summary, toasts and the sound player). Localisation rule:
+  anything built once and kept alive (the menu bar including Alarms, View
+  and Skins, and the tray menu) is retitled by `retranslate_ui()` on a
+  locale change; everything else (dialogs, toasts, notifications)
+  resolves its strings at the moment it is shown, so it needs no
+  retranslation pass.
   Shared colours live in `ui/theme.py`: one amber accent with dark
   on-accent text, applied application-wide through the QApplication
   palette by the composition root. The UI talks only to application
@@ -121,8 +128,15 @@ app identity constants shared with the Windows installer.
 | macOS | `builddmg.py` | `fancyclock-macos-<arch>.dmg` |
 | Linux | `build_flatpak.sh` | `dist/FancyClock.flatpak` |
 
-All icon assets derive from the 1024px master `fancyclock.png` via
-`generate_icons.py` into `assets/`. The five alarm sounds are synthesised
-deterministically by `generate_sounds.py` into `assets/sounds/`; every
-packaging path ships the `assets/` directory wholesale, so icons and
-sounds ride along without per-platform wiring.
+All icon assets derive from the 1024px plain master `fancyclock_plain.png`
+via `generate_icons.py`: it zooms the artwork so the clock dominates the
+canvas (restoring the rounded-square silhouette from the master's own
+alpha channel), composites the alarm-bell badge, writes the badged
+`fancyclock.png` and emits the full set into `assets/`. The five alarm
+sounds are synthesised deterministically by `generate_sounds.py` into
+`assets/sounds/`; every packaging path ships the `assets/` directory
+wholesale, so icons and sounds ride along without per-platform wiring.
+The Windows build scripts clear their output trees through
+`build_utils.clear_tree`, which renames a doomed tree aside before
+deleting it so a pending-delete zombie can never swallow a directory
+recreated on the same path mid-build.
