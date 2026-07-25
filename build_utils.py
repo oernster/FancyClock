@@ -3,13 +3,46 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 # A git-LFS pointer file (an unresolved stub) begins with this signature line.
 LFS_POINTER_MAGIC = b"version https://git-lfs.github.com/spec/v1"
+
+CLEAR_TREE_ATTEMPTS = 50
+CLEAR_TREE_WAIT_SECONDS = 0.1
+
+
+def clear_tree(path: Path) -> None:
+    """Remove a directory tree so its path is immediately reusable.
+
+    A plain rmtree can return while an antivirus or indexer handle keeps
+    the tree in a delete-pending state; a directory recreated on that
+    path silently dies with it. That intermittently broke installer
+    builds (PyInstaller's fresh work directory vanished mid-write) and
+    once took a finished app bundle with it. Renaming the tree aside
+    frees the path atomically; the renamed tree is then deleted and the
+    original path confirmed gone before returning.
+    """
+    for stale in path.parent.glob(f"{path.name}.doomed-*"):
+        shutil.rmtree(stale, ignore_errors=True)
+    if not path.exists():
+        return
+    doomed = path.with_name(f"{path.name}.doomed-{os.getpid()}")
+    try:
+        os.rename(path, doomed)
+    except OSError:
+        doomed = path
+    shutil.rmtree(doomed, ignore_errors=True)
+    for _ in range(CLEAR_TREE_ATTEMPTS):
+        if not path.exists():
+            return
+        time.sleep(CLEAR_TREE_WAIT_SECONDS)
+    raise SystemExit(f"Unable to clear directory: {path}")
 
 
 def run(cmd: list[str], check: bool = True, **kwargs) -> subprocess.CompletedProcess:

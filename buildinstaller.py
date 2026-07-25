@@ -16,6 +16,7 @@ import time
 from pathlib import Path
 
 import stamp_version
+from build_utils import clear_tree
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
@@ -102,8 +103,7 @@ def main() -> int:
     temp_dist_root = PROJECT_ROOT / "dist-installer.build"
 
     for p in [temp_dist_root, work_root]:
-        if p.exists():
-            shutil.rmtree(p, ignore_errors=True)
+        clear_tree(p)
 
     entrypoint = PROJECT_ROOT / "installer" / "app.py"
 
