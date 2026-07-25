@@ -143,20 +143,30 @@ class LocalizationService:
     # Translation lookup and formatting
     # ------------------------------------------------------------------
     def get_translation(self, key: str, locale: str | None = None) -> str:
-        """Return the translated text for ``key``, or the key itself."""
-        loc = locale or self._current_locale
-        self._ensure_loaded(loc)
-        data = self._cache.get(loc, {})
+        """Return the translated text for ``key``.
 
+        Lookup order: the requested locale, then English, then the key
+        itself, so a translation missing from one locale degrades to
+        readable English rather than a raw key on screen.
+        """
+        loc = locale or self._current_locale
+        for candidate in (loc, DEFAULT_LOCALE):
+            found = self._lookup(candidate, key)
+            if found is not None:
+                return found
+        return key
+
+    def _lookup(self, locale_code: str, key: str) -> str | None:
+        """Return ``key``'s text in one locale, or ``None`` when absent."""
+        self._ensure_loaded(locale_code)
+        data = self._cache.get(locale_code, {})
         if key in data:
             return data[key]
-
         if "." in key:
             short = key.split(".")[-1]
             if short in data:
                 return data[short]
-
-        return key
+        return None
 
     def _digit_map(self, locale: str | None) -> tuple[str, ...] | None:
         loc = locale or self._current_locale

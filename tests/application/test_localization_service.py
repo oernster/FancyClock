@@ -143,6 +143,20 @@ def test_get_translation_missing_returns_key() -> None:
     assert service.get_translation("nope") == "nope"
 
 
+def test_get_translation_falls_back_to_english() -> None:
+    service = build_service(
+        data={"en_GB": {"greeting": "Hello"}, "fr_FR": {"help": "Aide"}}
+    )
+    service.set_locale("fr_FR")
+    assert service.get_translation("greeting") == "Hello"
+
+
+def test_get_translation_dotted_key_falls_back_to_english() -> None:
+    service = build_service(data={"en_GB": {"monday": "Mon"}, "fr_FR": {}})
+    service.set_locale("fr_FR")
+    assert service.get_translation("calendar.days.monday") == "Mon"
+
+
 def test_get_translation_with_explicit_uncached_locale() -> None:
     service = build_service(data={"en_GB": {}, "es_ES": {"help": "Ayuda"}})
     assert service.get_translation("help", "es_ES") == "Ayuda"
