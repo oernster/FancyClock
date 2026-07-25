@@ -2,9 +2,10 @@
 
 The single source of truth for the app artwork is ``fancyclock_plain.png``
 at the repo root (a square 1024x1024 RGBA image with no badge). This script
-first composites the red alarm-bell badge onto that clean master and writes
-the result to ``fancyclock.png`` (the badged master every consumer uses),
-then emits the full platform set into ``assets/``:
+first zooms the artwork so the clock dominates the canvas (keeping the
+rounded-square silhouette), composites the red alarm-bell badge onto it and
+writes the result to ``fancyclock.png`` (the badged master every consumer
+uses), then emits the full platform set into ``assets/``:
 
 * ``fancyclock_icon_<size>.png`` for each size in PNG_SIZES (hicolor set,
   favicons, installer badges);
@@ -38,11 +39,17 @@ ICNS_NAME = "fancyclock.icns"
 
 RESAMPLE = Image.Resampling.LANCZOS
 
+# The clock artwork in the plain master sits with generous padding; zoom
+# it about the centre so the clock dominates, then restore the original
+# rounded-square silhouette from the master's own alpha channel.
+CONTENT_ZOOM = 1.28
+
 # Alarm-bell badge (approved design): red roundel with a tilted white bell
-# in the top-right corner of the 1024 canvas, first step toward the
-# upcoming alarm-control feature.
+# in the top-right corner of the 1024 canvas. The diameter stays a shade
+# under a quarter of the icon width so the badge reads as a badge rather
+# than competing with the clock.
 SUPERSAMPLE = 4
-BADGE_RADIUS = 190
+BADGE_RADIUS = 120
 BADGE_MARGIN = 24
 BADGE_RED = (225, 29, 46, 255)
 BADGE_RED_DARK = (156, 14, 27, 255)
@@ -142,9 +149,26 @@ def load_plain_master() -> Image.Image:
     return image
 
 
+def _enlarge_artwork(master: Image.Image) -> Image.Image:
+    """Zoom the artwork about its centre, keeping the original silhouette.
+
+    The rounded-square outline must not scale with the content, so the
+    zoomed image is cropped back to the master's size and the master's
+    own alpha channel is re-applied as the corner mask.
+    """
+    side = master.width
+    silhouette = master.getchannel("A")
+    scaled_side = round(side * CONTENT_ZOOM)
+    scaled = master.resize((scaled_side, scaled_side), RESAMPLE)
+    offset = (scaled_side - side) // 2
+    zoomed = scaled.crop((offset, offset, offset + side, offset + side))
+    zoomed.putalpha(silhouette)
+    return zoomed
+
+
 def build_badged_master() -> Image.Image:
     """Composite the alarm badge onto the plain master and write fancyclock.png."""
-    master = load_plain_master()
+    master = _enlarge_artwork(load_plain_master())
     badge = build_badge(BADGE_RADIUS)
 
     out = master.copy()
