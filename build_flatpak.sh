@@ -65,6 +65,48 @@ if [[ ${ORIG_ARGC} -eq 0 && -t 0 ]]; then
   fi
 fi
 
+# Preflight: the manifest installs Python deps offline with
+#   pip install --no-index --find-links=vendor -r requirements.txt
+# so every requirement must have a matching wheel in vendor/. Adding a name to
+# requirements.txt without dropping its wheel here fails deep inside
+# flatpak-builder with an opaque "No matching distribution" error. Catch it here.
+REQ_FILE="requirements.txt"
+VENDOR_DIR="vendor"
+if [[ -f "${REQ_FILE}" ]]; then
+  missing=()
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    line="${line%%#*}"                       # strip comments
+    line="$(echo "${line}" | tr -d '[:space:]')"
+    [[ -z "${line}" ]] && continue
+    [[ "${line}" == -* ]] && continue        # skip pip flags / -r includes
+    name="${line%%[<>=!~;[]*}"               # drop version specifiers/extras/markers
+    [[ -z "${name}" ]] && continue
+    # Normalize per PEP 503/427: lowercase, runs of -_. collapse to _.
+    norm="$(echo "${name}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[-_.]+/_/g')"
+    found=0
+    shopt -s nullglob
+    for whl in "${VENDOR_DIR}"/*.whl; do
+      dist="$(basename "${whl}")"
+      dist="${dist%%-*}"                      # distribution part of the wheel name
+      dnorm="$(echo "${dist}" | tr '[:upper:]' '[:lower:]' | sed -E 's/[-_.]+/_/g')"
+      if [[ "${dnorm}" == "${norm}" ]]; then found=1; break; fi
+    done
+    shopt -u nullglob
+    [[ ${found} -eq 0 ]] && missing+=("${name}")
+  done < "${REQ_FILE}"
+
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    echo "ERROR: offline build installs from '${VENDOR_DIR}/' (pip --no-index), but no" >&2
+    echo "matching wheel was found for these '${REQ_FILE}' entries:" >&2
+    for m in "${missing[@]}"; do echo "  - ${m}" >&2; done
+    echo >&2
+    echo "Add the wheel(s), e.g.:" >&2
+    echo "  python3 -m pip download ${missing[*]} --only-binary=:all: --no-deps -d ${VENDOR_DIR}/" >&2
+    exit 1
+  fi
+  echo "Preflight OK: every '${REQ_FILE}' entry has a wheel in '${VENDOR_DIR}/'."
+fi
+
 echo "Building ${APP_ID} from ${MANIFEST} (install scope: ${INSTALL_SCOPE})..."
 
 mkdir -p "${DISTDIR}"
