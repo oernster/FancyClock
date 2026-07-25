@@ -190,6 +190,13 @@ class AlarmsUiController(QObject):
             if self._tray is not None:
                 self._tray.set_next_text(text)
 
+    def retranslate(self) -> None:
+        """Update tray texts and the next-alarm summary for a new locale."""
+        if self._tray is not None:
+            self._tray.retranslate()
+        self._last_next_text = ""
+        self._refresh_next_summary()
+
     def open_manager(self) -> None:
         """Open (or focus) the alarms manager dialog."""
         if self._manager is not None and self._manager.isVisible():

@@ -87,6 +87,22 @@ class WindowLocaleMixin:
             pass
 
         try:
+            self._retranslate_alarms_menu()
+        except Exception:
+            pass
+
+        try:
+            self._retranslate_view_menu()
+        except Exception:
+            pass
+
+        try:
+            if self.alarms_controller is not None:
+                self.alarms_controller.retranslate()
+        except Exception:
+            pass
+
+        try:
             if hasattr(self, "about_dialog") and self.about_dialog.isVisible():
                 self.about_dialog.refresh_text()
         except Exception:

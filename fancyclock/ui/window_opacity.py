@@ -46,16 +46,23 @@ class WindowOpacityMixin:
     # ------------------------------------------------------------------
     # View menu
     # ------------------------------------------------------------------
-    def _create_view_menu(self, menu_bar) -> None:
-        """Build the View menu holding the opacity slider."""
+    def _view_label(self) -> str:
+        """Return the localized View menu title."""
         view_label = self.i18n_manager.get_translation("view")
         if view_label == "view":
             view_label = FALLBACK_VIEW_LABEL
-        self.view_menu = menu_bar.addMenu(view_label)
+        return view_label
 
+    def _opacity_label(self) -> str:
+        """Return the localized opacity slider label."""
         opacity_label = self.i18n_manager.get_translation("opacity")
         if opacity_label == "opacity":
             opacity_label = FALLBACK_OPACITY_LABEL
+        return opacity_label
+
+    def _create_view_menu(self, menu_bar) -> None:
+        """Build the View menu holding the opacity slider."""
+        self.view_menu = menu_bar.addMenu(self._view_label())
 
         container = QWidget(self)
         row = QHBoxLayout(container)
@@ -63,7 +70,8 @@ class WindowOpacityMixin:
         row.setContentsMargins(
             SLIDER_MARGIN_PX, half_margin, SLIDER_MARGIN_PX, half_margin
         )
-        row.addWidget(QLabel(opacity_label, container))
+        self.opacity_text_label = QLabel(self._opacity_label(), container)
+        row.addWidget(self.opacity_text_label)
 
         self.opacity_slider = QSlider(Qt.Orientation.Horizontal, container)
         self.opacity_slider.setRange(OPACITY_MIN_PERCENT, OPACITY_MAX_PERCENT)
@@ -82,6 +90,14 @@ class WindowOpacityMixin:
         self.opacity_slider.setValue(self._current_opacity_percent())
         self._update_opacity_label()
         self.opacity_slider.valueChanged.connect(self._set_opacity_percent)
+
+    def _retranslate_view_menu(self) -> None:
+        """Update the View menu texts to the current locale."""
+        if not hasattr(self, "view_menu"):
+            return
+        self.view_menu.setTitle(self._view_label())
+        self.opacity_text_label.setText(self._opacity_label())
+        self._update_opacity_label()
 
     # ------------------------------------------------------------------
     # Applying and persisting

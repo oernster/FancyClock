@@ -29,13 +29,13 @@ class AlarmTray(QObject):
         menu = QMenu()
         self._menu = menu
 
-        show_action = QAction(i18n.get_translation("tray_show"), menu)
-        show_action.triggered.connect(self.show_requested.emit)
-        menu.addAction(show_action)
+        self._show_action = QAction(i18n.get_translation("tray_show"), menu)
+        self._show_action.triggered.connect(self.show_requested.emit)
+        menu.addAction(self._show_action)
 
-        manage_action = QAction(i18n.get_translation("alarms_manage"), menu)
-        manage_action.triggered.connect(self.manager_requested.emit)
-        menu.addAction(manage_action)
+        self._manage_action = QAction(i18n.get_translation("alarms_manage"), menu)
+        self._manage_action.triggered.connect(self.manager_requested.emit)
+        menu.addAction(self._manage_action)
 
         menu.addSeparator()
 
@@ -53,9 +53,9 @@ class AlarmTray(QObject):
 
         menu.addSeparator()
 
-        quit_action = QAction(i18n.get_translation("tray_quit"), menu)
-        quit_action.triggered.connect(self.quit_requested.emit)
-        menu.addAction(quit_action)
+        self._quit_action = QAction(i18n.get_translation("tray_quit"), menu)
+        self._quit_action.triggered.connect(self.quit_requested.emit)
+        menu.addAction(self._quit_action)
 
         self._tray.setContextMenu(menu)
         self._tray.activated.connect(self._activated)
@@ -69,6 +69,13 @@ class AlarmTray(QObject):
     def _activated(self, reason) -> None:
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
             self.show_requested.emit()
+
+    def retranslate(self) -> None:
+        """Update the menu texts to the current locale."""
+        self._show_action.setText(self._i18n.get_translation("tray_show"))
+        self._manage_action.setText(self._i18n.get_translation("alarms_manage"))
+        self._master_action.setText(self._i18n.get_translation("alarms_enabled_master"))
+        self._quit_action.setText(self._i18n.get_translation("tray_quit"))
 
     def set_master(self, enabled: bool) -> None:
         """Reflect the master switch without re-emitting."""

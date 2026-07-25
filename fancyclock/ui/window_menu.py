@@ -93,6 +93,18 @@ class WindowMenuMixin:
 
         self.alarms_menu.aboutToShow.connect(self._sync_alarms_menu)
 
+    def _retranslate_alarms_menu(self) -> None:
+        """Update the Alarms menu texts to the current locale."""
+        if not hasattr(self, "alarms_menu"):
+            return
+        i18n = self.i18n_manager
+        self.alarms_menu.setTitle(i18n.get_translation("alarms"))
+        self.manage_alarms_action.setText(i18n.get_translation("alarms_manage"))
+        self.master_alarms_action.setText(i18n.get_translation("alarms_enabled_master"))
+        self.close_to_tray_action.setText(i18n.get_translation("close_to_tray"))
+        if self.autostart_action is not None:
+            self.autostart_action.setText(i18n.get_translation("start_on_login"))
+
     def _sync_alarms_menu(self) -> None:
         """Reflect live state in the Alarms menu check marks."""
         controller = self.alarms_controller
