@@ -1,12 +1,12 @@
 """Build the standalone FancyClock EXE bundle with PyInstaller."""
 
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 import stamp_version
+from build_utils import clear_tree
 
 APP_NAME = "FancyClock"
 ENTRYPOINT = "main.py"
@@ -48,11 +48,8 @@ def build_exe() -> int:
     if spec_file.exists():
         spec_file.unlink()
 
-    if dist_dir.exists():
-        shutil.rmtree(dist_dir)
-
-    if build_dir.exists():
-        shutil.rmtree(build_dir)
+    clear_tree(dist_dir)
+    clear_tree(build_dir)
 
     # Always build with the interpreter running this script, so the analysed
     # environment is the venv that actually has the app's dependencies.
