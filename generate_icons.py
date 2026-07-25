@@ -42,14 +42,14 @@ RESAMPLE = Image.Resampling.LANCZOS
 # The clock artwork in the plain master sits with generous padding; zoom
 # it about the centre so the clock dominates, then restore the original
 # rounded-square silhouette from the master's own alpha channel.
-CONTENT_ZOOM = 1.28
+CONTENT_ZOOM = 1.38
 
 # Alarm-bell badge (approved design): red roundel with a tilted white bell
-# in the top-right corner of the 1024 canvas. The diameter stays a shade
-# under a quarter of the icon width so the badge reads as a badge rather
-# than competing with the clock.
+# in the top-right corner of the 1024 canvas. The badge fills a shade
+# under the top-right quarter of the icon (diameter just below half the
+# canvas width) so it stays prominent at small sizes.
 SUPERSAMPLE = 4
-BADGE_RADIUS = 120
+BADGE_RADIUS = 240
 BADGE_MARGIN = 24
 BADGE_RED = (225, 29, 46, 255)
 BADGE_RED_DARK = (156, 14, 27, 255)
