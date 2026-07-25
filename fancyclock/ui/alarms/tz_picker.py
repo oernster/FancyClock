@@ -41,6 +41,10 @@ def pick_timezone(parent, i18n, timezone_service) -> str | None:
                 or needle in entry.tz_id.lower()
             ):
                 list_widget.addItem(entry.display)
+        # Focus the first match so OK, Enter and double click act on it
+        # without an extra click.
+        if list_widget.count() > 0:
+            list_widget.setCurrentRow(0)
 
     repopulate("")
     search_box.textChanged.connect(repopulate)
