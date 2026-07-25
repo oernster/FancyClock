@@ -6,7 +6,8 @@ APP_ID="uk.codecrafter.FancyClock"
 BUILDDIR="build-flatpak"
 DISTDIR="dist"
 REPO_DIR="${DISTDIR}/repo"
-BUNDLE_PATH="${DISTDIR}/FancyClock.flatpak"
+# Emit the final bundle in the repo base directory for easy access.
+BUNDLE_PATH="FancyClock.flatpak"
 
 ORIG_ARGC=$#
 
