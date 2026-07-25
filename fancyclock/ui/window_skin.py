@@ -34,6 +34,14 @@ class WindowSkinMixin:
         else:
             self.settings.set_skin_name(None)
 
+    def _skin_label(self, entry) -> str:
+        """Return the localized skin name, falling back to the file name."""
+        key = f"skin_{skin_stem(PurePath(entry.path).name)}"
+        label = self.i18n_manager.get_translation(key)
+        if label == key:
+            return entry.display_name
+        return label
+
     def _populate_skins_menu(self) -> None:
         """(Re)build the Skins menu from the available skin files."""
         if not hasattr(self, "skins_menu"):
@@ -49,7 +57,7 @@ class WindowSkinMixin:
         self.skins_menu.addAction(default_action)
 
         for entry in self.skin_service.entries():
-            action = QAction(entry.display_name, self)
+            action = QAction(self._skin_label(entry), self)
             action.triggered.connect(
                 lambda checked=False, p=entry.path: self._set_skin_and_persist(p)
             )
