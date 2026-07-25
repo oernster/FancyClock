@@ -64,6 +64,7 @@
     "november": "Nov",
     "october": "Oct",
     "ok": "OK",
+    "opacity": "Opacity",
     "saturday": "Sat",
     "search_timezone_placeholder": "Search for a timezone...",
     "select_timezone_title": "Select Timezone",
@@ -86,6 +87,7 @@
     "tray_still_running": "Fancy Clock is still running in the tray",
     "tuesday": "Tue",
     "version": "Version",
+    "view": "View",
     "website": "Website",
     "wednesday": "Wed"
 }

@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "OK",
+  "opacity": "Deckkraft",
   "saturday": "Sa",
   "search_timezone_placeholder": "Zeitzone suchen",
   "select_timezone_title": "Zeitzone auswählen",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock läuft weiter im Infobereich",
   "tuesday": "Di",
   "version": "Version",
+  "view": "Ansicht",
   "website": "Webseite",
   "wednesday": "Mi."
 }

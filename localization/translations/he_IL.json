@@ -79,6 +79,7 @@
   "november": "נובמבר",
   "october": "אוקטובר",
   "ok": "בסדר",
+  "opacity": "אטימות",
   "saturday": "יום שבת",
   "search_timezone_placeholder": "חפש אזור זמן...",
   "select_timezone_title": "לבחור אזור זמן",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock ממשיך לפעול במגש המערכת",
   "tuesday": "ג",
   "version": "נוסח",
+  "view": "תצוגה",
   "website": "אתר",
   "wednesday": "ד"
 }

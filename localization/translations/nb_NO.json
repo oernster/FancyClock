@@ -79,6 +79,7 @@
   "november": "Nov.",
   "october": "Okt.",
   "ok": "OK",
+  "opacity": "Gjennomsiktighet",
   "saturday": "Lør",
   "search_timezone_placeholder": "Søk etter en tidssone...",
   "select_timezone_title": "Velg tidssone",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock kjører fortsatt i systemstatusfeltet",
   "tuesday": "Tir",
   "version": "Versjon",
+  "view": "Vis",
   "website": "Nettside",
   "wednesday": "Oss"
 }

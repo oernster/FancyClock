@@ -79,6 +79,7 @@
   "november": "Kas",
   "october": "Eki",
   "ok": "Tamam",
+  "opacity": "Opaklık",
   "saturday": "Cmt",
   "search_timezone_placeholder": "Bir saat dilimi arayın...",
   "select_timezone_title": "Saat Dilimi Seçin",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock sistem tepsisinde çalışmaya devam ediyor",
   "tuesday": "Sal",
   "version": "Versiyon",
+  "view": "Görünüm",
   "website": "İnternet sayfası",
   "wednesday": "Çar"
 }

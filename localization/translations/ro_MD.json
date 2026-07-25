@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Oct",
   "ok": "OK",
+  "opacity": "Opacitate",
   "saturday": "Sâm",
   "search_timezone_placeholder": "Căutați un fus orar...",
   "select_timezone_title": "selectați fusul orar",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock rulează în continuare în bara de sistem",
   "tuesday": "Mar",
   "version": "Versiune",
+  "view": "Vizualizare",
   "website": "Pagină de web",
   "wednesday": "Mier"
 }

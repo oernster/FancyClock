@@ -79,6 +79,7 @@
   "november": "Νοέ",
   "october": "Οκμ",
   "ok": "OK",
+  "opacity": "Αδιαφάνεια",
   "saturday": "Σαβ",
   "search_timezone_placeholder": "Αναζήτηση ζώνης ώρας",
   "select_timezone_title": "Επιλογή ζώνης ώρας",
@@ -102,6 +103,7 @@
   "tray_still_running": "Το Fancy Clock συνεχίζει να τρέχει στη γραμμή συστήματος",
   "tuesday": "Τρί",
   "version": "Έκδοση",
+  "view": "Προβολή",
   "website": "Ιστοσελίδα",
   "wednesday": "Τετ"
 }

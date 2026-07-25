@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Oct.",
   "ok": "OK",
+  "opacity": "Opacidad",
   "saturday": "Sáb",
   "search_timezone_placeholder": "Buscar huso horario",
   "select_timezone_title": "Seleccione la zona horaria",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock sigue en la bandeja del sistema",
   "tuesday": "Mar",
   "version": "Versión",
+  "view": "Ver",
   "website": "Sitio web",
   "wednesday": "Mie"
 }

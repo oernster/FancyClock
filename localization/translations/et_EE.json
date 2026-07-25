@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "OK",
+  "opacity": "Läbipaistmatus",
   "saturday": "L",
   "search_timezone_placeholder": "Otsi ajavööndit...",
   "select_timezone_title": "Vali ajavöönd",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock töötab endiselt süsteemisalves",
   "tuesday": "T",
   "version": "Versioon",
+  "view": "Vaade",
   "website": "koduleht",
   "wednesday": "K"
 }

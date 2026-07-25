@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "OK",
+  "opacity": "Nepriehľadnosť",
   "saturday": "Sob",
   "search_timezone_placeholder": "Hľadať časové pásmo...",
   "select_timezone_title": "Vyberte časové pásmo...",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock stále beží v oznamovacej oblasti",
   "tuesday": "Uto",
   "version": "Verzia",
+  "view": "Zobrazenie",
   "website": "Web-stránka",
   "wednesday": "Str"
 }

@@ -79,6 +79,7 @@
   "november": "พ.ย.",
   "october": "ต.ค.",
   "ok": "ตกลง",
+  "opacity": "ຄວາມທຶບ",
   "saturday": "ส.",
   "search_timezone_placeholder": "ค้นหาเขตเวลา...",
   "select_timezone_title": "เลือกเขตเวลาของคุณ",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock ຍັງເຮັດວຽກຢູ່ໃນຖາດລະບົບ",
   "tuesday": "อ.",
   "version": "เวอร์ชัน",
+  "view": "ມຸມມອງ",
   "website": "เว็บไซต์",
   "wednesday": "พ."
 }

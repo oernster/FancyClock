@@ -32,7 +32,6 @@ ANIMATION_INTERVAL_MS = 16
 FADE_DURATION_MS = 1000
 CLOCK_SPACING_PX = 10
 FADE_START_OPACITY = 0.0
-FADE_END_OPACITY = 1.0
 FALLBACK_WINDOW_TITLE = "Fancy Clock"
 
 
@@ -79,6 +78,8 @@ class ClockWindow(
 
         self.time_zone = QTimeZone.systemTimeZone()
 
+        self._opacity_supported = self._supports_window_opacity()
+
         self.alarms_controller = None
         if alarm_service is not None:
             self.alarms_controller = AlarmsUiController(
@@ -122,15 +123,16 @@ class ClockWindow(
         self.anim_timer.start(ANIMATION_INTERVAL_MS)
 
         self.animation = None
-        if self._supports_window_opacity():
+        if self._opacity_supported:
             self.animation = QPropertyAnimation(self, b"windowOpacity")
             self.animation.setDuration(FADE_DURATION_MS)
             self.animation.setStartValue(FADE_START_OPACITY)
-            self.animation.setEndValue(FADE_END_OPACITY)
+            self.animation.setEndValue(self.settings.window_opacity())
             self.animation.setEasingCurve(QEasingCurve.InOutQuad)
 
         self._restore_locale_and_timezone()
         self._apply_startup_skin()
+        self._apply_startup_opacity()
 
         if self.alarms_controller is not None:
             self.alarms_controller.start()
@@ -163,8 +165,18 @@ class ClockWindow(
         super().showEvent(event)
         if self.animation is not None:
             self.animation.setStartValue(FADE_START_OPACITY)
-            self.animation.setEndValue(FADE_END_OPACITY)
+            self.animation.setEndValue(self.settings.window_opacity())
             self.animation.start()
+
+    def keyPressEvent(self, event):  # noqa: N802 (Qt override)
+        if self._handle_opacity_key(event):
+            return
+        super().keyPressEvent(event)
+
+    def wheelEvent(self, event):  # noqa: N802 (Qt override)
+        if self._handle_opacity_wheel(event):
+            return
+        super().wheelEvent(event)
 
     def closeEvent(self, event):  # noqa: N802 (Qt override)
         if self.alarms_controller is not None:

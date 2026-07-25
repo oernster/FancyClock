@@ -79,6 +79,7 @@
   "november": "নভে",
   "october": "অক্টোবর",
   "ok": "ওকে",
+  "opacity": "অস্বচ্ছতা",
   "saturday": "শনি",
   "search_timezone_placeholder": "একটি টাইমজোন অনুসন্ধান করুন...",
   "select_timezone_title": "সময়ের অঞ্চল নির্বাচন করুন",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock সিস্টেম ট্রেতে চলছে",
   "tuesday": "মঙ্গল",
   "version": "সংস্করণ",
+  "view": "দৃশ্য",
   "website": "ওয়েবসাইট",
   "wednesday": "বুধ"
 }

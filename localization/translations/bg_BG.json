@@ -79,6 +79,7 @@
   "november": "Ноември",
   "october": "Октомври",
   "ok": "OK",
+  "opacity": "Непрозрачност",
   "saturday": "Съб",
   "search_timezone_placeholder": "Търсене на часова зона...",
   "select_timezone_title": "Избор на часова зона",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock продължава да работи в системната област",
   "tuesday": "Вто",
   "version": "Версия",
+  "view": "Изглед",
   "website": "Интернет страница",
   "wednesday": "Сря"
 }

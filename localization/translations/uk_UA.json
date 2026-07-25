@@ -79,6 +79,7 @@
   "november": "листопад",
   "october": "жовтень",
   "ok": "OK",
+  "opacity": "Непрозорість",
   "saturday": "Суб",
   "search_timezone_placeholder": "Шукати часовий пояс...",
   "select_timezone_title": "Виберіть часовий пояс",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock продовжує працювати в системному лотку",
   "tuesday": "Вт",
   "version": "Версія",
+  "view": "Вигляд",
   "website": "Веб-сайт",
   "wednesday": "Сер"
 }

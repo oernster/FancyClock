@@ -79,6 +79,7 @@
   "november": "11月",
   "october": "10 月",
   "ok": "确认",
+  "opacity": "不透明度",
   "saturday": "星期6",
   "search_timezone_placeholder": "搜索时区",
   "select_timezone_title": "选择时区",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock 仍在系统托盘中运行",
   "tuesday": "週二",
   "version": "版次",
+  "view": "视图",
   "website": "網站",
   "wednesday": "周三"
 }

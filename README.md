@@ -14,7 +14,7 @@
 
 Version <!--VERSION-->2.0.0<!--/VERSION-->
 
-Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, multiple UI skins including Starfield and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
+Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, multiple UI skins including Starfield, adjustable window opacity and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
 
 **Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's. It is not a calendar, a timer or stopwatch, or a widget platform.
 

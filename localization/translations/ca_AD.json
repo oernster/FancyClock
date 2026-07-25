@@ -79,6 +79,7 @@
   "november": "nov",
   "october": "oct",
   "ok": "D'acord",
+  "opacity": "Opacitat",
   "saturday": "Dis",
   "search_timezone_placeholder": "Cerca una zona horària...",
   "select_timezone_title": "Selecciona la zona horària",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock continua funcionant a la safata del sistema",
   "tuesday": "Dt",
   "version": "Versió",
+  "view": "Visualització",
   "website": "Pàgina Web",
   "wednesday": "Dix"
 }

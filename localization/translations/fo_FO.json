@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "OK",
+  "opacity": "Ógjøgnumskygni",
   "saturday": "Ley",
   "search_timezone_placeholder": "Søk eftir einum tíðarøki...",
   "select_timezone_title": "Set tíðarsonu",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock koyrir framvegis í skipanarbakkanum",
   "tuesday": "Týs",
   "version": "Útgáva:",
+  "view": "Vís",
   "website": "Heimasíða",
   "wednesday": "Mik"
 }

@@ -79,6 +79,7 @@
   "november": "ሕዳ",
   "october": "ጥቅ",
   "ok": "እሺ",
+  "opacity": "ግልጽነት ማጣት",
   "saturday": "abbreviated weekday name",
   "search_timezone_placeholder": "የጊዜ ክልል ፍለጋ...",
   "select_timezone_title": "የሰዓት ክልል",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock በስርዓት ትሪ ውስጥ እየሠራ ነው",
   "tuesday": "ማክሰኞ",
   "version": "እትም",
+  "view": "እይታ",
   "website": "ዌብሳይት",
   "wednesday": "abbreviated weekday name"
 }
