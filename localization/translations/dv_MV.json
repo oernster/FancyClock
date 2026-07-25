@@ -79,6 +79,7 @@
   "november": "ނޮވެމްބަރު މަހުގެ 10 ވަނަ ދުވަހު އެވެ",
   "october": "އޮކްޓޯބަރު 10",
   "ok": "އެންމެ ރަނގަޅު",
+  "opacity": "ފުސްކަން",
   "saturday": "އިށީން",
   "search_timezone_placeholder": "ޓައިމްޒޯނެއް ހޯދުމަށް...",
   "select_timezone_title": "ޓައިމްޒޯން ހޮވާށެވެ",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock ސިސްޓަމް ޓްރޭގައި ހިނގަމުންދޭ",
   "tuesday": "އަންގާރަ...",
   "version": "ވާރޝަން",
+  "view": "ދައްކާގޮތް",
   "website": "ވެބްސައިޓް",
   "wednesday": "ބުދަ ދުވަހު"
 }

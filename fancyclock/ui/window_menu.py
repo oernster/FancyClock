@@ -38,6 +38,9 @@ class WindowMenuMixin:
         if self.alarms_controller is not None:
             self._create_alarms_menu(menu_bar)
 
+        if self._opacity_supported:
+            self._create_view_menu(menu_bar)
+
         skins_label = self.i18n_manager.get_translation("skins")
         if skins_label == "skins":
             skins_label = "Skins"

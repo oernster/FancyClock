@@ -79,6 +79,7 @@
   "november": "نوامبر",
   "october": "اکتبر",
   "ok": "تایید",
+  "opacity": "کدری",
   "saturday": "شنبه",
   "search_timezone_placeholder": "جستجوی منطقه زمانی ...",
   "select_timezone_title": "منطقه زمانی را انتخاب کنید",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock همچنان در سینی سیستم اجرا می‌شود",
   "tuesday": "سه شنبه",
   "version": "نسخه برنامه",
+  "view": "نما",
   "website": "وبسایت",
   "wednesday": "چهارشنبه"
 }

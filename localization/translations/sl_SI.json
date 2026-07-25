@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Oktober",
   "ok": "V redu",
+  "opacity": "Neprosojnost",
   "saturday": "Sob",
   "search_timezone_placeholder": "Iskanje časovnega pasu...",
   "select_timezone_title": "Izberite časovni pas",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock še naprej teče v sistemski vrstici",
   "tuesday": "Tor",
   "version": "Različica",
+  "view": "Pogled",
   "website": "Spletna stran",
   "wednesday": "Sre"
 }

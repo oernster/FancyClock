@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "OK",
+  "opacity": "Átlátszatlanság",
   "saturday": "Szo",
   "search_timezone_placeholder": "Keresés időzóna alapján",
   "select_timezone_title": "Időzóna kiválasztása",
@@ -102,6 +103,7 @@
   "tray_still_running": "A Fancy Clock tovább fut a tálcán",
   "tuesday": "Kedd",
   "version": "Változat",
+  "view": "Nézet",
   "website": "Honlap",
   "wednesday": "Szerda"
 }

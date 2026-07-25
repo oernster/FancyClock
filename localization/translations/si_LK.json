@@ -79,6 +79,7 @@
   "november": "नवम्बर",
   "october": "अक्तूबर",
   "ok": "ठीक",
+  "opacity": "පාරාන්ධතාව",
   "saturday": "शनिवार",
   "search_timezone_placeholder": "टाइमज़ोन खोजें...",
   "select_timezone_title": "टाइम जोन चुने",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock පද්ධති තැටියේ ක්‍රියාත්මකයි",
   "tuesday": "मंगलवार",
   "version": "संस्करण",
+  "view": "දසුන",
   "website": "वेबसाइट",
   "wednesday": "बुधवार"
 }

@@ -79,6 +79,7 @@
   "november": "Lap.",
   "october": "Spa.",
   "ok": "GERAI",
+  "opacity": "Nepermatomumas",
   "saturday": "Šeštad",
   "search_timezone_placeholder": "Ieškoti laiko juostos...",
   "select_timezone_title": "Pasirinkti laiko juostą",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock toliau veikia sistemos dėkle",
   "tuesday": "Antr",
   "version": "Versija",
+  "view": "Rodinys",
   "website": "Interneto svetainė",
   "wednesday": "Tr"
 }

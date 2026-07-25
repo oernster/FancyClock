@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Fancy Clock: Free desktop clock with alarms | Offline, cross-platform, 70+ languages</title>
-    <meta name="description" content="A free, private desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization and animated video skins. Offline, cross-platform, Windows, macOS and Linux.">
+    <meta name="description" content="A free, private desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, Windows, macOS and Linux.">
     <meta name="keywords" content="desktop clock, alarm clock app, desktop alarm, analog clock app, digital clock, world clock, timezone clock, animated clock, starfield clock, always on top clock, transparent clock, offline clock, open source clock, cross platform clock, Windows macOS Linux clock, multilingual clock, snooze alarm">
     <meta name="author" content="Oliver Ernster">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -31,7 +31,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Fancy Clock: Free desktop clock with alarms">
-    <meta property="og:description" content="A calm, unobtrusive desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization and animated video skins. Offline, cross-platform, free and open source.">
+    <meta property="og:description" content="A calm, unobtrusive desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated video skins and adjustable opacity. Offline, cross-platform, free and open source.">
     <meta property="og:image" content="https://ernster.dev/FancyClock/fancyclock-512.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="512">
@@ -45,7 +45,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fancy Clock: Free desktop clock with alarms">
-    <meta name="twitter:description" content="A calm desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization and animated skins. Offline and cross-platform.">
+    <meta name="twitter:description" content="A calm desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated skins and adjustable opacity. Offline and cross-platform.">
     <meta name="twitter:image" content="https://ernster.dev/FancyClock/fancyclock-512.png">
     <meta name="twitter:image:alt" content="Fancy Clock app icon">
 
@@ -405,7 +405,7 @@
             A calm desktop clock that stays out of the way. Analog or digital, with
             <strong style="color:var(--text)">alarms</strong>,
             <strong style="color:var(--text)">automatic timezone localization</strong>,
-            and animated skins, so the time is always there without ever demanding attention.
+            animated skins and adjustable opacity, so the time is always there without ever demanding attention.
         </p>
 
         <div class="actions">
@@ -429,7 +429,7 @@
         <section class="pitch" aria-label="What makes Fancy Clock different">
             <p>
                 Most desktop clocks are either <em>a bare number in a tray</em> or a heavyweight widget that clutters the screen.
-                Fancy Clock is <strong>a clock you actually want on the desktop</strong>: frameless, draggable and
+                Fancy Clock is <strong>a clock you actually want on the desktop</strong>: frameless, draggable, dimmable and
                 <strong>quietly correct</strong> about the time, wherever in the world you are.
             </p>
         </section>
@@ -459,6 +459,10 @@
                 <div class="card">
                     <h3>Frameless and draggable</h3>
                     <p>No title bar, no chrome. Grab it anywhere and place it exactly where you want it on any monitor. A single instance, never a stack of windows.</p>
+                </div>
+                <div class="card">
+                    <h3>Adjustable opacity</h3>
+                    <p>Dim the clock from solid down to a faint overlay with the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel; your level is remembered. Not available in the Flatpak sandbox.</p>
                 </div>
                 <div class="card">
                     <h3>Alarms that behave like a phone's</h3>
@@ -545,8 +549,9 @@
                 <p>
                     Fancy Clock is built around letting you choose how present it is. Run it plain and faint so it
                     disappears into the wallpaper, or give it an animated skin and let it be the boldest thing on the
-                    desktop. Either way it is frameless so it blends in and correct about the time and the timezone,
-                    so you can trust a glance instead of a double-check.
+                    desktop. Either way it is frameless so it blends in, dimmable so it never has to compete with
+                    your work and correct about the time and the timezone, so you can trust a glance instead of a
+                    double-check.
                 </p>
                 <p>
                     It is the clock I wanted on my own desktop: something pleasant to look at, honest about the time
@@ -571,6 +576,10 @@
                 <div class="faq-item">
                     <h3>Which platforms does Fancy Clock run on?</h3>
                     <p>Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an installer, macOS as a DMG and Linux as a Flatpak.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I make the clock semi-transparent or keep it out of the way?</h3>
+                    <p>Yes. A slider in the View menu dims the window from fully solid down to a faint overlay, also adjustable with Ctrl and the Up and Down arrows or Ctrl and the mouse wheel, and your level is remembered between sessions. The one exception is the Linux Flatpak, whose sandbox cannot set per-window opacity, so the control is hidden there.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Does it handle different timezones and languages?</h3>
@@ -651,7 +660,8 @@
         Fancy Clock is a free, private, local-first desktop clock for Windows, macOS and Linux. It offers analog and
         digital modes, alarms with snooze budgets, colours, five sounds and a missed-alarms summary, automatic system
         timezone localization with region names and numbers translated across more than 70 languages and 240 regional
-        locales, optional NTP time accuracy, nine animated video skins including Starfield, a system tray mode with
+        locales, optional NTP time accuracy, nine animated video skins including Starfield, adjustable window opacity
+        with a View menu slider and keyboard and wheel shortcuts, a system tray mode with
         optional start at sign-in and a frameless draggable window. Built with Python and PySide6,
         it runs entirely offline with no cloud dependency and is open source under the LGPL-3.0 licence.
     </p>
@@ -674,7 +684,7 @@
             "@id": "https://ernster.dev/FancyClock/#website",
             "url": "https://ernster.dev/FancyClock/",
             "name": "Fancy Clock",
-            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization and animated skins.",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze and sounds, automatic timezone localization, animated skins and adjustable opacity.",
             "inLanguage": "en-GB",
             "publisher": { "@id": "https://ernster.dev/FancyClock/#oliver" }
         },
@@ -697,7 +707,7 @@
             "applicationCategory": "UtilitiesApplication",
             "applicationSubCategory": "Desktop clock and world clock",
             "operatingSystem": "Windows, macOS, Linux",
-            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze budgets and five sounds, automatic system timezone localization, optional NTP time accuracy, nine animated video skins and a frameless draggable window. Translated across more than 70 languages.",
+            "description": "A free, private, local-first desktop clock with analog and digital modes, alarms with snooze budgets and five sounds, automatic system timezone localization, optional NTP time accuracy, nine animated video skins, adjustable opacity and a frameless draggable window. Translated across more than 70 languages.",
             "url": "https://ernster.dev/FancyClock/",
             "downloadUrl": "https://github.com/oernster/FancyClock/releases",
             "installUrl": "https://github.com/oernster/FancyClock/releases",
@@ -723,6 +733,7 @@
                 "Region names and numbers translated across 70+ languages and 240+ locales",
                 "Optional NTP time accuracy",
                 "Nine animated video skins including Starfield",
+                "Adjustable window opacity via a View menu slider, Ctrl+arrows and Ctrl+wheel (not in the Flatpak sandbox)",
                 "Frameless, draggable, single-instance window",
                 "Local-first, fully offline, no cloud dependency"
             ]
@@ -745,6 +756,11 @@
                     "@type": "Question",
                     "name": "Which platforms does Fancy Clock run on?",
                     "acceptedAnswer": { "@type": "Answer", "text": "Windows, macOS and Linux, from a single PySide6 codebase. Windows ships as an installer, macOS as a DMG and Linux as a Flatpak." }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Can I make the clock semi-transparent or keep it out of the way?",
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. A slider in the View menu dims the window from fully solid down to a faint overlay, also adjustable with Ctrl and the Up and Down arrows or Ctrl and the mouse wheel, and your level is remembered between sessions. The one exception is the Linux Flatpak, whose sandbox cannot set per-window opacity, so the control is hidden there." }
                 },
                 {
                     "@type": "Question",

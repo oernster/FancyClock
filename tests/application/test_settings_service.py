@@ -8,9 +8,12 @@ from fancyclock.application.settings import (
     ALARM_VOLUME_KEY,
     CLOSE_TO_TRAY_KEY,
     DEFAULT_ALARM_VOLUME,
+    DEFAULT_WINDOW_OPACITY,
     LOCALE_KEY,
+    MIN_WINDOW_OPACITY,
     SKIN_NAME_KEY,
     TIMEZONE_ID_KEY,
+    WINDOW_OPACITY_KEY,
     SettingsService,
 )
 
@@ -110,3 +113,28 @@ def test_close_to_tray_default_and_roundtrip() -> None:
 
     store.data[CLOSE_TO_TRAY_KEY] = "yes"
     assert service.close_to_tray() is False
+
+
+def test_window_opacity_default_roundtrip_and_clamping() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    assert service.window_opacity() == DEFAULT_WINDOW_OPACITY
+    service.set_window_opacity(0.5)
+    assert service.window_opacity() == 0.5
+    assert store.data[WINDOW_OPACITY_KEY] == 0.5
+
+    service.set_window_opacity(2.0)
+    assert service.window_opacity() == 1.0
+    service.set_window_opacity(0.05)
+    assert service.window_opacity() == MIN_WINDOW_OPACITY
+
+
+def test_window_opacity_ignores_invalid_stored_values() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    store.data[WINDOW_OPACITY_KEY] = "faint"
+    assert service.window_opacity() == DEFAULT_WINDOW_OPACITY
+    store.data[WINDOW_OPACITY_KEY] = 0.01
+    assert service.window_opacity() == DEFAULT_WINDOW_OPACITY

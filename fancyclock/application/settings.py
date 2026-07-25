@@ -9,10 +9,15 @@ TIMEZONE_ID_KEY = "timezone_id"
 LOCALE_KEY = "locale"
 ALARM_VOLUME_KEY = "alarm_volume"
 CLOSE_TO_TRAY_KEY = "close_to_tray"
+WINDOW_OPACITY_KEY = "window_opacity"
 
 DEFAULT_ALARM_VOLUME = 0.8
 MIN_VOLUME = 0.0
 MAX_VOLUME = 1.0
+
+DEFAULT_WINDOW_OPACITY = 1.0
+MIN_WINDOW_OPACITY = 0.2
+MAX_WINDOW_OPACITY = 1.0
 
 
 class SettingsService:
@@ -67,3 +72,18 @@ class SettingsService:
     def set_close_to_tray(self, enabled: bool) -> None:
         """Persist the close-to-tray preference."""
         self._store.set(CLOSE_TO_TRAY_KEY, bool(enabled))
+
+    def window_opacity(self) -> float:
+        """Return the window opacity in [0.2, 1], or the default."""
+        value = self._store.get(WINDOW_OPACITY_KEY, None)
+        if (
+            isinstance(value, (int, float))
+            and MIN_WINDOW_OPACITY <= value <= MAX_WINDOW_OPACITY
+        ):
+            return float(value)
+        return DEFAULT_WINDOW_OPACITY
+
+    def set_window_opacity(self, opacity: float) -> None:
+        """Persist the window opacity, clamped to [0.2, 1]."""
+        clamped = min(MAX_WINDOW_OPACITY, max(MIN_WINDOW_OPACITY, float(opacity)))
+        self._store.set(WINDOW_OPACITY_KEY, clamped)

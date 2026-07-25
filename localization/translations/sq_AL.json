@@ -79,6 +79,7 @@
   "november": "stu",
   "october": "lis",
   "ok": "OK",
+  "opacity": "Patejdukshmëria",
   "saturday": "sub.",
   "search_timezone_placeholder": "Traži vremensku zonu...",
   "select_timezone_title": "Odaberite vremensku zonu",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock vazhdon të punojë në shiritin e sistemit",
   "tuesday": "uto.",
   "version": "Verzija",
+  "view": "Pamja",
   "website": "Internetska stranica",
   "wednesday": "sri."
 }

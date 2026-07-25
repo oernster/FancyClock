@@ -79,6 +79,7 @@
   "november": "Nov",
   "october": "Okt",
   "ok": "U REDU",
+  "opacity": "Neprozirnost",
   "saturday": "Sub",
   "search_timezone_placeholder": "Potražite vremensku zonu...",
   "select_timezone_title": "Vremenska _zona:",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock i dalje radi u sistemskoj traci",
   "tuesday": "Uto",
   "version": "Verzija",
+  "view": "Prikaz",
   "website": "Website ",
   "wednesday": "Sri"
 }

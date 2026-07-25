@@ -79,6 +79,7 @@
   "november": "nov",
   "october": "okt",
   "ok": "OK",
+  "opacity": "Dekking",
   "saturday": "Za",
   "search_timezone_placeholder": "Zoek een tijdzone",
   "select_timezone_title": "Selecteer tijdzone",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock draait door in het systeemvak",
   "tuesday": "Di",
   "version": "Versie",
+  "view": "Beeld",
   "website": "Website",
   "wednesday": "Wo"
 }

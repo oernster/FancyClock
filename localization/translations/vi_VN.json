@@ -79,6 +79,7 @@
   "november": "Tháng 11",
   "october": "Tháng 10",
   "ok": "OK",
+  "opacity": "Độ mờ đục",
   "saturday": "T7",
   "search_timezone_placeholder": "Tìm kiếm múi giờ...",
   "select_timezone_title": "Chọn múi giờ",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock vẫn chạy trong khay hệ thống",
   "tuesday": "T3",
   "version": "Phiên bản",
+  "view": "Xem",
   "website": "Trang web",
   "wednesday": "T4"
 }

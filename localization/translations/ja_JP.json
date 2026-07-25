@@ -79,6 +79,7 @@
   "november": "11月",
   "october": "10月",
   "ok": "OK",
+  "opacity": "不透明度",
   "saturday": "土",
   "search_timezone_placeholder": "タイムゾーンを検索する",
   "select_timezone_title": "タイムゾーンを選択",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock はタスクトレイで動作中です",
   "tuesday": "火",
   "version": "バージョン",
+  "view": "表示",
   "website": "Web サイト",
   "wednesday": "水"
 }

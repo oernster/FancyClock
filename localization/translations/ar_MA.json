@@ -79,6 +79,7 @@
   "november": "نوفمبر",
   "october": "أكتوبر",
   "ok": "OK",
+  "opacity": "التعتيم",
   "saturday": "السبت",
   "search_timezone_placeholder": "بحث عن المنطقة الزمنية",
   "select_timezone_title": "تحديد المنطقة الزمنية",
@@ -102,6 +103,7 @@
   "tray_still_running": "لا يزال Fancy Clock يعمل في شريط النظام",
   "tuesday": "الثلاثاء",
   "version": "النسخة",
+  "view": "عرض",
   "website": "الموقع الالكتروني",
   "wednesday": "الأربعاء"
 }

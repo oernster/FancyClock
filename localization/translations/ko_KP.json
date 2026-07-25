@@ -79,6 +79,7 @@
   "november": "11 월",
   "october": "10 월",
   "ok": "정상",
+  "opacity": "불투명도",
   "saturday": "토",
   "search_timezone_placeholder": "표준 시간대 검색",
   "select_timezone_title": "표준 시간대 선택",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock이 시스템 트레이에서 실행 중입니다",
   "tuesday": "화",
   "version": "개정판 번호",
+  "view": "보기",
   "website": "웹사이트",
   "wednesday": "수"
 }

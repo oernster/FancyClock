@@ -80,6 +80,7 @@
   "november": "Ноя",
   "october": "Окт",
   "ok": "OK",
+  "opacity": "Непрозрачность",
   "saturday": "Сб",
   "search_timezone_placeholder": "Поиск по часовому поясу",
   "select_timezone_title": "Выберите часовой пояс",
@@ -103,6 +104,7 @@
   "tray_still_running": "Fancy Clock продолжает работать в системном лотке",
   "tuesday": "Вт",
   "version": "Версия",
+  "view": "Вид",
   "website": "Сайт",
   "wednesday": "Ср"
 }

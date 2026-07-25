@@ -79,6 +79,7 @@
   "november": "nov",
   "october": "okt",
   "ok": "OK",
+  "opacity": "Opacitet",
   "saturday": "Satt",
   "search_timezone_placeholder": "Sök efter en tidszon...",
   "select_timezone_title": "Välj tidszon",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock körs fortfarande i aktivitetsfältet",
   "tuesday": "Tis",
   "version": "Version",
+  "view": "Visa",
   "website": "Web stranica",
   "wednesday": "Ons"
 }

@@ -79,6 +79,7 @@
   "november": "nov",
   "october": "Ott",
   "ok": "OK",
+  "opacity": "Opaċità",
   "saturday": "Sab",
   "search_timezone_placeholder": "Cerca un fuso orario",
   "select_timezone_title": "Seleziona fuso orario",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock għadu jaħdem fis-system tray",
   "tuesday": "Mar",
   "version": "Versione",
+  "view": "Ara",
   "website": "Sito internet",
   "wednesday": "Mer"
 }

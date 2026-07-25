@@ -79,6 +79,7 @@
   "november": "ཟླ་བ་དགུ་པ།",
   "october": "ཨོག་ཊི།",
   "ok": "དེ་ཀྲིག་ཀྲི་",
+  "opacity": "མི་གསལ་བ།",
   "saturday": "ས་འུ།",
   "search_timezone_placeholder": "དུས་ཚོད་འཚོལ་བའི་དོན་ལུ་...",
   "select_timezone_title": "དུས་ཚོད། གདམ་ཁ་རྐྱབས།",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock རིམ་ལུགས་སྣོད་ནང་ལཱ་འབད་དོ།",
   "tuesday": "TUE",
   "version": "ཐོན་རིམ།",
+  "view": "མཐོང་སྣང་།",
   "website": "ཝེབ",
   "wednesday": "རྩེདམ།"
 }

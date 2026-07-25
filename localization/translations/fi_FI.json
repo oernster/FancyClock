@@ -79,6 +79,7 @@
   "november": "Marras",
   "october": "Loka",
   "ok": "OK",
+  "opacity": "Peittävyys",
   "saturday": "La",
   "search_timezone_placeholder": "Etsi aikavyöhyke",
   "select_timezone_title": "Valitse aikavyöhyke",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock on yhä käynnissä ilmaisinalueella",
   "tuesday": "Ti",
   "version": "Versio",
+  "view": "Näytä",
   "website": "Internet",
   "wednesday": "Ke"
 }

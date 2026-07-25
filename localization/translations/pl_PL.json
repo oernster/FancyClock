@@ -79,6 +79,7 @@
   "november": "Lis",
   "october": "Paź",
   "ok": "OK",
+  "opacity": "Nieprzezroczystość",
   "saturday": "So",
   "search_timezone_placeholder": "Wyszukaj strefę czasową",
   "select_timezone_title": "Wybierz strefę czasową",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock nadal działa w zasobniku systemowym",
   "tuesday": "Wt",
   "version": "Wersja",
+  "view": "Widok",
   "website": "Strona internetowa",
   "wednesday": "Śr"
 }

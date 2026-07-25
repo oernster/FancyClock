@@ -79,6 +79,7 @@
   "november": "พ.ย.",
   "october": "ต.ค.",
   "ok": "ตกลง",
+  "opacity": "ความทึบ",
   "saturday": "ส.",
   "search_timezone_placeholder": "ค้นหาเขตเวลา...",
   "select_timezone_title": "เลือกเขตเวลาของคุณ",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock ยังทำงานอยู่ในถาดระบบ",
   "tuesday": "อ.",
   "version": "เวอร์ชัน",
+  "view": "มุมมอง",
   "website": "เว็บไซต์",
   "wednesday": "พ."
 }

@@ -79,6 +79,7 @@
   "november": "Nov.",
   "october": "Okt.",
   "ok": "OK",
+  "opacity": "Necaurspīdīgums",
   "saturday": "Se",
   "search_timezone_placeholder": "Meklēt laika joslu...",
   "select_timezone_title": "Izvēlieties laika joslu...",
@@ -102,6 +103,7 @@
   "tray_still_running": "Fancy Clock turpina darboties sistēmas joslā",
   "tuesday": "O",
   "version": "Versija",
+  "view": "Skats",
   "website": "Interneta mājas lapa",
   "wednesday": "T"
 }
