@@ -42,7 +42,7 @@ All packages are on the [releases page](https://github.com/oernster/FancyClock/r
 
 ## Development
 
-The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md).
+The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md), and [`TECH_DEBT.md`](TECH_DEBT.md) for what is still open, what is deliberately left and what only looks like debt.
 
 ```bash
 pip install -r requirements.txt -r requirements-dev.txt
