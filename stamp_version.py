@@ -1,4 +1,4 @@
-"""Stamp the canonical version into static files that cannot read it at runtime.
+"""Stamp the canonical version into the gh-pages site, which cannot read it.
 
 The VERSION file at the repo root is the single source of truth. The runtime
 (fancyclock.version) and packaging (pyproject.toml dynamic version, the build
@@ -6,16 +6,21 @@ scripts) all read it directly. Static assets under docs/ are served as-is by
 GitHub Pages and cannot, so this script rewrites the version into them from
 VERSION instead.
 
-Two things are stamped:
+The docs/ tree is the ONLY target. Markdown at the repo root carries no version
+data at all, by policy, so it is deliberately out of scope: a version in a
+tracked document is a value that silently goes stale; the site is the one place
+that has no other way to learn it.
 
-* delimited tokens ``<!--VERSION-->x.y.z<!--/VERSION-->`` in root markdown and
-  any docs HTML or markdown, for visible version text;
-* the JSON-LD ``"softwareVersion": "x.y.z"`` field in docs HTML, where an HTML
+Two things are stamped, both under docs/:
+
+* delimited tokens ``<!--VERSION-->x.y.z<!--/VERSION-->`` in HTML or markdown,
+  for visible version text;
+* the JSON-LD ``"softwareVersion": "x.y.z"`` field in HTML, where an HTML
   comment token would corrupt the embedded JSON.
 
 It is idempotent (stamping an already-current file changes nothing) and prints
-the files it touched. buildexe.py and buildinstaller.py call main() so a release
-can never ship static docs whose version disagrees with VERSION.
+the files it touched. buildexe.py, buildinstaller.py and builddmg.py call main()
+so a release can never ship a site whose version disagrees with VERSION.
 """
 
 from __future__ import annotations
@@ -32,7 +37,7 @@ _SOFTWARE_VERSION_PATTERN = re.compile(r'("softwareVersion"\s*:\s*")([^"]*)(")')
 
 
 def read_version(root: Path) -> str:
-    """Return the canonical version from the VERSION file, or a dev sentinel."""
+    """Return the canonical version from the VERSION file (or a dev sentinel)."""
     version_file = root / VERSION_FILENAME
     if version_file.exists():
         return version_file.read_text(encoding="utf-8").strip()
@@ -50,13 +55,14 @@ def _stamp_text(text: str, version: str, *, is_html: bool) -> str:
 
 
 def _target_files(root: Path) -> list[Path]:
-    """Collect the static files that carry a stamped version."""
-    files = list(root.glob("*.md"))
+    """Collect the gh-pages files that carry a stamped version.
+
+    Only the docs/ tree is stamped. Root markdown is never touched.
+    """
     docs_dir = root / DOCS_DIRNAME
-    if docs_dir.is_dir():
-        files.extend(docs_dir.rglob("*.html"))
-        files.extend(docs_dir.rglob("*.md"))
-    return files
+    if not docs_dir.is_dir():
+        return []
+    return [*docs_dir.rglob("*.html"), *docs_dir.rglob("*.md")]
 
 
 def stamp(root: Path, version: str) -> list[Path]:
@@ -72,7 +78,7 @@ def stamp(root: Path, version: str) -> list[Path]:
 
 
 def main() -> int:
-    """Stamp the repo's static files from VERSION and report what changed."""
+    """Stamp the gh-pages site from VERSION and report what changed."""
     root = Path(__file__).resolve().parent
     version = read_version(root)
     touched = stamp(root, version)
@@ -81,7 +87,7 @@ def main() -> int:
         for path in touched:
             print(f"  {path.relative_to(root)}")
     else:
-        print(f"Version {version} already current in all static files.")
+        print(f"Version {version} already current across {DOCS_DIRNAME}/.")
     return 0
 
 

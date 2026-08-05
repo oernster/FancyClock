@@ -12,13 +12,24 @@
 
 # Fancy Clock
 
-Version <!--VERSION-->2.0.0<!--/VERSION-->
+Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, nine UI skins including Starfield, adjustable window opacity and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
 
-Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, multiple UI skins including Starfield, adjustable window opacity and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
+**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's.
 
-**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's. It is not a calendar, a timer or stopwatch, or a widget platform.
+**Who it is not for:** anyone after a calendar, a timer or stopwatch, a widget platform or a scheduler that can wake a sleeping machine. Fancy Clock never wakes a suspended or powered-off computer; it reports what it missed instead.
 
 Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
+
+## What it does
+
+- Analog and digital modes, frameless and draggable, with the mode, position, skin and timezone all remembered between sessions.
+- Automatic timezone localization: the system timezone drives the display and region names and numerals are translated into the local language.
+- More than 70 languages across over 240 regional locales, detected automatically and overridable from the menu.
+- Nine skins: the procedural Starfield plus eight animated video backdrops. Or run it plain.
+- Adjustable window opacity from the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel (Windows and macOS; the Flatpak sandbox cannot set per-window opacity).
+- Optional NTP time correction, so the display stays honest when the machine clock has drifted.
+- Alarms, covered below.
+- Local-first and offline: no account, no telemetry and no cloud. NTP is the only network call and it is optional.
 
 ## Alarms
 
@@ -40,17 +51,65 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 
 All packages are on the [releases page](https://github.com/oernster/FancyClock/releases).
 
-## Development
+## Stack
 
-The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md), and [`TECH_DEBT.md`](TECH_DEBT.md) for what is still open, what is deliberately left and what only looks like debt.
+| Layer | Choice |
+|---|---|
+| Language | Python 3.11 or newer |
+| UI toolkit | PySide6 (Qt 6), including QtMultimedia for the video skins |
+| Time data | `pytz` for the timezone catalog, `zoneinfo` with `tzdata` for alarm fold semantics, `tzlocal` for system detection |
+| Time source | NTP over UDP, with the system clock as the fallback |
+| Storage | JSON under the per-user config directory for settings and alarms |
+| Localisation | Bespoke JSON locale store under `localization/translations/` |
+| Tests | `pytest` with `pytest-cov`, hand-written fakes and no mock libraries |
+| Quality | `black`, `flake8`, `ruff` and structural architecture tests |
+| Packaging | PyInstaller plus a bespoke installer (Windows), create-dmg (macOS), Flatpak (Linux) |
+| Media | Git LFS for the `media/*.mp4` skins |
+
+## Install and run from source
+
+The video skins live in Git LFS, so install LFS before cloning or the `.mp4` files arrive as pointer stubs.
 
 ```bash
+git lfs install
+git clone https://github.com/oernster/FancyClock.git
+cd FancyClock
+git lfs checkout
+
+python -m venv venv
+source venv/bin/activate          # Windows PowerShell: venv\Scripts\Activate.ps1
 pip install -r requirements.txt -r requirements-dev.txt
-python -m pytest
+
 python main.py
 ```
 
-Build entry points: `buildexe.py` plus `buildinstaller.py` (Windows installer), `builddmg.py` (macOS DMG), `build_flatpak.sh` (Linux Flatpak), `generate_icons.py` (regenerate every icon asset from the `fancyclock.png` master), `generate_sounds.py` (regenerate the alarm sounds deterministically). Flatpak prerequisites: [`DEVELOPER_README.md`](DEVELOPER_README.md); local Flatpak install notes: [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md).
+## Test
+
+```bash
+python -m pytest
+```
+
+The suite runs unit, integration and structural tests behind a hard 100% coverage gate over the domain, application and infrastructure layers. `black --check .`, `flake8 .` and `ruff check .` are standing steps alongside it.
+
+## Build
+
+| Target | Command | Output |
+|---|---|---|
+| Windows installer | `python buildexe.py` then `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
+| macOS DMG | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
+| Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
+| Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus the full `assets/` set from the `fancyclock_plain.png` master |
+| Alarm sounds | `python generate_sounds.py` | `assets/sounds/`, synthesised deterministically |
+
+Prerequisites, the offline Flatpak `vendor/` workflow and troubleshooting are in [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md).
+
+## Development
+
+The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md). [`TECH_DEBT.md`](TECH_DEBT.md) records what is still open, what is deliberately left and what only looks like debt.
+
+## Licence
+
+GNU Lesser General Public License v3.0 only. The full text is in [`LICENSE`](LICENSE).
 
 ## English
 Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield.  

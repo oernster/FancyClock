@@ -1,7 +1,5 @@
 # FancyClock Architecture
 
-Version: <!--VERSION-->2.0.0<!--/VERSION-->
-
 ## Invariants
 
 Each invariant is enforced by a structural test in
@@ -55,8 +53,8 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   suite (`ui/alarms/`: controller, tray icon, manager and editor dialogs,
   the clock-face time picker, the persistent firing window, the
   missed-alarms summary, toasts and the sound player). Localisation rule:
-  anything built once and kept alive (the menu bar including Alarms, View
-  and Skins, and the tray menu) is retitled by `retranslate_ui()` on a
+  anything built once and kept alive (the tray menu and the menu bar
+  including Alarms, View and Skins) is retitled by `retranslate_ui()` on a
   locale change; everything else (dialogs, toasts, notifications)
   resolves its strings at the moment it is shown, so it needs no
   retranslation pass.
@@ -109,6 +107,7 @@ app identity constants shared with the Windows installer.
 | A first launch evaluates an empty window | A fresh store has no watermark, so historical occurrences can never fire on install |
 | The tray degrades to a plain window | `QSystemTrayIcon.isSystemTrayAvailable()` is false on some Linux desktops (vanilla GNOME); close-to-tray disables rather than hiding an unrecoverable window |
 | The installer and the app share one Run value | Both write `HKCU\...\Run\FancyClock`, so the sign-in checkbox and the Alarms menu toggle can never disagree |
+| The `media/*.mp4` skins are tracked with Git LFS | They are large binaries whose every revision would otherwise live in history forever; LFS keeps the working tree identical and the clone small, at the cost of one `git lfs install` on a fresh machine |
 
 ## Quality enforcement
 
@@ -117,8 +116,12 @@ app identity constants shared with the Windows installer.
 - No mock libraries: hand-written fakes implement the ports; infrastructure
   tests use real temp files and a real local UDP server.
 - `black --check`, `flake8` and `ruff check` are standing steps.
-- The version is never hardcoded outside the VERSION file; static docs are
-  stamped by `stamp_version.py`, which the build scripts invoke.
+- The version is never hardcoded outside the VERSION file. The runtime reads it
+  through `fancyclock.version`, packaging through the dynamic version in
+  `pyproject.toml` and the build scripts through `stamp_version.read_version()`.
+  The gh-pages site under `docs/` cannot read it at render time, so
+  `stamp_version.py` writes it into that tree (and only that tree) before every
+  package is built. No tracked markdown carries a version at all.
 
 ## Delivery
 
@@ -136,6 +139,9 @@ alpha channel), composites the alarm-bell badge, writes the badged
 sounds are synthesised deterministically by `generate_sounds.py` into
 `assets/sounds/`; every packaging path ships the `assets/` directory
 wholesale, so icons and sounds ride along without per-platform wiring.
+The nine skins are one procedural Starfield effect plus eight `media/*.mp4`
+backdrops held in Git LFS, so a build machine needs `git lfs checkout` before
+packaging or the bundles ship pointer stubs that cannot play.
 The Windows build scripts clear their output trees through
 `build_utils.clear_tree`, which renames a doomed tree aside before
 deleting it so a pending-delete zombie can never swallow a directory
