@@ -32,6 +32,8 @@
   "alarm_volume": "កម្រិតសំឡេងរោទ៍",
   "alarms": "ម៉ោងរោទ៍",
   "alarms_enabled_master": "បើកម៉ោងរោទ៍",
+  "alarms_load_failed_text": "ធាតុខូចដែលបានរំលង៖ {count}។ ម៉ោងរោទ៍ណាដែលបាត់ត្រូវកំណត់ឡើងវិញ។",
+  "alarms_load_failed_title": "មិនអាចអានម៉ោងរោទ៍មួយចំនួនបានទេ",
   "alarms_manage": "គ្រប់គ្រងម៉ោងរោទ៍...",
   "alarms_title": "ម៉ោងរោទ៍",
   "app_description": "แอปพลิเคชันนาฬิกาที่สวยงามและหรูหรา",

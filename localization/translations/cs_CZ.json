@@ -32,6 +32,8 @@
   "alarm_volume": "Hlasitost budíku",
   "alarms": "Budíky",
   "alarms_enabled_master": "Budíky zapnuty",
+  "alarms_load_failed_text": "Přeskočené poškozené položky: {count}. Chybějící budík je nutné nastavit znovu.",
+  "alarms_load_failed_title": "Některé budíky se nepodařilo načíst",
   "alarms_manage": "Spravovat budíky...",
   "alarms_title": "Budíky",
   "app_description": "Krásná a efektní hodinová aplikace.",

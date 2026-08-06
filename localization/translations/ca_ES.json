@@ -32,6 +32,8 @@
   "alarm_volume": "Volum de l'alarma",
   "alarms": "Alarmes",
   "alarms_enabled_master": "Alarmes activades",
+  "alarms_load_failed_text": "Entrades malmeses omeses: {count}. Cal tornar a definir qualsevol alarma que falti.",
+  "alarms_load_failed_title": "No s'han pogut llegir algunes alarmes",
   "alarms_manage": "Gestiona les alarmes...",
   "alarms_title": "Alarmes",
   "app_description": "Una aplicació de rellotge bonica i elegant.",

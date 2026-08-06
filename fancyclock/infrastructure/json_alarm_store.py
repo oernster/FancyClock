@@ -12,6 +12,7 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
+from fancyclock.application.ports import AlarmLoad
 from fancyclock.domain.alarms import (
     Alarm,
     AlarmError,
@@ -23,6 +24,10 @@ from fancyclock.infrastructure.json_settings_store import default_config_dir
 
 ALARMS_FILE_NAME = "alarms.json"
 DOCUMENT_VERSION = 1
+
+# Reported when the document itself could not be read, so the count stands for
+# "the file", not for a number of entries: nothing inside it could be counted.
+_WHOLE_FILE = 1
 
 
 def _alarm_to_dict(alarm: Alarm) -> dict[str, Any]:
@@ -91,31 +96,51 @@ class JsonAlarmStore:
         self._config_dir.mkdir(parents=True, exist_ok=True)
         return self._config_dir / ALARMS_FILE_NAME
 
-    def load(self) -> AlarmsState:
-        """Return the persisted state; tolerant of missing or bad data."""
+    def load(self) -> AlarmLoad:
+        """Return the persisted state; tolerant of missing or bad data.
+
+        Every tolerated failure is counted rather than merely survived. The
+        caller is told how many entries were unreadable so it can say so once,
+        because an alarm silently dropped from the list is an alarm that will
+        not ring at the time the user set.
+        """
         path = self.alarms_path()
         if not path.exists():
-            return AlarmsState.empty()
+            # No file yet: a first run, not damage. Nothing was lost.
+            return AlarmLoad(state=AlarmsState.empty())
         try:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
         except Exception:
-            return AlarmsState.empty()
+            # Unreadable or not valid JSON. Falls back to an empty document so
+            # the clock still starts. The whole file is reported lost.
+            return AlarmLoad(state=AlarmsState.empty(), skipped_alarms=_WHOLE_FILE)
         if not isinstance(data, dict):
-            return AlarmsState.empty()
+            # Valid JSON of the wrong shape (a list or a scalar). Same
+            # fallback: an empty document, with the whole file reported lost.
+            return AlarmLoad(state=AlarmsState.empty(), skipped_alarms=_WHOLE_FILE)
 
         alarms: list[Alarm] = []
+        skipped_alarms = 0
         for entry in data.get("alarms", ()):
             try:
                 alarms.append(_alarm_from_dict(entry))
             except Exception:
-                continue
+                # One malformed alarm entry: falls back to skipping that entry
+                # alone, so the remaining alarms still load. Counted, because
+                # this is the alarm that will not ring.
+                skipped_alarms += 1
         known = {alarm.alarm_id for alarm in alarms}
         snoozes: list[SnoozeState] = []
+        skipped_snoozes = 0
         for entry in data.get("snooze_states", ()):
             try:
                 state = _snooze_from_dict(entry)
             except Exception:
+                # One malformed snooze record: falls back to skipping it, which
+                # loses only the snooze, never the alarm behind it. Counted so
+                # the total is honest, though it matters less than an alarm.
+                skipped_snoozes += 1
                 continue
             if state.alarm_id in known:
                 snoozes.append(state)
@@ -124,13 +149,19 @@ class JsonAlarmStore:
         try:
             watermark = datetime.fromisoformat(raw_watermark) if raw_watermark else None
         except Exception:
+            # An unparseable watermark falls back to None, which makes the next
+            # tick treat the session as fresh. Not counted: no alarm is lost.
             watermark = None
 
-        return AlarmsState(
-            alarms=tuple(alarms),
-            snooze_states=tuple(snoozes),
-            master_enabled=data.get("master_enabled", True) is not False,
-            last_evaluated_utc=watermark,
+        return AlarmLoad(
+            state=AlarmsState(
+                alarms=tuple(alarms),
+                snooze_states=tuple(snoozes),
+                master_enabled=data.get("master_enabled", True) is not False,
+                last_evaluated_utc=watermark,
+            ),
+            skipped_alarms=skipped_alarms,
+            skipped_snoozes=skipped_snoozes,
         )
 
     def save(self, state: AlarmsState) -> None:

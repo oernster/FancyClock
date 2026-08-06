@@ -32,6 +32,8 @@
   "alarm_volume": "Kelantangan penggera",
   "alarms": "Penggera",
   "alarms_enabled_master": "Penggera diaktifkan",
+  "alarms_load_failed_text": "Entri rosak yang dilangkau: {count}. Penggera yang hilang perlu ditetapkan semula.",
+  "alarms_load_failed_title": "Sesetengah penggera tidak dapat dibaca",
   "alarms_manage": "Urus penggera...",
   "alarms_title": "Penggera",
   "app_description": "Aplikasi jam yang cantik dan mewah.",

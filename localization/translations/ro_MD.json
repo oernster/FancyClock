@@ -32,6 +32,8 @@
   "alarm_volume": "Volum alarmă",
   "alarms": "Alarme",
   "alarms_enabled_master": "Alarme activate",
+  "alarms_load_failed_text": "Intrări deteriorate omise: {count}. Orice alarmă lipsă trebuie setată din nou.",
+  "alarms_load_failed_title": "Unele alarme nu au putut fi citite",
   "alarms_manage": "Gestionare alarme...",
   "alarms_title": "Alarme",
   "app_description": "O aplicație de ceas frumoasă și elegantă.",

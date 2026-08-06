@@ -32,6 +32,8 @@
   "alarm_volume": "Głośność alarmu",
   "alarms": "Alarmy",
   "alarms_enabled_master": "Alarmy włączone",
+  "alarms_load_failed_text": "Pominięte uszkodzone wpisy: {count}. Brakujący alarm trzeba ustawić ponownie.",
+  "alarms_load_failed_title": "Nie udało się odczytać niektórych alarmów",
   "alarms_manage": "Zarządzaj alarmami...",
   "alarms_title": "Alarmy",
   "app_description": "Piękna i fantazyjna aplikacja zegarowa.",

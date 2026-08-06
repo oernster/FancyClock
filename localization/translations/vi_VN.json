@@ -32,6 +32,8 @@
   "alarm_volume": "Âm lượng báo thức",
   "alarms": "Báo thức",
   "alarms_enabled_master": "Đã bật báo thức",
+  "alarms_load_failed_text": "Mục bị hỏng đã bỏ qua: {count}. Báo thức nào bị thiếu phải được đặt lại.",
+  "alarms_load_failed_title": "Không thể đọc một số báo thức",
   "alarms_manage": "Quản lý báo thức...",
   "alarms_title": "Báo thức",
   "app_description": "Một ứng dụng đồng hồ đẹp và lạ mắt.",

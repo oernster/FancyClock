@@ -32,6 +32,8 @@
   "alarm_volume": "Оятқыш дыбысы",
   "alarms": "Оятқыштар",
   "alarms_enabled_master": "Оятқыштар қосулы",
+  "alarms_load_failed_text": "Өткізіп жіберілген бүлінген жазбалар: {count}. Жоқ оятқышты қайта орнату керек.",
+  "alarms_load_failed_title": "Кейбір оятқыштарды оқу мүмкін болмады",
   "alarms_manage": "Оятқыштарды басқару...",
   "alarms_title": "Оятқыштар",
   "app_description": "Красивое и модное приложение для часов.",

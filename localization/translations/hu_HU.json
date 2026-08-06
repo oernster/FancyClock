@@ -32,6 +32,8 @@
   "alarm_volume": "Ébresztő hangereje",
   "alarms": "Ébresztők",
   "alarms_enabled_master": "Ébresztők bekapcsolva",
+  "alarms_load_failed_text": "Kihagyott sérült bejegyzések: {count}. A hiányzó ébresztőt újra be kell állítani.",
+  "alarms_load_failed_title": "Néhány ébresztőt nem sikerült beolvasni",
   "alarms_manage": "Ébresztők kezelése...",
   "alarms_title": "Ébresztők",
   "app_description": "Gyönyörű és divatos óraalkalmazás.",

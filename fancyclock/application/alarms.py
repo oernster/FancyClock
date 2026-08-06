@@ -80,8 +80,19 @@ class AlarmService:
         self._time_service = time_service
         self._id_factory = id_factory
         self._porter = porter
-        self._state = store.load()
+        self._load = store.load()
+        self._state = self._load.state
         self._watermark_persisted_at: datetime | None = None
+
+    @property
+    def entries_lost_on_load(self) -> int:
+        """Return how many stored entries could not be read at startup.
+
+        Zero means the saved document loaded whole. Anything else is an alarm
+        or a snooze the user set that is no longer there, which is worth
+        telling them once rather than leaving them to notice a silent morning.
+        """
+        return self._load.lost_entries
 
     # ------------------------------------------------------------------
     # Time and lookups
@@ -112,7 +123,7 @@ class AlarmService:
         )
 
     def alarm_by_id(self, alarm_id: str) -> Alarm | None:
-        """Return the alarm with ``alarm_id``, or ``None``."""
+        """Return the alarm with ``alarm_id``, else ``None``."""
         return self._state.alarm_by_id(alarm_id)
 
     def new_alarm_id(self) -> str:
@@ -262,7 +273,7 @@ class AlarmService:
     # Summary, import and export
     # ------------------------------------------------------------------
     def next_alarm(self) -> NextAlarmInfo | None:
-        """Return the next alarm to fire, or ``None``."""
+        """Return the next alarm to fire, else ``None``."""
         found = upcoming_occurrence(self._state, self.now_utc(), self._resolve_tz)
         if found is None:
             return None

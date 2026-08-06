@@ -32,6 +32,8 @@
   "alarm_volume": "Wekkervolume",
   "alarms": "Wekkers",
   "alarms_enabled_master": "Wekkers ingeschakeld",
+  "alarms_load_failed_text": "Overgeslagen beschadigde vermeldingen: {count}. Een ontbrekende wekker moet opnieuw worden ingesteld.",
+  "alarms_load_failed_title": "Sommige wekkers konden niet worden gelezen",
   "alarms_manage": "Wekkers beheren...",
   "alarms_title": "Wekkers",
   "app_description": "Een mooie en chique klokapplicatie.",

@@ -32,6 +32,8 @@
   "alarm_volume": "Alarm ses düzeyi",
   "alarms": "Alarmlar",
   "alarms_enabled_master": "Alarmlar etkin",
+  "alarms_load_failed_text": "Atlanan bozuk kayıtlar: {count}. Eksik olan alarmın yeniden kurulması gerekir.",
+  "alarms_load_failed_title": "Bazı alarmlar okunamadı",
   "alarms_manage": "Alarmları yönet...",
   "alarms_title": "Alarmlar",
   "app_description": "Güzel ve süslü bir saat uygulaması.",

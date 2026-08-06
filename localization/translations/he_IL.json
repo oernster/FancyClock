@@ -32,6 +32,8 @@
   "alarm_volume": "עוצמת התראה",
   "alarms": "התראות",
   "alarms_enabled_master": "התראות פעילות",
+  "alarms_load_failed_text": "רשומות פגומות שדולגו: {count}. יש להגדיר מחדש כל התראה חסרה.",
+  "alarms_load_failed_title": "לא ניתן היה לקרוא חלק מההתראות",
   "alarms_manage": "ניהול התראות...",
   "alarms_title": "התראות",
   "app_description": "אפליקציית שעון יפה ומהודרת.",

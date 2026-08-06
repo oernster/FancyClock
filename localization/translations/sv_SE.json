@@ -32,6 +32,8 @@
   "alarm_volume": "Alarmvolym",
   "alarms": "Alarm",
   "alarms_enabled_master": "Alarm aktiverade",
+  "alarms_load_failed_text": "Skadade poster som hoppades över: {count}. Ett alarm som saknas måste ställas in igen.",
+  "alarms_load_failed_title": "Vissa alarm kunde inte läsas",
   "alarms_manage": "Hantera alarm...",
   "alarms_title": "Alarm",
   "app_description": "En vacker och snygg klockapplikation.",

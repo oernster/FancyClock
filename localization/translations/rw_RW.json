@@ -32,6 +32,8 @@
   "alarm_volume": "Ijwi ry'isaha ikangura",
   "alarms": "Amasaha akangura",
   "alarms_enabled_master": "Amasaha akangura arakora",
+  "alarms_load_failed_text": "Ibyanditswe byangiritse byasimbutswe: {count}. Isaha yo kubyutsa ibuze igomba kongera gushyirwaho.",
+  "alarms_load_failed_title": "Zimwe mu masaha yo kubyutsa ntizashoboye gusomwa",
   "alarms_manage": "Gucunga amasaha akangura...",
   "alarms_title": "Amasaha akangura",
   "app_description": "Une belle et élégante application d'horloge.",

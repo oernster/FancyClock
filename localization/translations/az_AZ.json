@@ -32,6 +32,8 @@
   "alarm_volume": "Zəngli saatın səsi",
   "alarms": "Zəngli saatlar",
   "alarms_enabled_master": "Zəngli saatlar aktivdir",
+  "alarms_load_failed_text": "Ötürülən zədəli qeydlər: {count}. Çatışmayan siqnal yenidən qurulmalıdır.",
+  "alarms_load_failed_title": "Bəzi siqnallar oxuna bilmədi",
   "alarms_manage": "Zəngli saatları idarə et...",
   "alarms_title": "Zəngli saatlar",
   "app_description": "Gözəl və təmtəraqlı saat tətbiqi.",

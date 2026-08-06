@@ -32,6 +32,8 @@
   "alarm_volume": "එලාම ශබ්දය",
   "alarms": "එලාම",
   "alarms_enabled_master": "එලාම සක්‍රීයයි",
+  "alarms_load_failed_text": "මඟ හැරි හානි වූ ඇතුළත් කිරීම්: {count}. නැති වූ ඕනෑම එලාමයක් නැවත සැකසිය යුතුය.",
+  "alarms_load_failed_title": "සමහර එලාම කියවීමට නොහැකි විය",
   "alarms_manage": "එලාම කළමනාකරණය...",
   "alarms_title": "එලාම",
   "app_description": "एक सुंदर और फैंसी घड़ी एप्लिकेशन।",

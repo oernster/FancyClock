@@ -32,6 +32,8 @@
   "alarm_volume": "Budilnik ovozi",
   "alarms": "Budilniklar",
   "alarms_enabled_master": "Budilniklar yoqilgan",
+  "alarms_load_failed_text": "O'tkazib yuborilgan shikastlangan yozuvlar: {count}. Yo'q signalni qaytadan o'rnatish kerak.",
+  "alarms_load_failed_title": "Ba'zi signallarni o'qib bo'lmadi",
   "alarms_manage": "Budilniklarni boshqarish...",
   "alarms_title": "Budilniklar",
   "app_description": "Красивое и модное приложение для часов.",

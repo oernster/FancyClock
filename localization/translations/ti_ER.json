@@ -32,6 +32,8 @@
   "alarm_volume": "ዓቐን ድምፂ መበራበሪ",
   "alarms": "መበራበሪታት",
   "alarms_enabled_master": "መበራበሪታት ንጡፋት",
+  "alarms_load_failed_text": "ዝተሰግሩ ዝተበላሸዉ መእተዊታት፦ {count}። ዝጠፍአ መንቕሒ እንደገና ክውቀር ኣለዎ።",
+  "alarms_load_failed_title": "ገሊኡ መንቕሒ ክንበብ ኣይተኻእለን",
   "alarms_manage": "መበራበሪታት ኣመሓድር...",
   "alarms_title": "መበራበሪታት",
   "app_description": "የሚያምር እና የሚያምር የሰዓት ማመልከቻ.",

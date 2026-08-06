@@ -32,6 +32,8 @@
   "alarm_volume": "የማንቂያ ድምፅ መጠን",
   "alarms": "ማንቂያዎች",
   "alarms_enabled_master": "ማንቂያዎች ነቅተዋል",
+  "alarms_load_failed_text": "የተበላሹ ግቤቶች ተዘለሉ፦ {count}። የጠፋ ማንቂያ እንደገና መዘጋጀት አለበት።",
+  "alarms_load_failed_title": "አንዳንድ ማንቂያዎችን ማንበብ አልተቻለም",
   "alarms_manage": "ማንቂያዎችን ያስተዳድሩ...",
   "alarms_title": "ማንቂያዎች",
   "app_description": "የሚያምር እና የሚያምር የሰዓት ማመልከቻ.",

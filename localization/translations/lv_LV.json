@@ -32,6 +32,8 @@
   "alarm_volume": "Modinātāja skaļums",
   "alarms": "Modinātāji",
   "alarms_enabled_master": "Modinātāji ieslēgti",
+  "alarms_load_failed_text": "Izlaisti bojāti ieraksti: {count}. Trūkstošais modinātājs jāiestata no jauna.",
+  "alarms_load_failed_title": "Dažus modinātājus neizdevās nolasīt",
   "alarms_manage": "Pārvaldīt modinātājus...",
   "alarms_title": "Modinātāji",
   "app_description": "Skaista un izsmalcināta pulksteņa aplikācija.",

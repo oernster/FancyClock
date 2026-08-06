@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import datetime, tzinfo
 from pathlib import Path
 from typing import Any, Protocol
@@ -29,7 +30,7 @@ class SettingsStore(Protocol):
     """Persists user settings as key-value pairs."""
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Return the stored value for ``key``, or ``default``."""
+        """Return the stored value for ``key``, else ``default``."""
         ...
 
     def set(self, key: str, value: Any | None) -> None:
@@ -41,7 +42,7 @@ class TranslationsRepository(Protocol):
     """Loads translation dictionaries by locale code."""
 
     def load(self, locale_code: str) -> dict[str, Any] | None:
-        """Return the translations for ``locale_code``, or ``None``."""
+        """Return the translations for ``locale_code``, else ``None``."""
         ...
 
 
@@ -77,11 +78,33 @@ class TimezoneCatalog(Protocol):
         ...
 
 
+@dataclass(frozen=True, slots=True)
+class AlarmLoad:
+    """The persisted state, together with what the load could not read.
+
+    A tolerant load is right for an alarm document: one unreadable entry must
+    never stop the application starting. Staying silent about it is not, since
+    a skipped entry is an alarm that will not ring; not ringing is the
+    worst thing an alarm clock can do. The counts travel back beside the state
+    so the caller can say so once, rather than the store deciding on its own
+    that nobody needs to know.
+    """
+
+    state: AlarmsState
+    skipped_alarms: int = 0
+    skipped_snoozes: int = 0
+
+    @property
+    def lost_entries(self) -> int:
+        """Return how many stored entries could not be read."""
+        return self.skipped_alarms + self.skipped_snoozes
+
+
 class AlarmStore(Protocol):
     """Persists the whole alarm document."""
 
-    def load(self) -> AlarmsState:
-        """Return the persisted state, or an empty state."""
+    def load(self) -> AlarmLoad:
+        """Return the persisted state plus what could not be read."""
         ...
 
     def save(self, state: AlarmsState) -> None:

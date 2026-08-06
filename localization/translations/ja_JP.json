@@ -32,6 +32,8 @@
   "alarm_volume": "アラーム音量",
   "alarms": "アラーム",
   "alarms_enabled_master": "アラーム有効",
+  "alarms_load_failed_text": "スキップした破損エントリ: {count}。見つからないアラームは設定し直してください。",
+  "alarms_load_failed_title": "一部のアラームを読み込めませんでした",
   "alarms_manage": "アラームを管理...",
   "alarms_title": "アラーム",
   "app_description": "美しくておしゃれな時計アプリケーション。",

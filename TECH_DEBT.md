@@ -6,14 +6,13 @@ This is a well-kept repository, so this file is short. `VERSION` and `stamp_vers
 
 ---
 
-## 1. Forty-two broad exception handlers, none with a stated reason
+## 1. Thirty-seven broad exception handlers, none with a stated reason
 
 `except Exception` (or bare `except`) across `fancyclock/`, with none of them saying why. They cluster and each cluster deserves a different answer:
 
-- **`infrastructure/json_alarm_store.py` (five handlers).** These are deliberate and the docstring says so: "tolerant of missing or bad data". The design consequence is worth writing down, because it is not obvious. A single malformed entry in the alarms file is silently skipped by the `continue` in the loop, so a user whose alarm file is partially corrupt loses that alarm with no message and no log line. For an alarm clock, silently not ringing is the worst failure mode available. The tolerance is right; the silence is not. Count what was dropped and surface it once.
-- **`infrastructure/` generally (six more).** `ntp_time_source`, `system_locale_probe`, `timezone_locale_map` and `translations_repo` plus `json_settings_store`: network, OS locale and file reads that should degrade to a default rather than crash a clock. Correct behaviour; each wants one line saying what it falls back to.
+- **`infrastructure/` generally (six).** `ntp_time_source`, `system_locale_probe`, `timezone_locale_map` and `translations_repo` plus `json_settings_store`: network, OS locale and file reads that should degrade to a default rather than crash a clock. Correct behaviour; each wants one line saying what it falls back to.
 - **`ui/` (twenty-seven).** Sixteen of those are in `window_locale.py` alone, with the rest spread across `analog_clock.py`, `window.py`, `window_drag.py`, `window_opacity.py` and `dialogs.py`. Qt paint and window-manager calls where an exception is worse than a missing visual effect, so the lowest value to change: give them the house `# noqa: BLE001` plus a reason and move on. The concentration in `window_locale.py` is the part worth a second look, because a retranslation pass that swallows sixteen different failures can leave the UI half-translated with nothing said.
-- **`application/` (three) and `main.py` (one).** The application layer is meant to be the reasoned part of the codebase, so a broad catch in `alarms.py` or `localization.py` is the least defensible of the four clusters. Narrow these to the exception actually expected.
+- **`application/` (three) and `main.py` (one).** The application layer is meant to be the reasoned part of the codebase, so a broad catch in `alarms.py` or `localization.py` is the least defensible of the three remaining clusters. Narrow these to the exception actually expected.
 
 None of this changes behaviour. It makes each decision reviewable, which is the point.
 

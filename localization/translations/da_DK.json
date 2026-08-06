@@ -32,6 +32,8 @@
   "alarm_volume": "Alarmlydstyrke",
   "alarms": "Alarmer",
   "alarms_enabled_master": "Alarmer aktiveret",
+  "alarms_load_failed_text": "Beskadigede poster sprunget over: {count}. En alarm, der mangler, skal indstilles igen.",
+  "alarms_load_failed_title": "Nogle alarmer kunne ikke læses",
   "alarms_manage": "Administrer alarmer...",
   "alarms_title": "Alarmer",
   "app_description": "En smuk og fancy ur-applikation.",

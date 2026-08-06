@@ -32,6 +32,8 @@
   "alarm_volume": "Weckerlautstärke",
   "alarms": "Wecker",
   "alarms_enabled_master": "Wecker aktiviert",
+  "alarms_load_failed_text": "Übersprungene beschädigte Einträge: {count}. Ein fehlender Wecker muss neu gestellt werden.",
+  "alarms_load_failed_title": "Einige Wecker konnten nicht gelesen werden",
   "alarms_manage": "Wecker verwalten...",
   "alarms_title": "Wecker",
   "app_description": "Eine schöne und ausgefallene Uhrenanwendung.",

@@ -294,3 +294,23 @@ def test_now_in_converts_to_the_requested_timezone() -> None:
     assert (local.hour, local.minute) == (7, 0)
     fallback = service.now_in("Nowhere/Bad")
     assert (fallback.hour, fallback.minute) == (6, 0)
+
+
+def test_a_clean_load_reports_nothing_lost() -> None:
+    service, _store, _clock = make_service(utc(2026, 7, 3, 6, 0))
+    assert service.entries_lost_on_load == 0
+
+
+def test_the_service_reports_what_the_load_could_not_read() -> None:
+    """Both kinds of loss are surfaced, so the count the user sees is whole."""
+    now = utc(2026, 7, 3, 6, 0)
+    store = FakeStore(skipped_alarms=2, skipped_snoozes=1)
+    service = AlarmService(
+        store=store,
+        catalog=FakeCatalog(),
+        clock=FakeClock(now),
+        time_service=TimeService(source=FakeTimeSource(now), clock=FakeClock(now)),
+        id_factory=id_factory(),
+        porter=FakePorter(),
+    )
+    assert service.entries_lost_on_load == 3

@@ -32,6 +32,8 @@
   "alarm_volume": "알람 음량",
   "alarms": "알람",
   "alarms_enabled_master": "알람 사용",
+  "alarms_load_failed_text": "건너뛴 손상된 항목: {count}. 없어진 알람은 다시 설정해야 합니다.",
+  "alarms_load_failed_title": "일부 알람을 읽을 수 없습니다",
   "alarms_manage": "알람 관리...",
   "alarms_title": "알람",
   "app_description": "아름답고 멋진 시계 응용 프로그램입니다.",

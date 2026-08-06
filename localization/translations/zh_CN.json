@@ -32,6 +32,8 @@
   "alarm_volume": "闹钟音量",
   "alarms": "闹钟",
   "alarms_enabled_master": "已启用闹钟",
+  "alarms_load_failed_text": "已跳过的损坏条目：{count}。缺少的闹钟需要重新设置。",
+  "alarms_load_failed_title": "部分闹钟无法读取",
   "alarms_manage": "管理闹钟...",
   "alarms_title": "闹钟",
   "app_description": "一个美丽而花哨的时钟应用程序。",

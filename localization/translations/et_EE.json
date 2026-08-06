@@ -32,6 +32,8 @@
   "alarm_volume": "Äratuse helitugevus",
   "alarms": "Äratused",
   "alarms_enabled_master": "Äratused lubatud",
+  "alarms_load_failed_text": "Vahele jäetud rikutud kirjed: {count}. Puuduv äratus tuleb uuesti seada.",
+  "alarms_load_failed_title": "Mõnda äratust ei õnnestunud lugeda",
   "alarms_manage": "Halda äratusi...",
   "alarms_title": "Äratused",
   "app_description": "Ilus ja uhke kellarakendus.",

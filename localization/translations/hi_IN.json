@@ -32,6 +32,8 @@
   "alarm_volume": "अलार्म की आवाज़",
   "alarms": "अलार्म",
   "alarms_enabled_master": "अलार्म सक्षम",
+  "alarms_load_failed_text": "छोड़ी गई क्षतिग्रस्त प्रविष्टियाँ: {count}। कोई भी अनुपस्थित अलार्म फिर से सेट करना होगा।",
+  "alarms_load_failed_title": "कुछ अलार्म पढ़े नहीं जा सके",
   "alarms_manage": "अलार्म प्रबंधित करें...",
   "alarms_title": "अलार्म",
   "app_description": "एक सुंदर और फैंसी घड़ी एप्लिकेशन।",

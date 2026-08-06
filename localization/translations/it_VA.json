@@ -32,6 +32,8 @@
   "alarm_volume": "Volume sveglia",
   "alarms": "Sveglie",
   "alarms_enabled_master": "Sveglie attive",
+  "alarms_load_failed_text": "Voci danneggiate ignorate: {count}. Qualsiasi sveglia mancante deve essere impostata di nuovo.",
+  "alarms_load_failed_title": "Non è stato possibile leggere alcune sveglie",
   "alarms_manage": "Gestisci sveglie...",
   "alarms_title": "Sveglie",
   "app_description": "Una bella e fantasiosa applicazione dell'orologio.",

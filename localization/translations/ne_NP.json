@@ -32,6 +32,8 @@
   "alarm_volume": "अलार्मको आवाज",
   "alarms": "अलार्महरू",
   "alarms_enabled_master": "अलार्म सक्षम",
+  "alarms_load_failed_text": "छाडिएका बिग्रिएका प्रविष्टिहरू: {count}। हराएको अलार्म फेरि सेट गर्नुपर्छ।",
+  "alarms_load_failed_title": "केही अलार्महरू पढ्न सकिएन",
   "alarms_manage": "अलार्म व्यवस्थापन...",
   "alarms_title": "अलार्महरू",
   "app_description": "एक सुंदर और फैंसी घड़ी एप्लिकेशन।",

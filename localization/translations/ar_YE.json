@@ -32,6 +32,8 @@
   "alarm_volume": "مستوى صوت المنبه",
   "alarms": "المنبهات",
   "alarms_enabled_master": "المنبهات مفعلة",
+  "alarms_load_failed_text": "الإدخالات التالفة التي تم تخطيها: {count}. أي منبه مفقود يجب ضبطه من جديد.",
+  "alarms_load_failed_title": "تعذّر قراءة بعض المنبهات",
   "alarms_manage": "إدارة المنبهات...",
   "alarms_title": "المنبهات",
   "app_description": "تطبيق ساعة جميل وفاخر.",

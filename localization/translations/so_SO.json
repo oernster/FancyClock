@@ -32,6 +32,8 @@
   "alarm_volume": "Codka qaylodhaanta",
   "alarms": "Qaylodhaanta",
   "alarms_enabled_master": "Qaylodhaantu waa shaqaynaysaa",
+  "alarms_load_failed_text": "Gelinta burburtay ee la boodey: {count}. Digniin kasta oo maqan waa in dib loo dejiyo.",
+  "alarms_load_failed_title": "Qaar ka mid ah digniinaha lama akhrin karin",
   "alarms_manage": "Maamul qaylodhaanta...",
   "alarms_title": "Qaylodhaanta",
   "app_description": "تطبيق ساعة جميل وفاخر.",

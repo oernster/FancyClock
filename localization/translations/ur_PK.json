@@ -32,6 +32,8 @@
   "alarm_volume": "الارم کی آواز",
   "alarms": "الارم",
   "alarms_enabled_master": "الارم فعال",
+  "alarms_load_failed_text": "چھوڑی گئی خراب اندراجات: {count}۔ کوئی بھی غائب الارم دوبارہ مقرر کرنا ہوگا۔",
+  "alarms_load_failed_title": "کچھ الارم پڑھے نہیں جا سکے",
   "alarms_manage": "الارم منظم کریں...",
   "alarms_title": "الارم",
   "app_description": "एक सुंदर और फैंसी घड़ी एप्लिकेशन।",

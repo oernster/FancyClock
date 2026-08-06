@@ -32,6 +32,8 @@
   "alarm_volume": "بلندی صدای هشدار",
   "alarms": "هشدارها",
   "alarms_enabled_master": "هشدارها فعال",
+  "alarms_load_failed_text": "ورودی‌های آسیب‌دیدهٔ نادیده‌گرفته‌شده: {count}. هر هشدار جاافتاده باید دوباره تنظیم شود.",
+  "alarms_load_failed_title": "برخی از هشدارها خوانده نشدند",
   "alarms_manage": "مدیریت هشدارها...",
   "alarms_title": "هشدارها",
   "app_description": "یک برنامه ساعت زیبا و فانتزی.",

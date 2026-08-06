@@ -32,6 +32,8 @@
   "alarm_volume": "Ljóðstyrki á vekjara",
   "alarms": "Vekjarar",
   "alarms_enabled_master": "Vekjarar virknir",
+  "alarms_load_failed_text": "Skaddar skrásetingar sleptar: {count}. Ein vekjari sum vantar má setast av nýggjum.",
+  "alarms_load_failed_title": "Nakrar vekjarar kundu ikki lesast",
   "alarms_manage": "Stýr vekjarum...",
   "alarms_title": "Vekjarar",
   "app_description": "Ein vakur og fancy klokka umsókn.",

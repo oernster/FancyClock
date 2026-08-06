@@ -4,7 +4,13 @@ from __future__ import annotations
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, QTimeZone
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QMainWindow, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QMessageBox,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 from fancyclock.application.alarms import AlarmService
 from fancyclock.application.localization import LocalizationService
@@ -33,6 +39,15 @@ FADE_DURATION_MS = 1000
 CLOCK_SPACING_PX = 10
 FADE_START_OPACITY = 0.0
 FALLBACK_WINDOW_TITLE = "Fancy Clock"
+
+# Saying the saved alarms did not load whole. The delay lets the window
+# finish drawing first, so the warning appears over a clock rather than
+# over nothing.
+ALARM_LOAD_FAILED_TITLE_KEY = "alarms_load_failed_title"
+ALARM_LOAD_FAILED_TEXT_KEY = "alarms_load_failed_text"
+COUNT_PLACEHOLDER = "{count}"
+ALARM_WARNING_DELAY_MS = 400
+NOTHING_LOST = 0
 
 
 class ClockWindow(
@@ -79,6 +94,9 @@ class ClockWindow(
         self.time_zone = QTimeZone.systemTimeZone()
 
         self._opacity_supported = self._supports_window_opacity()
+
+        self.alarm_service = alarm_service
+        self._alarm_load_warned = False
 
         self.alarms_controller = None
         if alarm_service is not None:
@@ -167,6 +185,34 @@ class ClockWindow(
             self.animation.setStartValue(FADE_START_OPACITY)
             self.animation.setEndValue(self.settings.window_opacity())
             self.animation.start()
+        self._warn_once_about_unreadable_alarms()
+
+    def _warn_once_about_unreadable_alarms(self) -> None:
+        """Say once that the saved alarms file was not read whole.
+
+        Interrupting on startup is the right weight for this: an alarm that
+        was dropped will not ring, so the user would otherwise find out by
+        oversleeping. It is said once per run, never on a clean load, then
+        deferred so it appears over a drawn window rather than a blank one.
+        """
+        if self._alarm_load_warned or self.alarm_service is None:
+            return
+        self._alarm_load_warned = True
+        lost = self.alarm_service.entries_lost_on_load
+        if lost <= NOTHING_LOST:
+            return
+        QTimer.singleShot(
+            ALARM_WARNING_DELAY_MS, lambda: self._show_alarm_load_warning(lost)
+        )
+
+    def _show_alarm_load_warning(self, lost: int) -> None:
+        """Show the modal naming how many saved entries could not be read."""
+        text = self.i18n_manager.get_translation(ALARM_LOAD_FAILED_TEXT_KEY)
+        QMessageBox.warning(
+            self,
+            self.i18n_manager.get_translation(ALARM_LOAD_FAILED_TITLE_KEY),
+            text.replace(COUNT_PLACEHOLDER, self.i18n_manager.format_number(lost)),
+        )
 
     def keyPressEvent(self, event):  # noqa: N802 (Qt override)
         if self._handle_opacity_key(event):

@@ -32,6 +32,8 @@
   "alarm_volume": "Volume do alarme",
   "alarms": "Alarmes",
   "alarms_enabled_master": "Alarmes ativados",
+  "alarms_load_failed_text": "Entradas danificadas ignoradas: {count}. Qualquer alarme em falta tem de ser definido de novo.",
+  "alarms_load_failed_title": "Não foi possível ler alguns alarmes",
   "alarms_manage": "Gerir alarmes...",
   "alarms_title": "Alarmes",
   "app_description": "Uma aplicação de relógio bonita e elegante.",

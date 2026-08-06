@@ -32,6 +32,8 @@
   "alarm_volume": "Alarmvolum",
   "alarms": "Alarmer",
   "alarms_enabled_master": "Alarmer aktivert",
+  "alarms_load_failed_text": "Skadde oppføringer hoppet over: {count}. En alarm som mangler må stilles på nytt.",
+  "alarms_load_failed_title": "Noen alarmer kunne ikke leses",
   "alarms_manage": "Administrer alarmer...",
   "alarms_title": "Alarmer",
   "app_description": "En vakker og fancy klokkeapplikasjon.",

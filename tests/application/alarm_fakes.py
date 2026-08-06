@@ -17,6 +17,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from fancyclock.application.alarms import AlarmService
+from fancyclock.application.ports import AlarmLoad
 from fancyclock.application.time_service import TimeService
 from fancyclock.domain.alarms import Alarm, AlarmsState
 
@@ -28,12 +29,30 @@ def utc(*args) -> datetime:
 
 
 class FakeStore:
-    def __init__(self, state: AlarmsState | None = None) -> None:
+    """An alarm store that reports whatever the test says the load lost.
+
+    ``skipped_alarms`` and ``skipped_snoozes`` default to zero, so the common
+    case reads as a clean load and only the tests that care about damage have
+    to mention it.
+    """
+
+    def __init__(
+        self,
+        state: AlarmsState | None = None,
+        skipped_alarms: int = 0,
+        skipped_snoozes: int = 0,
+    ) -> None:
         self.state = state or AlarmsState.empty()
+        self.skipped_alarms = skipped_alarms
+        self.skipped_snoozes = skipped_snoozes
         self.save_count = 0
 
-    def load(self) -> AlarmsState:
-        return self.state
+    def load(self) -> AlarmLoad:
+        return AlarmLoad(
+            state=self.state,
+            skipped_alarms=self.skipped_alarms,
+            skipped_snoozes=self.skipped_snoozes,
+        )
 
     def save(self, state: AlarmsState) -> None:
         self.state = state

@@ -32,6 +32,8 @@
   "alarm_volume": "Leʻo ʻo e meʻa fakaʻā",
   "alarms": "Ngaahi meʻa fakaʻā",
   "alarms_enabled_master": "Kuo fakangofua e ngaahi meʻa fakaʻā",
+  "alarms_load_failed_text": "Ngaahi hū maumau naʻe laka atu: {count}. Ko ha fakaʻilo ʻoku puli kuo pau ke toe fokotuʻu.",
+  "alarms_load_failed_title": "Naʻe ʻikai lava ke lau ha niʻihi ʻo e fakaʻilo",
   "alarms_manage": "Tokangaʻi e ngaahi meʻa fakaʻā...",
   "alarms_title": "Ngaahi meʻa fakaʻā",
   "app_description": "Une belle et élégante application d'horloge.",

@@ -32,6 +32,8 @@
   "alarm_volume": "Volume alarm",
   "alarms": "Alarm",
   "alarms_enabled_master": "Alarm diaktifkan",
+  "alarms_load_failed_text": "Entri rusak yang dilewati: {count}. Alarm yang hilang harus disetel ulang.",
+  "alarms_load_failed_title": "Beberapa alarm tidak dapat dibaca",
   "alarms_manage": "Kelola alarm...",
   "alarms_title": "Alarm",
   "app_description": "Aplikasi jam yang cantik dan mewah.",

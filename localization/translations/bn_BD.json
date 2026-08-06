@@ -32,6 +32,8 @@
   "alarm_volume": "অ্যালার্মের ভলিউম",
   "alarms": "অ্যালার্ম",
   "alarms_enabled_master": "অ্যালার্ম চালু",
+  "alarms_load_failed_text": "বাদ দেওয়া ক্ষতিগ্রস্ত এন্ট্রি: {count}। অনুপস্থিত অ্যালার্ম আবার সেট করতে হবে।",
+  "alarms_load_failed_title": "কিছু অ্যালার্ম পড়া যায়নি",
   "alarms_manage": "অ্যালার্ম পরিচালনা...",
   "alarms_title": "অ্যালার্ম",
   "app_description": "একটি সুন্দর এবং অভিনব ঘড়ি অ্যাপ্লিকেশন ।",

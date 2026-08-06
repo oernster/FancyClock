@@ -32,6 +32,8 @@
   "alarm_volume": "Alarm volume",
   "alarms": "Alarms",
   "alarms_enabled_master": "Alarms enabled",
+  "alarms_load_failed_text": "Damaged entries skipped: {count}. Any alarm that is missing must be set again.",
+  "alarms_load_failed_title": "Some alarms could not be read",
   "alarms_manage": "Manage alarms...",
   "alarms_title": "Alarms",
   "app_description": "A beautiful and fancy clock application.",

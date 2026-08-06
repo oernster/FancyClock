@@ -32,6 +32,8 @@
   "alarm_volume": "Žadintuvo garsumas",
   "alarms": "Žadintuvai",
   "alarms_enabled_master": "Žadintuvai įjungti",
+  "alarms_load_failed_text": "Praleisti sugadinti įrašai: {count}. Trūkstamą žadintuvą reikia nustatyti iš naujo.",
+  "alarms_load_failed_title": "Kai kurių žadintuvų nepavyko nuskaityti",
   "alarms_manage": "Tvarkyti žadintuvus...",
   "alarms_title": "Žadintuvai",
   "app_description": "Graži ir išgalvota laikrodžio aplikacija.",

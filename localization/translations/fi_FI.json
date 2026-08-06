@@ -32,6 +32,8 @@
   "alarm_volume": "Herätyksen äänenvoimakkuus",
   "alarms": "Herätykset",
   "alarms_enabled_master": "Herätykset käytössä",
+  "alarms_load_failed_text": "Ohitetut vioittuneet merkinnät: {count}. Puuttuva herätys on asetettava uudelleen.",
+  "alarms_load_failed_title": "Joitakin herätyksiä ei voitu lukea",
   "alarms_manage": "Hallitse herätyksiä...",
   "alarms_title": "Herätykset",
   "app_description": "Kaunis ja hieno kellosovellus.",

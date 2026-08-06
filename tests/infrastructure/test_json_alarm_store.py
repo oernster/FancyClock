@@ -51,23 +51,23 @@ def test_save_then_load_roundtrips_everything(tmp_path: Path) -> None:
     store = JsonAlarmStore(config_dir=tmp_path)
     state = full_state()
     store.save(state)
-    assert store.load() == state
+    assert store.load().state == state
 
 
 def test_missing_file_loads_empty_state(tmp_path: Path) -> None:
-    assert JsonAlarmStore(config_dir=tmp_path).load() == AlarmsState.empty()
+    assert JsonAlarmStore(config_dir=tmp_path).load().state == AlarmsState.empty()
 
 
 def test_corrupt_json_loads_empty_state(tmp_path: Path) -> None:
     store = JsonAlarmStore(config_dir=tmp_path)
     store.alarms_path().write_text("{nope", encoding="utf-8")
-    assert store.load() == AlarmsState.empty()
+    assert store.load().state == AlarmsState.empty()
 
 
 def test_non_dict_document_loads_empty_state(tmp_path: Path) -> None:
     store = JsonAlarmStore(config_dir=tmp_path)
     store.alarms_path().write_text("[1, 2]", encoding="utf-8")
-    assert store.load() == AlarmsState.empty()
+    assert store.load().state == AlarmsState.empty()
 
 
 def test_invalid_entries_are_skipped_on_load(tmp_path: Path) -> None:
@@ -95,7 +95,7 @@ def test_invalid_entries_are_skipped_on_load(tmp_path: Path) -> None:
         ],
     }
     store.alarms_path().write_text(json.dumps(document), encoding="utf-8")
-    state = store.load()
+    state = store.load().state
     assert [a.alarm_id for a in state.alarms] == ["good"]
     assert len(state.snooze_states) == 1
     assert state.snooze_states[0].alarm_id == "good"
@@ -106,7 +106,7 @@ def test_master_enabled_survives_odd_values(tmp_path: Path) -> None:
     store = JsonAlarmStore(config_dir=tmp_path)
     document = {"version": 1, "master_enabled": False, "alarms": []}
     store.alarms_path().write_text(json.dumps(document), encoding="utf-8")
-    assert store.load().master_enabled is False
+    assert store.load().state.master_enabled is False
 
 
 def test_porter_roundtrip(tmp_path: Path) -> None:
@@ -165,3 +165,76 @@ def test_porter_import_malformed_alarm_entry_raises(tmp_path: Path) -> None:
     target.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(AlarmError):
         JsonAlarmPorter().import_alarms(target)
+
+
+def test_load_counts_a_malformed_alarm_entry(tmp_path) -> None:
+    """A bad entry is skipped as before, now counted rather than hidden."""
+    store = JsonAlarmStore(config_dir=tmp_path)
+    store.alarms_path().write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "alarms": [{"id": "only-an-id"}],
+                "snooze_states": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    load = store.load()
+    assert load.state.alarms == ()
+    assert load.skipped_alarms == 1
+    assert load.lost_entries == 1
+
+
+def test_load_counts_a_malformed_snooze_record(tmp_path) -> None:
+    store = JsonAlarmStore(config_dir=tmp_path)
+    store.alarms_path().write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "alarms": [],
+                "snooze_states": [{"id": "x"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    load = store.load()
+    assert load.skipped_snoozes == 1
+    assert load.skipped_alarms == 0
+
+
+def test_load_reports_the_whole_file_when_the_json_is_unreadable(tmp_path) -> None:
+    store = JsonAlarmStore(config_dir=tmp_path)
+    store.alarms_path().write_text("{not json", encoding="utf-8")
+    load = store.load()
+    assert load.state.alarms == ()
+    assert load.lost_entries == 1
+
+
+def test_load_reports_the_whole_file_when_the_document_is_the_wrong_shape(
+    tmp_path,
+) -> None:
+    store = JsonAlarmStore(config_dir=tmp_path)
+    store.alarms_path().write_text(json.dumps([1, 2, 3]), encoding="utf-8")
+    load = store.load()
+    assert load.lost_entries == 1
+
+
+def test_a_missing_file_is_a_first_run_rather_than_damage(tmp_path) -> None:
+    load = JsonAlarmStore(config_dir=tmp_path / "absent").load()
+    assert load.state.alarms == ()
+    assert load.lost_entries == 0
+
+
+def test_an_unparseable_watermark_loses_no_entry(tmp_path) -> None:
+    """The watermark falls back to None; nothing the user set is lost by it."""
+    store = JsonAlarmStore(config_dir=tmp_path)
+    store.alarms_path().write_text(
+        json.dumps(
+            {"version": 1, "alarms": [], "last_evaluated_utc": "not-a-timestamp"}
+        ),
+        encoding="utf-8",
+    )
+    load = store.load()
+    assert load.state.last_evaluated_utc is None
+    assert load.lost_entries == 0

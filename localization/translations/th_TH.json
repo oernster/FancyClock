@@ -32,6 +32,8 @@
   "alarm_volume": "ระดับเสียงปลุก",
   "alarms": "นาฬิกาปลุก",
   "alarms_enabled_master": "เปิดใช้นาฬิกาปลุก",
+  "alarms_load_failed_text": "รายการที่เสียหายซึ่งข้ามไป: {count} การปลุกที่หายไปต้องตั้งใหม่",
+  "alarms_load_failed_title": "ไม่สามารถอ่านการปลุกบางรายการได้",
   "alarms_manage": "จัดการนาฬิกาปลุก...",
   "alarms_title": "นาฬิกาปลุก",
   "app_description": "แอปพลิเคชันนาฬิกาที่สวยงามและหรูหรา",

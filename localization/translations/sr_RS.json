@@ -32,6 +32,8 @@
   "alarm_volume": "Јачина аларма",
   "alarms": "Аларми",
   "alarms_enabled_master": "Аларми укључени",
+  "alarms_load_failed_text": "Прескочени оштећени уноси: {count}. Аларм који недостаје мора се поново подесити.",
+  "alarms_load_failed_title": "Неке аларме није било могуће прочитати",
   "alarms_manage": "Управљај алармима...",
   "alarms_title": "Аларми",
   "app_description": "Lijepa i otmjena aplikacija za satove.",

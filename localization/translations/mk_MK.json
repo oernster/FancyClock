@@ -32,6 +32,8 @@
   "alarm_volume": "Јачина на алармот",
   "alarms": "Аларми",
   "alarms_enabled_master": "Алармите се вклучени",
+  "alarms_load_failed_text": "Прескокнати оштетени записи: {count}. Аларм што недостасува мора повторно да се постави.",
+  "alarms_load_failed_title": "Некои аларми не можеа да се прочитаат",
   "alarms_manage": "Управувај со алармите...",
   "alarms_title": "Аларми",
   "app_description": "Lijepa i otmjena aplikacija za satove.",

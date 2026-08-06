@@ -32,6 +32,8 @@
   "alarm_volume": "Volum tal-allarm",
   "alarms": "Allarmi",
   "alarms_enabled_master": "Allarmi attivati",
+  "alarms_load_failed_text": "Entrati bil-ħsara maqbuża: {count}. Kull alarm nieqes irid jiġi ssettjat mill-ġdid.",
+  "alarms_load_failed_title": "Xi alarmi ma setgħux jinqraw",
   "alarms_manage": "Immaniġġja l-allarmi...",
   "alarms_title": "Allarmi",
   "app_description": "Una bella e fantasiosa applicazione dell'orologio.",

@@ -32,6 +32,8 @@
   "alarm_volume": "Iterartitsissutip nipaa",
   "alarms": "Iterartitsissutit",
   "alarms_enabled_master": "Iterartitsissutit atorneqarput",
+  "alarms_load_failed_text": "Aserorsimasut qaangerneqartut: {count}. Sianerfissaq amigaatigineqartoq nutaamik aaqqissuunneqassaaq.",
+  "alarms_load_failed_title": "Ilaat sianerneqartartut atuarneqarsinnaanngillat",
   "alarms_manage": "Iterartitsissutit aqutsigit...",
   "alarms_title": "Iterartitsissutit",
   "app_description": "En smuk og fancy ur-applikation.",

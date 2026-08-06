@@ -32,6 +32,8 @@
   "alarm_volume": "Hljóðstyrkur vekjara",
   "alarms": "Vekjarar",
   "alarms_enabled_master": "Vekjarar virkir",
+  "alarms_load_failed_text": "Skemmdar færslur sem sleppt var: {count}. Vekjaraklukku sem vantar þarf að stilla aftur.",
+  "alarms_load_failed_title": "Ekki tókst að lesa sumar vekjaraklukkur",
   "alarms_manage": "Stjórna vekjurum...",
   "alarms_title": "Vekjarar",
   "app_description": "En smuk og fancy ur-applikation.",

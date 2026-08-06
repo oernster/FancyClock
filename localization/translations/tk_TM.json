@@ -32,6 +32,8 @@
   "alarm_volume": "Oýarýjynyň sesi",
   "alarms": "Oýarýjylar",
   "alarms_enabled_master": "Oýarýjylar işjeň",
+  "alarms_load_failed_text": "Geçilen zaýalanan ýazgylar: {count}. Ýitirilen duýduryş täzeden gurulmaly.",
+  "alarms_load_failed_title": "Käbir duýduryşlary okap bolmady",
   "alarms_manage": "Oýarýjylary dolandyrmak...",
   "alarms_title": "Oýarýjylar",
   "app_description": "Красивое и модное приложение для часов.",

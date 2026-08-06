@@ -32,6 +32,8 @@
   "alarm_volume": "Glasnost budilke",
   "alarms": "Budilke",
   "alarms_enabled_master": "Budilke omogočene",
+  "alarms_load_failed_text": "Preskočeni poškodovani vnosi: {count}. Manjkajočo budilko je treba nastaviti znova.",
+  "alarms_load_failed_title": "Nekaterih budilk ni bilo mogoče prebrati",
   "alarms_manage": "Upravljaj budilke...",
   "alarms_title": "Budilke",
   "app_description": "Lepa in elegantna aplikacija ure.",

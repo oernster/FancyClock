@@ -32,6 +32,8 @@
   "alarm_volume": "Volume de l'alarme",
   "alarms": "Alarmes",
   "alarms_enabled_master": "Alarmes activées",
+  "alarms_load_failed_text": "Entrées endommagées ignorées : {count}. Toute alarme manquante doit être définie à nouveau.",
+  "alarms_load_failed_title": "Certaines alarmes n'ont pas pu être lues",
   "alarms_manage": "Gérer les alarmes...",
   "alarms_title": "Alarmes",
   "app_description": "Une belle et élégante application d'horloge.",

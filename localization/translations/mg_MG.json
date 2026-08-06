@@ -32,6 +32,8 @@
   "alarm_volume": "Haavon'ny feon'ny fanairana",
   "alarms": "Fanairana",
   "alarms_enabled_master": "Alefa ny fanairana",
+  "alarms_load_failed_text": "Fidirana simba nodinganina: {count}. Tsy maintsy averina apetraka ny famohazana tsy hita.",
+  "alarms_load_failed_title": "Tsy voavaky ny famohazana sasany",
   "alarms_manage": "Mitantana ny fanairana...",
   "alarms_title": "Fanairana",
   "app_description": "Une belle et élégante application d'horloge.",

@@ -32,6 +32,8 @@
   "alarm_volume": "ລະດັບສຽງປຸກ",
   "alarms": "ໂມງປຸກ",
   "alarms_enabled_master": "ເປີດໃຊ້ໂມງປຸກ",
+  "alarms_load_failed_text": "ລາຍການທີ່ເສຍຫາຍທີ່ຂ້າມໄປ: {count}. ໂມງປຸກທີ່ຂາດຫາຍຕ້ອງຕັ້ງໃໝ່.",
+  "alarms_load_failed_title": "ບໍ່ສາມາດອ່ານບາງໂມງປຸກໄດ້",
   "alarms_manage": "ຈັດການໂມງປຸກ...",
   "alarms_title": "ໂມງປຸກ",
   "app_description": "แอปพลิเคชันนาฬิกาที่สวยงามและหรูหรา",

@@ -32,6 +32,8 @@
   "alarm_volume": "Volumi i alarmit",
   "alarms": "Alarmet",
   "alarms_enabled_master": "Alarmet të aktivizuara",
+  "alarms_load_failed_text": "Zëra të dëmtuar të anashkaluar: {count}. Çdo alarm që mungon duhet vendosur sërish.",
+  "alarms_load_failed_title": "Disa alarme nuk u lexuan dot",
   "alarms_manage": "Menaxho alarmet...",
   "alarms_title": "Alarmet",
   "app_description": "Lijepa i otmjena aplikacija za satove.",
