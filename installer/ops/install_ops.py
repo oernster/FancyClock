@@ -99,7 +99,11 @@ def _swap_in_bundle(staging_dir: Path, target_dir: Path) -> None:
         )
         try:
             target_dir.rename(backup_dir)
-        except Exception as exc:
+        except OSError as exc:
+            # A locked file, a permission refusal or a vanished volume all
+            # arrive as OSError, all meaning the same thing to the user: the
+            # existing install cannot be moved aside, so stop before anything
+            # is overwritten.
             raise InstallerOperationError(
                 f"Unable to replace existing install at {target_dir}"
             ) from exc
@@ -111,12 +115,18 @@ def _swap_in_bundle(staging_dir: Path, target_dir: Path) -> None:
             # Likely cross-volume move. Copy instead.
             shutil.copytree(staging_dir, target_dir, dirs_exist_ok=False)
             shutil.rmtree(staging_dir, ignore_errors=True)
-    except Exception:
-        # Rollback.
+    except OSError:
+        # The move and the cross-volume copy both fail as OSError, including
+        # shutil.Error, which derives from it. Put the previous install back
+        # before re-raising, so a failed upgrade leaves a working application
+        # rather than nothing at all.
         if backup_dir and backup_dir.exists() and not target_dir.exists():
             try:
                 backup_dir.rename(target_dir)
-            except Exception:
+            except OSError:
+                # The rollback itself failed. Nothing further can be done here
+                # and the original failure is the one worth reporting, so let
+                # it propagate untouched.
                 pass
         raise
     finally:
@@ -185,7 +195,9 @@ def _deploy_runtime_icon_assets(*, install_dir: Path) -> None:
     if ico.exists():
         try:
             shutil.copy2(ico, install_dir / DEPLOYED_ICO_NAME)
-        except Exception:
+        except OSError:
+            # Icon assets are cosmetic. Failing to place one degrades to Qt's
+            # default icon rather than a failed installation.
             pass
 
     for name in DEPLOYED_PNG_NAMES:
@@ -194,8 +206,9 @@ def _deploy_runtime_icon_assets(*, install_dir: Path) -> None:
             continue
         try:
             shutil.copy2(src, install_dir / name)
-        except Exception:
-            pass
+        except OSError:
+            # As above: a missing PNG size costs appearance, not function.
+            continue
 
 
 def install_new(
@@ -284,10 +297,11 @@ def upgrade_or_reinstall(
             # Install to new location, then delete old.
             _swap_in_bundle(staging_dir, target_dir)
 
-            try:
-                shutil.rmtree(current_install_dir, ignore_errors=True)
-            except Exception:
-                pass
+            # ignore_errors already swallows every filesystem failure, so the
+            # try/except that used to wrap this could never fire. Leaving the
+            # old directory behind is the accepted outcome: the new install is
+            # already in place and working.
+            shutil.rmtree(current_install_dir, ignore_errors=True)
 
         # Ensure icon assets are present for the active install location.
         _deploy_runtime_icon_assets(install_dir=target_dir)
@@ -345,7 +359,10 @@ def _apply_shortcuts(
         # If user unchecks during reinstall/upgrade, remove it.
         try:
             sp.desktop_lnk.unlink(missing_ok=True)
-        except Exception:
+        except OSError:
+            # A shortcut held open or on a disconnected profile share cannot be
+            # removed. The install itself is unaffected, so leave the stale
+            # shortcut rather than failing the operation over it.
             pass
 
     if opts.create_start_menu_shortcut:
@@ -353,5 +370,7 @@ def _apply_shortcuts(
     else:
         try:
             sp.start_menu_lnk.unlink(missing_ok=True)
-        except Exception:
+        except OSError:
+            # As for the desktop shortcut above: a stale entry is preferable to
+            # a failed install.
             pass

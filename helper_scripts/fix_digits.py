@@ -89,7 +89,11 @@ for path in glob.glob(os.path.join(BASE, "*.json")):
                 digits = list(parsed)
             else:
                 digits = None
-        except Exception:
+        except (ValueError, SyntaxError):
+            # literal_eval rejects anything that is not a Python literal, which
+            # is exactly the case this is looking for: a digits value that was
+            # written as prose rather than as a list. Fall through and let the
+            # locale-based assignment below supply one.
             digits = None
 
     # 2) If no usable digits, assign based on locale

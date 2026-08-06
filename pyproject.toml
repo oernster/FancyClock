@@ -37,7 +37,14 @@ line-length = 88
 extend-exclude = ["venv", "build", "dist"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I"]
+# BLE is selected on top of the defaults so an unexplained blind `except
+# Exception` fails the lint rather than relying on review to spot it. Every
+# handler in the tree is either narrowed to the exceptions actually expected or
+# marked `# noqa: BLE001` with the fallback it takes written beside it. There
+# is no per-file ignore: the installer does the most privileged work in the
+# product, so exempting it would announce a rule while excusing the code that
+# most needs it.
+select = ["E4", "E7", "E9", "F", "I", "BLE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

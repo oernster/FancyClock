@@ -45,10 +45,7 @@ class HeaderFitController:
         # Lock in a minimum size based on the post-style size hint. This prevents
         # the header row from being sized to a slightly-too-small height/width
         # due to font metric rounding.
-        try:
-            title.setMinimumSize(title.sizeHint())
-        except Exception:
-            pass
+        title.setMinimumSize(title.sizeHint())
 
     def schedule(self) -> None:
         if self._scheduled:
@@ -110,7 +107,7 @@ class HeaderFitController:
         """Ensure the whole installer UI has enough room for all labels.
 
         This does not attempt to make *arbitrarily long* dynamic strings fit
-        horizontally (e.g. very long paths in editable controls), but it does
+        horizontally (e.g. very long paths in editable controls). It does
         ensure the window can expand to fit the layout's size hint so that
         labels are not clipped by an artificially-small window.
         """
@@ -158,7 +155,9 @@ class HeaderFitController:
             return title.contentsRect().width() >= int(
                 tight.width() + 4
             ) and title.contentsRect().height() >= int(tight.height() + 4)
-        except Exception:
+        except RuntimeError:
+            # The label's C++ object has gone during a resize. Report the
+            # header as fitting so nothing tries to shrink a dead widget.
             return True
 
     @staticmethod
@@ -168,8 +167,10 @@ class HeaderFitController:
             tight = fm.tightBoundingRect(title.text())
             req_w = int(tight.width() + 6)
             req_h = int(tight.height() + 6)
-        except Exception:
-            # Fallback: conservative.
+        except RuntimeError:
+            # tightBoundingRect can be unavailable for the loaded font backend.
+            # Fall back to the advance width, which over-estimates slightly and
+            # so errs towards a header that is too roomy rather than clipped.
             req_w = int(fm.horizontalAdvance(title.text()) + 10)
             req_h = int(fm.height() + 6)
         return req_w, req_h

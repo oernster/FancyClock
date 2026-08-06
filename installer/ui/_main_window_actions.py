@@ -26,37 +26,28 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def connect_signals(window: InstallerMainWindow) -> None:
-    try:
-        window._licence_btn.clicked.connect(window._show_installer_licence)
-    except Exception:
-        pass
-    try:
-        window._theme_toggle_btn.clicked.connect(window._toggle_theme)
-    except Exception:
-        pass
-    try:
-        if getattr(window, "_browse_btn", None) is not None:
-            window._browse_btn.clicked.connect(window._browse_install_dir)
-    except Exception:
-        pass
-    try:
-        window._btn_primary_left.clicked.connect(
-            lambda: window._request_operation(Operation.INSTALL)
-        )
-    except Exception:
-        pass
-    try:
-        window._btn_primary_right.clicked.connect(
-            lambda: window._request_operation(Operation.REPAIR)
-        )
-    except Exception:
-        pass
-    try:
-        window._btn_uninstall.clicked.connect(
-            lambda: window._request_operation(Operation.UNINSTALL)
-        )
-    except Exception:
-        pass
+    """Wire every control the window builds.
+
+    Nothing is caught here. `build_installer_main_window_ui` creates all six
+    controls unconditionally and runs before this, so a missing attribute is a
+    wiring defect rather than a runtime condition: the AttributeError names the
+    control that was not built, which is what a developer needs to see. These
+    calls were each wrapped in a blind try/except that could only ever have
+    hidden that defect and left a dead button in the shipped setup program.
+    """
+    window._licence_btn.clicked.connect(window._show_installer_licence)
+    window._theme_toggle_btn.clicked.connect(window._toggle_theme)
+    if getattr(window, "_browse_btn", None) is not None:
+        window._browse_btn.clicked.connect(window._browse_install_dir)
+    window._btn_primary_left.clicked.connect(
+        lambda: window._request_operation(Operation.INSTALL)
+    )
+    window._btn_primary_right.clicked.connect(
+        lambda: window._request_operation(Operation.REPAIR)
+    )
+    window._btn_uninstall.clicked.connect(
+        lambda: window._request_operation(Operation.UNINSTALL)
+    )
 
 
 def show_installer_licence(window: InstallerMainWindow) -> None:
@@ -67,22 +58,24 @@ def show_installer_licence(window: InstallerMainWindow) -> None:
             existing.raise_()
             existing.activateWindow()
             return
-        except Exception:
+        except RuntimeError:
+            # The Python wrapper outlives the C++ dialog when Qt has already
+            # deleted it; touching it then raises RuntimeError. Fall
+            # through and build a fresh one rather than showing nothing.
             pass
     dlg = InstallerLicenceDialog(parent=window)
     window._installer_licence_dialog = dlg
 
     def _clear_ref() -> None:
+        # Same wrapper-outlives-widget case: if the window is already gone
+        # there is no reference left to clear.
         try:
             if getattr(window, "_installer_licence_dialog", None) is dlg:
                 window._installer_licence_dialog = None
-        except Exception:
+        except RuntimeError:
             pass
 
-    try:
-        dlg.finished.connect(_clear_ref)
-    except Exception:
-        pass
+    dlg.finished.connect(_clear_ref)
 
     # Non-blocking but modal.
     dlg.open()
@@ -175,7 +168,9 @@ def set_buttons_for_allowed_ops(
         window._btn_primary_left.setText(_label(left))
         try:
             window._btn_primary_left.clicked.disconnect()
-        except Exception:
+        except RuntimeError:
+            # Qt raises when the signal has nothing connected yet, which is the
+            # normal case the first time the state is refreshed.
             pass
         window._btn_primary_left.clicked.connect(
             lambda: window._request_operation(left)
@@ -188,7 +183,8 @@ def set_buttons_for_allowed_ops(
         window._btn_primary_right.setText(_label(right))
         try:
             window._btn_primary_right.clicked.disconnect()
-        except Exception:
+        except RuntimeError:
+            # As above: nothing connected yet on the first refresh.
             pass
         window._btn_primary_right.clicked.connect(
             lambda: window._request_operation(right)
@@ -196,12 +192,18 @@ def set_buttons_for_allowed_ops(
 
 
 def validate_install_dir(path: Path) -> bool:
-    # Best-effort check that the directory is user-writeable.
+    """Return whether the chosen directory can actually be written to.
+
+    The answer is discovered by writing, because permissions, a read-only
+    volume and a path that is really a file all present differently and none
+    is reliably visible from a stat. Every one of them surfaces as OSError,
+    which is the only failure this is asking about.
+    """
     try:
         path.mkdir(parents=True, exist_ok=True)
         test = path / ".fancyclock_installer_write_test"
         test.write_text("ok", encoding="utf-8")
         test.unlink(missing_ok=True)
         return True
-    except Exception:
+    except OSError:
         return False

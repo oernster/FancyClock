@@ -27,6 +27,9 @@ LOG = logging.getLogger("translate_timezones")
 
 REFERENCE_FILENAME = "key_reference.json"
 
+# Pool size used when the platform will not report its processor count.
+DEFAULT_WORKERS = 4
+
 LANGUAGE_FALLBACKS: Dict[str, List[str]] = {
     "ar": ["ar", "en"],
     "az": ["az", "tr", "en"],
@@ -219,7 +222,12 @@ def process_locale(
 
         return (file_path.name, True, None)
 
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
+        # This is the per-file boundary of a batch run over the whole locale
+        # corpus, spanning file IO, JSON parsing and a translation API reached
+        # over the network. The failure modes are open-ended and the contract
+        # is one result tuple per file, so anything that goes wrong is recorded
+        # against that file and the batch continues.
         LOG.error("Error processing %s: %s", file_path.name, exc)
         return (file_path.name, False, str(exc))
 
@@ -292,8 +300,10 @@ def main() -> None:
             import multiprocessing
 
             workers = max(1, multiprocessing.cpu_count())
-        except Exception:
-            workers = 4
+        except (ImportError, NotImplementedError):
+            # cpu_count raises NotImplementedError where the platform cannot
+            # report it. Fall back to a modest fixed pool.
+            workers = DEFAULT_WORKERS
     else:
         workers = max(1, args.workers)
 

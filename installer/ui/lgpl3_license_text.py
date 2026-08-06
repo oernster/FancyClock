@@ -11,22 +11,23 @@ def _read_lgpl3_text() -> str:
 
     candidates: list[Path] = []
 
-    try:
-        meipass = getattr(sys, "_MEIPASS", None)
-        if meipass:
-            candidates.append(Path(meipass) / "LICENSE")
-    except Exception:
-        pass
+    # PyInstaller's extraction directory, present only in a frozen build.
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.append(Path(meipass) / "LICENSE")
 
-    try:
-        candidates.append(Path(sys.executable).resolve().parent / "LICENSE")
-    except Exception:
-        pass
-
-    try:
-        candidates.append(Path(__file__).resolve().parents[2] / "LICENSE")
-    except Exception:
-        pass
+    # Beside the executable, then the repository root when running from source.
+    # resolve() touches the filesystem and parents[2] assumes this module's
+    # depth, so a broken path or an unexpected layout drops that candidate
+    # rather than the whole search.
+    for build_candidate in (
+        lambda: Path(sys.executable).resolve().parent / "LICENSE",
+        lambda: Path(__file__).resolve().parents[2] / "LICENSE",
+    ):
+        try:
+            candidates.append(build_candidate())
+        except (OSError, IndexError):
+            continue
 
     candidates.append(Path.cwd() / "LICENSE")
 
@@ -34,7 +35,9 @@ def _read_lgpl3_text() -> str:
         try:
             if p.exists() and p.is_file():
                 return p.read_text(encoding="utf-8", errors="replace")
-        except Exception:
+        except OSError:
+            # Unreadable or on a volume that has gone away: try the next place
+            # rather than failing the whole lookup.
             continue
 
     raise FileNotFoundError(

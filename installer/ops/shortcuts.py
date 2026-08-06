@@ -26,7 +26,10 @@ def _default_icon_location_for(target_exe: Path) -> str:
         if ico.exists() and ico.is_file():
             # Use forward slashes and full absolute path
             return str(ico.resolve()).replace("\\", "/")
-    except Exception:
+    except OSError:
+        # resolve() and exists() both touch the filesystem. If the deployed
+        # icon cannot be inspected, fall through to the executable itself,
+        # which carries the same icon in its own resources.
         pass
 
     return str(target_exe)
@@ -132,23 +135,29 @@ def create_shortcut(
         try:
             if pythoncom is not None and com_initialized:
                 pythoncom.CoUninitialize()
-        except Exception:
-            # Nothing sensible to do here; shortcut creation already failed/succeeded.
+        except Exception:  # noqa: BLE001
+            # pythoncom reports failure with its own com_error type, which
+            # cannot be named without importing it. This runs in a finally
+            # after the shortcut has already succeeded or failed, so there is
+            # nothing left to degrade and nothing worth reporting.
             pass
 
 
 def remove_shortcut(shortcut_path: Path) -> None:
     try:
         shortcut_path.unlink(missing_ok=True)
-    except Exception:
-        # Best effort.
+    except OSError:
+        # Locked, else on a profile share that is unreachable. A shortcut left
+        # behind is untidy; refusing to uninstall over it would be worse.
         return
 
     # Remove parent folder if empty (Start Menu subfolder).
     try:
         if shortcut_path.parent.exists() and not any(shortcut_path.parent.iterdir()):
             shortcut_path.parent.rmdir()
-    except Exception:
+    except OSError:
+        # The folder gained a file between the emptiness check and the rmdir,
+        # or it is not ours to remove. Leaving it is harmless.
         return
 
 
@@ -157,12 +166,13 @@ def remove_taskbar_pin(shortcut_path: Path) -> None:
 
     Only the .lnk is deleted; the shared "User Pinned\\TaskBar" folder is left in
     place because Windows manages it. The live taskbar icon may persist until
-    Explorer restarts or the user next signs in, but it no longer launches the
+    Explorer restarts or the user next signs in; it no longer launches the
     removed app.
     """
 
     try:
         shortcut_path.unlink(missing_ok=True)
-    except Exception:
-        # Best effort.
+    except OSError:
+        # Windows owns the pinned-items folder and may hold the file. The pin
+        # stops launching the removed app either way, which is the point.
         return

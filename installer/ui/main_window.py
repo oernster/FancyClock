@@ -65,8 +65,8 @@ class InstallerMainWindow(QMainWindow):
         # Windows DPI scaling / Accessibility text size / mixed-DPI multi-monitor
         # setups (see [`crapinstaller.png`](crapinstaller.png:1)).
         #
-        # Use a minimum size for the intended design, but allow width/height to
-        # grow if required to keep all header text visible.
+        # Use a minimum size for the intended design, allowing width and height
+        # to grow if required to keep all header text visible.
         self.setMinimumSize(750, 520)
         self.resize(750, 520)
 
@@ -79,7 +79,10 @@ class InstallerMainWindow(QMainWindow):
             )
             if not icon.isNull():
                 self.setWindowIcon(icon)
-        except Exception:
+        except (OSError, IndexError):
+            # resolve() touches the filesystem and parents[2] assumes this
+            # module's depth in the tree. A setup program with the default Qt
+            # icon still installs, so neither is worth refusing to start over.
             pass
 
         build_installer_main_window_ui(self)

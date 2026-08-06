@@ -40,26 +40,20 @@ def _find_brand_icon_path(*, project_root: Path) -> Path | None:
     roots: list[Path] = []
 
     # In a frozen PyInstaller build, bundled files live under sys._MEIPASS.
-    try:
-        meipass = getattr(sys, "_MEIPASS", None)
-        if meipass:
-            roots.append(Path(meipass))
-    except Exception:
-        pass
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        roots.append(Path(meipass))
 
     roots.append(project_root)
 
-    # Next to exe.
-    try:
-        roots.append(Path(sys.executable).resolve().parent)
-    except Exception:
-        pass
-
-    # CWD as a final fallback.
-    try:
-        roots.append(Path.cwd())
-    except Exception:
-        pass
+    # Beside the executable, then the working directory. Both touch the
+    # filesystem, so a deleted working directory or an unresolvable executable
+    # path drops that root instead of losing the icon search entirely.
+    for build_root in (lambda: Path(sys.executable).resolve().parent, Path.cwd):
+        try:
+            roots.append(build_root())
+        except OSError:
+            continue
 
     for root in roots:
         for name in filenames:
@@ -67,7 +61,8 @@ def _find_brand_icon_path(*, project_root: Path) -> Path | None:
             try:
                 if p.exists() and p.is_file():
                     return p
-            except Exception:
+            except OSError:
+                # Unreadable path or a volume that has gone away: keep looking.
                 continue
 
     return None
@@ -86,5 +81,8 @@ def set_windows_app_user_model_id(app_id: str) -> None:
         import ctypes
 
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
-    except Exception:
+    except (AttributeError, OSError):
+        # Taskbar grouping is cosmetic. A Windows build without the shell32
+        # entry point raises AttributeError and a refused call raises OSError;
+        # neither is worth failing an installation over.
         return

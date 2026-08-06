@@ -170,7 +170,9 @@ def process_file(path: Path) -> None:
     try:
         with path.open("r", encoding="utf-8") as f:
             data = json.load(f)
-    except Exception as e:
+    except (OSError, json.JSONDecodeError) as e:
+        # Unreadable file or malformed JSON. Report the locale and move on, so
+        # one bad file does not abandon the other 242.
         print(f"ERROR reading {path}: {e}")
         return
 
@@ -190,7 +192,9 @@ def process_file(path: Path) -> None:
             json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=True)
             f.write("\n")
         print(f"Updated {path} with credits_media = {value!r}")
-    except Exception as e:
+    except OSError as e:
+        # The file could not be written. Say which one and carry on with the
+        # rest of the corpus.
         print(f"ERROR writing {path}: {e}")
 
 

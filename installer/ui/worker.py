@@ -16,6 +16,10 @@ from installer.ops.errors import AppRunningError, InstallerOperationError
 
 ProgressCb = Callable[[str], None]
 
+# How long a terminated thread is given to actually die before shutdown carries
+# on regardless. Only reached when a cooperative cancel has already timed out.
+TERMINATE_GRACE_MS = 500
+
 
 @dataclass(frozen=True, slots=True)
 class OperationResult:
@@ -48,12 +52,20 @@ class OperationWorker(QObject):
         pythoncom = None
         try:
             import pythoncom as _pythoncom  # type: ignore  # noqa: WPS433
-
-            pythoncom = _pythoncom
-            pythoncom.CoInitialize()
-        except Exception:
-            # Best-effort; operations that require COM will fail and report.
+        except ImportError:
+            # pywin32 is not installed. Operations needing COM will fail and
+            # report that themselves, which is more useful than refusing here.
             pythoncom = None
+        else:
+            pythoncom = _pythoncom
+            try:
+                pythoncom.CoInitialize()
+            except Exception:  # noqa: BLE001
+                # pythoncom signals failure with its own com_error type, which
+                # cannot be named without importing it. A thread already
+                # initialised under a different model also raises rather than
+                # no-opping. Degrade to "no COM on this thread" either way.
+                pythoncom = None
 
         try:
             logger.info(
@@ -80,7 +92,10 @@ class OperationWorker(QObject):
             try:
                 if pythoncom is not None:
                     pythoncom.CoUninitialize()
-            except Exception:
+            except Exception:  # noqa: BLE001
+                # Same unnameable com_error as CoInitialize above. This runs in
+                # a finally on a thread that is about to end, so there is
+                # nothing left to degrade and nothing worth reporting.
                 pass
 
     def _emit_progress(self, payload) -> None:  # noqa: ANN001
@@ -123,11 +138,10 @@ class _GuiRelay(QObject):
 
     @Slot(object)
     def store_result(self, result) -> None:  # noqa: ANN001
-        # Result is stored on the GUI thread.
-        try:
-            self._result = result
-        except Exception:
-            self._result = OperationResult(ok=False, message="Invalid operation result")
+        # Result is stored on the GUI thread. A plain attribute binding cannot
+        # fail, so the try/except that used to wrap this could only ever have
+        # masked a later change.
+        self._result = result
 
     @Slot()
     def notify_finished(self) -> None:
@@ -174,8 +188,11 @@ class OperationController:
         if not self._thread.wait(timeout_ms):
             try:
                 self._thread.terminate()
-                self._thread.wait(500)
-            except Exception:
+                self._thread.wait(TERMINATE_GRACE_MS)
+            except RuntimeError:
+                # The QThread finished between the wait timing out and the
+                # terminate, so its C++ object is already gone. That is the
+                # outcome this wanted anyway.
                 return
 
     def cancel(self) -> None:
@@ -235,7 +252,9 @@ class OperationController:
                 self._relay = None
                 try:
                     thread.deleteLater()
-                except Exception:
+                except RuntimeError:
+                    # Qt has already destroyed the C++ thread object, so there
+                    # is nothing left to schedule for deletion.
                     pass
 
         thread.finished.connect(_on_thread_finished, Qt.QueuedConnection)

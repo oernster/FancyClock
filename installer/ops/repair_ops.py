@@ -70,7 +70,11 @@ def repair(
                         needs = _sha256_file(dst).lower() != str(e.sha256).lower()
                     else:
                         needs = True
-                except Exception:
+                except (OSError, ValueError):
+                    # OSError if the file cannot be stat'd or read, ValueError
+                    # if the manifest size is not a number. Repair exists to
+                    # restore anything it cannot verify, so an unreadable file
+                    # is treated as needing restoration.
                     needs = True
             if needs:
                 if progress:

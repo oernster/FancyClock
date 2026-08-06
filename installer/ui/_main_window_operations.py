@@ -15,6 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMessageBox
 
 from fancyclock.version import APP_DISPLAY_NAME
@@ -32,6 +33,14 @@ from installer.ui._main_window_types import UiSelections
 
 if TYPE_CHECKING:  # pragma: no cover
     from installer.ui.main_window import InstallerMainWindow
+
+# How long the final status line stays on screen before it is cleared, so a
+# fast operation still reads as having done something.
+COMPLETION_VISIBLE_MS = 1200
+
+# Pause before the window closes itself after an uninstall launched from
+# Windows Settings, long enough for the result to register.
+UNINSTALL_CLOSE_MS = 600
 
 
 def current_selections(window: InstallerMainWindow) -> UiSelections:
@@ -149,23 +158,14 @@ def on_operation_finished(
     refresh_state(window)
 
     # Keep completion visible briefly so users can tell something happened.
-    try:
-        from PySide6.QtCore import QTimer
-
-        QTimer.singleShot(1200, lambda: window._progress.setText(""))
-    except Exception:
-        pass
+    # QTimer is imported at module scope, so nothing here can fail to resolve.
+    QTimer.singleShot(COMPLETION_VISIBLE_MS, lambda: window._progress.setText(""))
 
     if op == Operation.UNINSTALL and result.ok:
         # Only auto-close when we were explicitly launched as an uninstaller
         # (e.g. from Windows Settings via UninstallString).
         if getattr(window._cli_args, "uninstall", False):
-            try:
-                from PySide6.QtCore import QTimer
-
-                QTimer.singleShot(600, window.close)
-            except Exception:
-                window.close()
+            QTimer.singleShot(UNINSTALL_CLOSE_MS, window.close)
         return
 
 

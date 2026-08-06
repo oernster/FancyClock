@@ -86,13 +86,18 @@ def uninstall(identity, opts: UninstallOptions) -> None:  # noqa: ANN001 (identi
 
     try:
         clear_run_at_signin()
-    except Exception:
+    except OSError:
+        # winreg reports every registry failure as OSError. A start-on-sign-in
+        # value that will not delete leaves a dead launch entry, which is worth
+        # less than stopping the uninstall the user asked for.
         pass
 
     # Remove registry first (best effort).
     try:
         delete_uninstall_entry(identity.uninstall_key)
-    except Exception:
+    except OSError:
+        # Same again: without the key the entry lingers in Apps and Features,
+        # but the files still come off, which is what uninstall means here.
         pass
 
     # Remove user data (the same per-user tree Qt's AppConfigLocation uses).
@@ -103,7 +108,7 @@ def uninstall(identity, opts: UninstallOptions) -> None:  # noqa: ANN001 (identi
     # Remove install directory. When this uninstaller runs from outside the
     # install dir nothing locks it (the app is already confirmed not running),
     # so delete synchronously and surface any failure. Only the installed copy
-    # living inside the dir cannot delete its own exe, and so it defers.
+    # living inside the dir cannot delete its own exe, so that case defers.
     if _running_from_inside(install_dir):
         _schedule_delete_after_exit(install_dir)
     else:
@@ -138,7 +143,10 @@ def _running_from_inside(install_dir: Path) -> bool:
     try:
         running = Path(sys.executable).resolve()
         install_dir = install_dir.resolve()
-    except Exception:
+    except OSError:
+        # resolve() walks the filesystem and can fail on a broken link or an
+        # unreachable volume. The docstring's rule applies: on any uncertainty
+        # about the paths, take the safe deferred path.
         return True
     return running == install_dir or install_dir in running.parents
 

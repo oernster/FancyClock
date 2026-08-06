@@ -33,8 +33,9 @@ def main():
                     if isinstance(parsed, (list, tuple)) and len(parsed) == 10:
                         data["digits"] = list(parsed)
                         modified = True
-                except Exception:
-                    # If it fails, just leave as-is
+                except (ValueError, SyntaxError):
+                    # Not a Python literal, so there is nothing to convert.
+                    # Leave the value untouched rather than guessing at it.
                     pass
 
             # 2) Fix timezone: derive from select_timezone_title if possible
