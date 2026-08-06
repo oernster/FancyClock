@@ -41,10 +41,15 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   NTP-corrected now) and the `ResourcePaths` value object. Ports are
   `typing.Protocol` interfaces in `ports.py` (including `AlarmStore`,
   `AlarmPorter` and `AutostartManager`); services receive their
-  dependencies by constructor injection.
+  dependencies by constructor injection. `AlarmStore.load` returns an
+  `AlarmLoad`: the state beside a count of what could not be read, so a
+  tolerant load reports its losses at the boundary instead of keeping
+  them to itself. `AlarmService.entries_lost_on_load` carries that count
+  up to the window, which says so once at startup.
 - **Infrastructure** (`fancyclock/infrastructure/`): implementations of the
   ports. NTP over UDP with a system-clock fallback, the JSON settings store,
-  the JSON alarm store and porter (tolerant load, strict import), the
+  the JSON alarm store and porter (tolerant load that counts every entry
+  it skips, strict import that raises), the
   per-OS autostart adapters (HKCU Run key, macOS LaunchAgent, XDG
   autostart, null under Flatpak), the per-locale translation repository,
   the timezone-to-locale map, the system locale probe, the pytz timezone

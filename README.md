@@ -39,6 +39,7 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 - A persistent firing window plus a best-effort system notification; a missed-alarms summary covers anything that fired while the machine was asleep or the app was closed.
 - System tray icon with next-alarm tooltip, master switch and close-to-tray; optional start at sign-in (installer checkbox on Windows, in-app toggle everywhere it is supported).
 - Alarms fire on the same NTP-corrected time the clocks display and handle DST transitions correctly; import and export as JSON.
+- A damaged alarms file is reported rather than quietly costing you an alarm. Unreadable entries are still skipped so the app always starts. What is new is that the count is shown once at startup, so an alarm that will not ring is something you are told about rather than something you discover by oversleeping.
 - Honest limits: a suspended or powered-off machine is never woken; missed alarms are reported on the next launch or wake instead.
 
 ## Downloads
