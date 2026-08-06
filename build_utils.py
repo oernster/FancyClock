@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -12,6 +13,8 @@ from pathlib import Path
 
 # A git-LFS pointer file (an unresolved stub) begins with this signature line.
 LFS_POINTER_MAGIC = b"version https://git-lfs.github.com/spec/v1"
+
+_MISSING_MODULE_PATTERN = re.compile(r"missing module named (\S+)")
 
 CLEAR_TREE_ATTEMPTS = 50
 CLEAR_TREE_WAIT_SECONDS = 0.1
@@ -112,6 +115,64 @@ def lfs_pointer_stubs(root: Path) -> list[Path]:
         if head == LFS_POINTER_MAGIC:
             stubs.append(path)
     return stubs
+
+
+def warn_file_for(build_dir: Path, name: str) -> Path:
+    """Return the path PyInstaller writes its missing-import report to.
+
+    Args:
+        build_dir: The --workpath given to PyInstaller.
+        name: The --name given to PyInstaller.
+    """
+    return build_dir / name / f"warn-{name}.txt"
+
+
+def missing_bundled_packages(warn_file: Path, required: tuple[str, ...]) -> list[str]:
+    """Return the required packages PyInstaller could not bundle.
+
+    PyInstaller downgrades an import it cannot resolve to a line in this file
+    and writes the executable anyway, so a build run by an interpreter lacking
+    a dependency reports success and then dies in the user's hands. That is how
+    a broken 1.6.0 once shipped.
+
+    Only an exact top-level name counts. A missing submodule of an installed
+    package is normal: a healthy report lists dozens of absent names such as
+    ``comtypes.gen.*``; folding those down to their root package would fail
+    every healthy build.
+
+    Args:
+        warn_file: The warn-<name>.txt PyInstaller writes into the work path.
+        required: Top-level packages this artefact cannot run without.
+
+    Returns:
+        The required packages reported missing, in the order first seen.
+    """
+    if not warn_file.exists():
+        return []
+
+    missing: list[str] = []
+    for line in warn_file.read_text(encoding="utf-8", errors="replace").splitlines():
+        match = _MISSING_MODULE_PATTERN.search(line)
+        if match is None:
+            continue
+        name = match.group(1).strip("'\"")
+        if name in required and name not in missing:
+            missing.append(name)
+    return missing
+
+
+def require_bundled(build_dir: Path, name: str, required: tuple[str, ...]) -> None:
+    """Abort the build when a required package was not bundled."""
+    warn_file = warn_file_for(build_dir, name)
+    missing = missing_bundled_packages(warn_file, required)
+    if not missing:
+        return
+    sys.exit(
+        f"ERROR: {name} is missing required packages: {', '.join(missing)}.\n"
+        f"See {warn_file}\n"
+        "PyInstaller bundles what the interpreter running this build can "
+        "import, so build from the project virtual environment."
+    )
 
 
 def require_materialized(root: Path) -> None:

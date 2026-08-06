@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 import stamp_version
-from build_utils import clear_tree
+from build_utils import clear_tree, require_bundled
 
 APP_NAME = "FancyClock"
 ENTRYPOINT = "main.py"
@@ -80,20 +80,7 @@ def build_exe() -> int:
         print("EXE not found after build")
         return 1
 
-    warn_file = build_dir / APP_NAME / f"warn-{APP_NAME}.txt"
-    warn_text = warn_file.read_text(encoding="utf-8") if warn_file.exists() else ""
-    missing = [
-        name
-        for name in REQUIRED_BUNDLED_PACKAGES
-        if f"missing module named {name} -" in warn_text
-    ]
-    if missing:
-        print(
-            "Error: bundle is missing required packages: "
-            + ", ".join(missing)
-            + ". Check the environment running this build."
-        )
-        return 1
+    require_bundled(build_dir, APP_NAME, REQUIRED_BUNDLED_PACKAGES)
 
     print(f"[OK] EXE created: {exe_path}")
     print(f"Size: {exe_path.stat().st_size / (1024 * 1024):.1f} MB")

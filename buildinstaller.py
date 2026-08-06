@@ -16,11 +16,15 @@ import time
 from pathlib import Path
 
 import stamp_version
-from build_utils import clear_tree
+from build_utils import clear_tree, require_bundled
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 SETUP_NAME = "FancyClockSetup"
+
+# Packages the setup program itself cannot start without: its whole UI is
+# PySide6 and its operations live in the `installer` package.
+REQUIRED_BUNDLED_PACKAGES = ("PySide6", "installer")
 ICON = PROJECT_ROOT / "assets" / "fancyclock.ico"
 
 # Icon assets bundled at the installer data root: the installer window icon
@@ -153,6 +157,11 @@ def main() -> int:
 
     cmd.append(str(entrypoint))
     _run(cmd)
+
+    # Refuse to ship a setup program that is missing what it needs to run. The
+    # same silent failure that once shipped a broken app exe applies here, with
+    # a worse outcome: the user cannot even reach the app.
+    require_bundled(work_root, SETUP_NAME, REQUIRED_BUNDLED_PACKAGES)
 
     built_exe = temp_dist_root / f"{SETUP_NAME}.exe"
     final_exe = final_dist_root / f"{SETUP_NAME}.exe"

@@ -22,7 +22,14 @@ import tempfile
 from pathlib import Path
 
 import stamp_version
-from build_utils import require, require_materialized, require_module, run, section
+from build_utils import (
+    require,
+    require_bundled,
+    require_materialized,
+    require_module,
+    run,
+    section,
+)
 from dmg_icon import png_to_icns, set_volume_icon
 
 
@@ -36,6 +43,11 @@ def _read_version() -> str:
 # Constants -------------------------------------------------------------------
 
 APP_NAME = "FancyClock"
+
+# Packages the macOS bundle cannot run without. Same set as the Windows build:
+# PyInstaller only warns when it cannot resolve one, so the report is read back
+# before the bundle is signed and notarised.
+REQUIRED_BUNDLED_PACKAGES = ("PySide6", "pytz", "tzlocal")
 APP_DISPLAY_NAME = "Fancy Clock"
 APP_VERSION = _read_version()
 BUNDLE_ID = "uk.codecrafter.FancyClock"
@@ -169,6 +181,12 @@ def build_app_bundle(entitlements_path: Path, icns_path: Path | None = None) -> 
     app_path = Path("dist") / f"{APP_NAME}.app"
     if not app_path.exists():
         sys.exit(f"ERROR: Expected app bundle not found: {app_path}")
+
+    # No --workpath is given above, so PyInstaller writes its report under the
+    # default build directory. Read it before signing: a bundle missing a
+    # runtime dependency would otherwise be signed, notarised and shipped.
+    require_bundled(Path("build"), APP_NAME, REQUIRED_BUNDLED_PACKAGES)
+
     print(f"  Built: {app_path}")
     return app_path
 
