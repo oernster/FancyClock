@@ -121,5 +121,7 @@ def require_materialized(root: Path) -> None:
         names = ", ".join(str(p) for p in stubs)
         sys.exit(
             f"ERROR: git-LFS content not materialized: {names}. "
-            "Install git-lfs and run `git lfs pull` before building."
+            "Run `git lfs install` (registers the smudge filters, needed once "
+            "per machine even when git-lfs is on PATH) then `git lfs fetch "
+            "--all` and `git lfs checkout` before building."
         )
