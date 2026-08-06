@@ -72,6 +72,15 @@ infrastructure layers (see `.coveragerc` for the measured surface) plus
 structural tests that enforce the architecture. A coverage-gated run prints the
 coverage table last, so read the exit code rather than the tail of the output.
 
+`ruff` selects `BLE` on top of the defaults, so a blind `except Exception`
+fails the lint. There is no per-file ignore, including for `installer/`, which
+does the most privileged work in the product: exempting it would announce a
+rule while excusing the code that most needs it. Catch the type that actually
+occurs (`OSError` for filesystem and registry work, `RuntimeError` where a Qt
+wrapper can outlive its C++ half) and reach for `# noqa: BLE001` only when the
+type genuinely cannot be named, writing the fallback beside it. The three
+surviving cases are documented in [`TECH_DEBT.md`](TECH_DEBT.md).
+
 ## 4. Build entry points
 
 | Target | Command | Output |
@@ -121,8 +130,13 @@ markdown at the repo root.
 
 ## 5. Flatpak
 
-The Flatpak build is **offline** for Python dependencies: every wheel and sdist
-must be pre-populated into a local `vendor/` directory before the build runs.
+The sandbox installs Python dependencies with
+`python3 -m pip install --no-index --find-links=vendor --prefix=/app -r requirements.txt`,
+so every wheel has to exist in a local `vendor/` directory before the sandbox
+runs. `vendor/` is a build cache rather than source: it is gitignored, so a
+fresh clone or a cleaned tree has none of them. **The build script fills it for
+you**, which is why a first build on a new machine now works instead of failing
+inside `flatpak-builder` with an opaque "No matching distribution".
 
 ### 5.1 Runtime prerequisites
 
@@ -133,26 +147,35 @@ flatpak install flathub org.kde.Sdk//6.8
 flatpak install flathub org.kde.Platform//6.8
 ```
 
-These provide Python 3.12 inside the sandbox, the Qt 6 frameworks, the ffmpeg
+These provide Python inside the sandbox, the Qt 6 frameworks, the ffmpeg
 backend that plays the video skins and the SDK tools needed to build krb5.
 
-### 5.2 Generate `vendor/`
+### 5.2 `vendor/` and the wheel fetch
 
-The manifest installs dependencies with
-`python3 -m pip install --no-index --find-links=vendor --prefix=/app -r requirements.txt`,
-so everything must exist locally. Rebuild from scratch:
+`build_flatpak.sh` works out which requirements have no matching wheel, then
+downloads just those before starting the build. It asks the SDK named in the
+manifest which Python version it ships and resolves wheel tags for that
+interpreter rather than the host's, because the two routinely differ and a
+wheel built for the host will not install in the sandbox.
+
+Nothing needs doing by hand. To force a clean refill:
 
 ```bash
 rm -rf vendor
-mkdir -p vendor
+./build_flatpak.sh --user
+```
+
+For an air-gapped build, pass `--no-fetch`. The script then never contacts PyPI
+and fails with the list of missing distributions if `vendor/` is incomplete,
+which is the behaviour every build had before. Populate it beforehand with:
+
+```bash
 pip download -r requirements.txt -d vendor
 ```
 
-The Flatpak runtime uses Python 3.12, so run the download with a Python whose
-wheels are compatible (or pass `--python-version 3.12`). Afterwards `vendor/`
-should hold the PySide6, shiboken6, pyside6-addons and pyside6-essentials
-wheels plus `pytz`, `tzlocal` and `tzdata` (the IANA data behind `zoneinfo`,
-which alarm scheduling depends on).
+A complete `vendor/` holds the PySide6, shiboken6, pyside6-addons and
+pyside6-essentials wheels plus `pytz`, `tzlocal` and `tzdata` (the IANA data
+behind `zoneinfo`, which alarm scheduling depends on).
 
 ### 5.3 krb5
 
@@ -162,8 +185,9 @@ embedded `krb5` module, so there is nothing to install by hand.
 
 ### 5.4 Build
 
-Before running the build, confirm the LFS assets are real files, `vendor/` is
-populated and the Flatpak runtimes are installed. Then:
+Before running the build, confirm the LFS assets are real files and the Flatpak
+runtimes are installed. `vendor/` looks after itself unless you pass
+`--no-fetch`. Then:
 
 ```bash
 ./build_flatpak.sh --user

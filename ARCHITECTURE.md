@@ -125,6 +125,11 @@ app identity constants shared with the Windows installer.
 - No mock libraries: hand-written fakes implement the ports; infrastructure
   tests use real temp files and a real local UDP server.
 - `black --check`, `flake8` and `ruff check` are standing steps.
+- `ruff` selects `BLE`, so a blind `except Exception` fails the lint rather than
+  waiting for review to notice it. The rule carries no per-file ignore, so the
+  setup program is held to it exactly as the application package is. Handlers
+  name the type that actually occurs; the three that cannot are marked
+  `# noqa: BLE001` with the fallback beside them and listed in `TECH_DEBT.md`.
 - The version is never hardcoded outside the VERSION file. The runtime reads it
   through `fancyclock.version`, packaging through the dynamic version in
   `pyproject.toml` and the build scripts through `stamp_version.read_version()`.
