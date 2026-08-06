@@ -1,5 +1,5 @@
 {
-  "about": "About",
+  "about": "Teave",
   "about_dialog_title": "Teave peene kella kohta",
   "about_libraries_used": "Kasutatud teegid",
   "alarm_color": "Värv",
@@ -47,7 +47,7 @@
   "calendar.days.thursday": "N",
   "calendar.days.tuesday": "T",
   "calendar.days.wednesday": "K",
-  "cancel": "Saab sisse lülitada",
+  "cancel": "Tühista",
   "close_to_tray": "Sulge süsteemisalve",
   "credits_media": "Tänu: (meedia)",
   "december": "Dets",

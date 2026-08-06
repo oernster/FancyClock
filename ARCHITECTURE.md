@@ -16,6 +16,9 @@ the build fails when one is violated.
 | Only the composition root wires infrastructure | `test_composition_root_is_the_only_infrastructure_consumer` |
 | No module exceeds 400 lines, across the application package, the setup program and the tests (delivery scripts exempt) | `test_no_module_exceeds_the_line_limit` |
 | No module sits in the danger band just under that cap | `test_no_module_sits_in_the_danger_band` |
+| Every locale carries every reference key, so none relies on the English fallback | `test_every_locale_carries_every_reference_key` |
+| No locale ships the English string unaccounted for | `test_no_locale_silently_ships_the_english_value` |
+| Every accepted-English exemption still describes a real value | `test_accepted_english_is_still_english` |
 
 ## Dependency direction
 
