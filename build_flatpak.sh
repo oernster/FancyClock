@@ -21,6 +21,11 @@ INSTALL_SCOPE="user" # user|system
 INSTALL_NO_DEPS=1
 INSTALL_NO_RELATED=1
 
+# vendor/ is a build cache, not source: it is gitignored, so a fresh clone or a
+# cleaned tree has no wheels at all. Refill it from PyPI by default rather than
+# failing, and let --no-fetch demand a pre-populated vendor/ for air-gapped builds.
+VENDOR_FETCH=1
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --system)
@@ -47,9 +52,14 @@ while [[ $# -gt 0 ]]; do
       INSTALL_NO_RELATED=1
       shift
       ;;
+    --no-fetch)
+      # Never touch PyPI: vendor/ must already hold every wheel.
+      VENDOR_FETCH=0
+      shift
+      ;;
     *)
       echo "Unknown option: $1" >&2
-      echo "Usage: $0 [--user|--system] [--offline] [--deps] [--related]" >&2
+      echo "Usage: $0 [--user|--system] [--offline] [--deps] [--related] [--no-fetch]" >&2
       exit 2
       ;;
   esac
@@ -73,8 +83,11 @@ fi
 # flatpak-builder with an opaque "No matching distribution" error. Catch it here.
 REQ_FILE="requirements.txt"
 VENDOR_DIR="vendor"
-if [[ -f "${REQ_FILE}" ]]; then
+
+# Fill `missing` with the requirements that have no wheel in vendor/.
+find_missing_wheels() {
   missing=()
+  local line name norm whl dist dnorm found
   while IFS= read -r line || [[ -n "${line}" ]]; do
     line="${line%%#*}"                       # strip comments
     line="$(echo "${line}" | tr -d '[:space:]')"
@@ -93,8 +106,46 @@ if [[ -f "${REQ_FILE}" ]]; then
       if [[ "${dnorm}" == "${norm}" ]]; then found=1; break; fi
     done
     shopt -u nullglob
-    [[ ${found} -eq 0 ]] && missing+=("${name}")
+    if [[ ${found} -eq 0 ]]; then missing+=("${name}"); fi
   done < "${REQ_FILE}"
+  # The loop's status is the last requirement's test result, and a `set -e`
+  # caller would treat "everything present" as a failure. Report success.
+  return 0
+}
+
+# The wheels are installed by the SDK's interpreter, not the host's, and the two
+# routinely differ. Ask the SDK named in the manifest which Python it ships so
+# pip resolves tags for that one; fall back to the host if the SDK can't answer.
+sdk_python_version() {
+  local sdk sdk_version arch
+  sdk="$(sed -nE "s/^sdk:[[:space:]]*['\"]?([^'\"[:space:]]+)['\"]?[[:space:]]*$/\1/p" "${MANIFEST}" | head -n1)"
+  sdk_version="$(sed -nE "s/^runtime-version:[[:space:]]*['\"]?([^'\"[:space:]]+)['\"]?[[:space:]]*$/\1/p" "${MANIFEST}" | head -n1)"
+  [[ -z "${sdk}" || -z "${sdk_version}" ]] && return 1
+  arch="$(flatpak --default-arch 2>/dev/null)" || return 1
+  flatpak run --user --arch="${arch}" --command=python3 "${sdk}//${sdk_version}" \
+    -c 'import sys; print("%d.%d" % sys.version_info[:2])' 2>/dev/null | tail -n1
+}
+
+if [[ -f "${REQ_FILE}" ]]; then
+  find_missing_wheels
+
+  if [[ ${#missing[@]} -gt 0 && ${VENDOR_FETCH} -eq 1 ]]; then
+    echo "Missing wheels in '${VENDOR_DIR}/': ${missing[*]}"
+    py_version="$(sdk_python_version || true)"
+    fetch_args=(-r "${REQ_FILE}" --only-binary=:all: -d "${VENDOR_DIR}")
+    if [[ -n "${py_version}" ]]; then
+      echo "Fetching wheels for the SDK's Python ${py_version}..."
+      fetch_args+=(--python-version "${py_version}")
+    else
+      echo "WARNING: could not query the SDK's Python version; fetching for the host" >&2
+      echo "         interpreter instead. Wheels may not match the build runtime." >&2
+    fi
+    if ! python3 -m pip download "${fetch_args[@]}"; then
+      echo "ERROR: failed to download wheels into '${VENDOR_DIR}/'." >&2
+      exit 1
+    fi
+    find_missing_wheels
+  fi
 
   if [[ ${#missing[@]} -gt 0 ]]; then
     echo "ERROR: offline build installs from '${VENDOR_DIR}/' (pip --no-index), but no" >&2
