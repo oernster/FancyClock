@@ -11,7 +11,7 @@ ENV_LIST_SEPARATOR = ":"
 
 
 def _default_locale_getter() -> str | None:
-    """Return the process locale language code, or ``None``."""
+    """Return the process locale language code, else ``None``."""
     return locale.getlocale()[0]
 
 
@@ -32,7 +32,10 @@ class EnvironmentLocaleProbe:
 
         try:
             from_locale = self._locale_getter()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to no reading from the OS, leaving the environment
+            # variables below as the source. The getter is platform code
+            # whose failures differ per operating system.
             from_locale = None
         if from_locale:
             found.append(from_locale)

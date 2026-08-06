@@ -33,7 +33,10 @@ class JsonTranslationsRepository:
         try:
             with path.open("r", encoding="utf-8") as fh:
                 data = json.load(fh)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
+            # Falls back to no translations for this locale, so the caller
+            # resolves through English instead. Logged, since a locale file
+            # that will not parse is a packaging fault worth seeing.
             logger.error("Failed to load locale %s: %s", locale_code, exc)
             return None
 

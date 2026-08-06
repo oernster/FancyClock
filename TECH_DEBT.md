@@ -6,27 +6,26 @@ This is a well-kept repository, so this file is short. `VERSION` and `stamp_vers
 
 ---
 
-## 1. Thirty-seven broad exception handlers, none with a stated reason
+## 1. Nothing enforces the broad-handler convention outside the app package
 
-`except Exception` (or bare `except`) across `fancyclock/`, with none of them saying why. They cluster and each cluster deserves a different answer:
+`fancyclock/` now carries no unexplained `except Exception`: each one is either
+narrowed to the exceptions actually expected or marked `# noqa: BLE001` with the
+fallback it takes written beside it. Nothing stops the next one being added
+without a reason.
 
-- **`infrastructure/` generally (six).** `ntp_time_source`, `system_locale_probe`, `timezone_locale_map` and `translations_repo` plus `json_settings_store`: network, OS locale and file reads that should degrade to a default rather than crash a clock. Correct behaviour; each wants one line saying what it falls back to.
-- **`ui/` (twenty-seven).** Sixteen of those are in `window_locale.py` alone, with the rest spread across `analog_clock.py`, `window.py`, `window_drag.py`, `window_opacity.py` and `dialogs.py`. Qt paint and window-manager calls where an exception is worse than a missing visual effect, so the lowest value to change: give them the house `# noqa: BLE001` plus a reason and move on. The concentration in `window_locale.py` is the part worth a second look, because a retranslation pass that swallows sixteen different failures can leave the UI half-translated with nothing said.
-- **`application/` (three) and `main.py` (one).** The application layer is meant to be the reasoned part of the codebase, so a broad catch in `alarms.py` or `localization.py` is the least defensible of the three remaining clusters. Narrow these to the exception actually expected.
-
-None of this changes behaviour. It makes each decision reviewable, which is the point.
+The fix is a `[tool.ruff]` block selecting `BLE` on top of the default rules, so
+an unexplained broad catch fails the lint rather than relying on review. That
+cannot be switched on yet: `installer/` carries 48 of them and `helper_scripts/`
+8. Turning the rule on with a per-file ignore for the installer would
+announce a rule while exempting the code that does the most privileged work in
+the product. The installer is the piece worth doing first, since a swallowed
+exception there is a half-installed application with nothing said.
 
 ## 2. The UI layer is omitted from the gate in full
 
 `.coveragerc` omits `fancyclock/ui/*` along with `main.py`, `application/ports.py` and `infrastructure/single_instance.py`. The last three are composition root, Protocol declarations and a platform lock; all three are correct omissions.
 
 The UI omission is the standard portfolio position and is correct for painting and layout. It is recorded here only so the omission is never read as "the UI has no logic": `window_locale.py`, `window_drag.py` and the alarm-badge composition carry real decisions. As those grow, they want pushing down into `fancyclock/application`, where the gate can see them.
-
-## 3. Four generator scripts at root with no single convention
-
-`generate_icons.py`, `generate_sounds.py`, `compose_alarm_badge.py` and `stamp_version.py` sit at root beside `helper_scripts/`. All four are legitimate build-time generators and all four are correctly exempt from the module cap.
-
-The debt is only that `helper_scripts/` exists as well, so there are two answers to "where do build helpers live". Pick one and move the odd ones out. Trivial, listed for completeness.
 
 ---
 
@@ -45,6 +44,7 @@ These look like candidates but are correct as they stand; changing them would re
 - **`tests/structural/test_architecture.py`.** Domain purity, a wall-clock ban in the domain, all four layer directions, a composition-root whitelist and the module size rule in two tiers: the 400-line cap, plus a danger band whose width is derived from the cap so the two numbers cannot drift apart. For a clock application, `test_domain_never_reads_the_wall_clock()` is exactly the right invariant and it is easy to imagine it being weakened for convenience. Do not.
 - **`VERSION` with `stamp_version.py` writing the delimited tokens** into `docs/` only, called from the build scripts. Correctly implemented single source of truth. The delivery side of this repository is in good order.
 - **The `media/*.mp4` skins in Git LFS.** The working tree is identical to a plain checkout and history no longer grows by tens of megabytes each time a backdrop is replaced. The one cost is that a fresh machine needs `git lfs install` before the videos are real files; that is documented in the README and the development guide.
+- **Two script directories: the repo root and `helper_scripts/`.** This was recorded as debt on the grounds that there were two answers to "where do build helpers live". There are not: there are two questions. The root holds delivery scripts, the ones a release runs and which import each other (`stamp_version.py` is imported by the build scripts from there). `helper_scripts/` holds one-shot maintenance tooling for the 243-file locale corpus, run by hand and mostly never run twice. Merging them either buries four delivery scripts among twenty maintenance ones or moves `stamp_version.py` away from the scripts that import it. The distinction is written down in `DEVELOPMENT_README.md` with the test for which a new script is.
 - **The JSON locale system and the custom localisation manager** rather than Qt Linguist. This is the portfolio's deliberate i18n approach and FancyClock is one of its two reference implementations.
 - **`ENGLISH_BY_DESIGN` and `ACCEPTED_ENGLISH` in `tests/structural/test_translation_coverage.py`.** These are not an untranslated backlog. The first names keys whose English value is correct in any language (proper nouns, `OK`, the digit table, plus the month and day abbreviations that coincide across most European languages by design, so equality there proves nothing either way). The second names the specific locales that legitimately write a word exactly as English: French `Licence`, German `Version`, Dutch `Website`, Nordic `Alarm` and `Spiral`, Indonesian `Edit`. Every entry is a claim about one language, which is why they are listed individually rather than waved through by key. The list may only shrink: `test_accepted_english_is_still_english` fails when an entry has since been translated, so an exemption cannot outlive the value it excused.
 - **`uk.codecrafter.FancyClock.yml` and `.metainfo.xml` tracked at root** while other projects generate their Flatpak manifest inside the build script. Both approaches work; a committed manifest is easier to review and this one is complete.

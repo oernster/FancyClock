@@ -83,6 +83,28 @@ coverage table last, so read the exit code rather than the tail of the output.
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus `assets/` from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/` (deterministic stdlib synthesis) |
 
+### Where a script lives
+
+Two directories hold scripts. They are not two answers to one question; they
+are two different kinds of thing, so both stay.
+
+**Repo root: delivery scripts.** Anything a release runs. The table above plus
+`stamp_version.py`, `compose_alarm_badge.py`, `dmg_icon.py` and `build_utils.py`.
+They are invoked as part of building or stamping a release, several of them by
+each other; `stamp_version.py` in particular is imported by the build
+scripts from the root. They are exempt from the module size rule, since a
+linear recipe of flags and steps costs more to split than it saves.
+
+**`helper_scripts/`: one-shot corpus maintenance.** Tooling for the 243
+translation files: adding a key across every locale, repairing values, auditing
+for suspicious translations, driving the LibreTranslate client. Each is run by
+hand when the locale corpus needs something done to it, never by a build, with
+most never run twice. Keeping them out of the root is what stops the four
+delivery scripts being lost among twenty maintenance ones.
+
+The test for which a new script is: would a release break if it were deleted?
+If yes it belongs at the root, otherwise in `helper_scripts/`.
+
 ### Version stamping
 
 `VERSION` at the repo root is the single source of truth. The runtime reads it

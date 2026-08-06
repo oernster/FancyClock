@@ -106,7 +106,12 @@ class AlarmService:
         """Resolve a timezone id, falling back to UTC for unknown zones."""
         try:
             return self._catalog.tzinfo_for(tz_id)
-        except Exception:
+        except (KeyError, TypeError, ValueError):
+            # The port promises to raise when the zone is unknown. An
+            # unknown name is a KeyError (ZoneInfoNotFoundError derives
+            # from it), a malformed one a ValueError, a non-string a
+            # TypeError. UTC is the safe reading; a broken catalog is not
+            # this method's business to hide.
             return timezone.utc
 
     def now_in(self, tz_id: str) -> datetime:

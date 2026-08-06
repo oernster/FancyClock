@@ -111,7 +111,7 @@ class JsonAlarmStore:
         try:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
-        except Exception:
+        except Exception:  # noqa: BLE001
             # Unreadable or not valid JSON. Falls back to an empty document so
             # the clock still starts. The whole file is reported lost.
             return AlarmLoad(state=AlarmsState.empty(), skipped_alarms=_WHOLE_FILE)
@@ -125,7 +125,7 @@ class JsonAlarmStore:
         for entry in data.get("alarms", ()):
             try:
                 alarms.append(_alarm_from_dict(entry))
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # One malformed alarm entry: falls back to skipping that entry
                 # alone, so the remaining alarms still load. Counted, because
                 # this is the alarm that will not ring.
@@ -136,7 +136,7 @@ class JsonAlarmStore:
         for entry in data.get("snooze_states", ()):
             try:
                 state = _snooze_from_dict(entry)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # One malformed snooze record: falls back to skipping it, which
                 # loses only the snooze, never the alarm behind it. Counted so
                 # the total is honest, though it matters less than an alarm.
@@ -148,7 +148,7 @@ class JsonAlarmStore:
         raw_watermark = data.get("last_evaluated_utc")
         try:
             watermark = datetime.fromisoformat(raw_watermark) if raw_watermark else None
-        except Exception:
+        except Exception:  # noqa: BLE001
             # An unparseable watermark falls back to None, which makes the next
             # tick treat the session as fresh. Not counted: no alarm is lost.
             watermark = None

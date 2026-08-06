@@ -37,7 +37,11 @@ class JsonSettingsStore:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
             return data if isinstance(data, dict) else {}
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to empty settings, so the app starts on its
+            # defaults rather than refusing to open. Unlike the alarms
+            # document, nothing here is a promise to the user that a
+            # dropped value would break.
             return {}
 
     def _save(self, data: dict[str, Any]) -> None:
@@ -48,7 +52,7 @@ class JsonSettingsStore:
         tmp.replace(path)
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Return the stored value for ``key``, or ``default``."""
+        """Return the stored value for ``key``, else ``default``."""
         return self._load().get(key, default)
 
     def set(self, key: str, value: Any | None) -> None:

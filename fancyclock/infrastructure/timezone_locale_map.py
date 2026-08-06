@@ -29,7 +29,10 @@ class JsonTimezoneLocaleMap:
             with map_path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
             return data if isinstance(data, dict) else {}
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
+            # Falls back to an empty map, so every zone simply has no
+            # locale and the app keeps the user's chosen one. Logged,
+            # because a missing map file is worth knowing about.
             logger.error("Failed to load timezone map: %s", exc)
             return {}
 
@@ -37,7 +40,10 @@ class JsonTimezoneLocaleMap:
         """Return the locale for ``tz_id`` (``None`` means the system zone)."""
         try:
             tz_name = tz_id or self._localzone_name()
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
+            # Falls back to no locale for this zone, which leaves the
+            # current one in place. Reading the system zone goes through
+            # third-party platform code with no documented failure set.
             logger.warning("Could not determine system timezone: %s", exc)
             return None
         return self._map.get(tz_name)

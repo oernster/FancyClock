@@ -39,7 +39,11 @@ def _duck_weekday(dt: Any) -> int:
         if hasattr(dt, "dayOfWeek"):
             return int(dt.dayOfWeek())
         return dt.weekday() + 1
-    except Exception:
+    except (AttributeError, TypeError, ValueError, RuntimeError):
+        # The ways duck typing fails here: neither shape is present, the
+        # attribute is not callable as assumed, the value will not convert,
+        # or the Qt object behind it has been deleted, which PySide6 reports
+        # as a RuntimeError. A wrong weekday label is not worth a crash.
         return FALLBACK_WEEKDAY
 
 
@@ -48,7 +52,9 @@ def _duck_month(dt: Any) -> int:
     try:
         month = dt.month
         return int(month() if callable(month) else month)
-    except Exception:
+    except (AttributeError, TypeError, ValueError, RuntimeError):
+        # The same duck-typing failures as the weekday reader above,
+        # including a deleted Qt object.
         return FALLBACK_MONTH
 
 
@@ -103,7 +109,7 @@ class LocalizationService:
         return DEFAULT_LOCALE
 
     def locale_for_timezone(self, tz_id: str | None) -> str | None:
-        """Return the normalized locale mapped to a timezone, or ``None``."""
+        """Return the normalized locale mapped to a timezone, else ``None``."""
         mapped = self._tz_locale_map.locale_for(tz_id)
         if mapped:
             return normalize_locale(mapped)
@@ -157,7 +163,7 @@ class LocalizationService:
         return key
 
     def _lookup(self, locale_code: str, key: str) -> str | None:
-        """Return ``key``'s text in one locale, or ``None`` when absent."""
+        """Return ``key``'s text in one locale, else ``None`` when absent."""
         self._ensure_loaded(locale_code)
         data = self._cache.get(locale_code, {})
         if key in data:

@@ -85,7 +85,10 @@ class AnalogClock(QWidget):
             if self._media_player is not None:
                 try:
                     self._media_player.stop()
-                except Exception:
+                except Exception:  # noqa: BLE001
+                    # Falls back to leaving the player where it is. The
+                    # skin is being cleared anyway, so a backend that
+                    # refuses to stop costs nothing visible.
                     pass
             self._current_skin = None
             self._current_frame = None
@@ -101,14 +104,21 @@ class AnalogClock(QWidget):
             if hasattr(self._media_player, "setLoops"):
                 try:
                     self._media_player.setLoops(INFINITE_LOOPS)
-                except Exception:
+                except Exception:  # noqa: BLE001
+                    # Falls back to a skin that plays once instead of
+                    # looping. Present-but-unusable API is normal across
+                    # Qt multimedia backends, which is why hasattr alone
+                    # is not enough to rely on it.
                     pass
 
         self._current_skin = file_path
         try:
             self._media_player.setSource(QUrl.fromLocalFile(file_path))
             self._media_player.play()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to no skin, so the painted galaxy returns. A
+            # codec the platform lacks is the common case and it must not
+            # take the clock face down with it.
             self._current_skin = None
             self._current_frame = None
             self.update()
@@ -117,7 +127,10 @@ class AnalogClock(QWidget):
         """Store the most recent frame so paintEvent can draw it."""
         try:
             image = frame.toImage()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to dropping this frame, so the previous one stays
+            # on screen. This runs once per video frame, so raising here
+            # would turn one bad frame into a crash mid-playback.
             image = None
 
         if image is None or image.isNull():
@@ -136,7 +149,10 @@ class AnalogClock(QWidget):
             ):
                 self._media_player.setPosition(0)
                 self._media_player.play()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to the skin stopping at its end rather than
+            # looping. This is the manual loop for backends without
+            # setLoops, so the same backend variance applies.
             pass
 
     # ------------------------------------------------------------------ #

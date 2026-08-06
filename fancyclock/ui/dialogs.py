@@ -276,7 +276,10 @@ class LicenseDialog(QDialog):
         if self._license_path:
             try:
                 text = Path(self._license_path).read_text(encoding="utf-8")
-            except Exception:
+            except (OSError, UnicodeDecodeError):
+                # A licence file that is missing from the bundle or not
+                # decodable falls back to the built-in notice, so the
+                # dialog still says something rather than failing to open.
                 text = LICENCE_FALLBACK_TEXT
 
         self.license_text.setPlainText(text)

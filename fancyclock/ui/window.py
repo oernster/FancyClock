@@ -113,7 +113,10 @@ class ClockWindow(
         self._create_menu_bar()
         try:
             self.synchronize_time()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to the system clock, which is what the app shows
+            # until the next sync succeeds. A clock that will not open
+            # because a time server was unreachable is the worse outcome.
             pass
 
         self.old_pos = None
@@ -169,7 +172,10 @@ class ClockWindow(
         if win is not None:
             try:
                 win.requestActivate()
-            except Exception:
+            except Exception:  # noqa: BLE001
+                # Falls back to the setWindowState call below, which asks
+                # for the same thing another way. Window managers vary in
+                # what they permit an application to demand.
                 pass
 
         self.setWindowState(

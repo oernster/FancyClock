@@ -56,7 +56,11 @@ class NtpTimeSource:
                 sock.settimeout(self._timeout_seconds)
                 sock.sendto(NTP_REQUEST, (server, self._port))
                 data, _ = sock.recvfrom(RECEIVE_BUFFER_SIZE)
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Falls back to None, which makes the caller try the next
+            # server and then the system clock. A time server is reached
+            # over a network that can fail in ways no exception list
+            # predicts. A clock must start whether or not it is reachable.
             return None
 
         if len(data) < NTP_PACKET_SIZE:

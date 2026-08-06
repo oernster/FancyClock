@@ -139,7 +139,11 @@ def main() -> int:
     if sys.platform == "win32":
         try:
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
-        except Exception:
+        except (AttributeError, OSError):
+            # Setting the taskbar identity is cosmetic: it groups windows
+            # and picks the icon. An older or restricted shell32 gives an
+            # AttributeError or an OSError; neither is a reason to refuse
+            # to start a clock.
             pass
 
     QGuiApplication.setDesktopFileName(APP_ID)

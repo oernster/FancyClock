@@ -1,7 +1,7 @@
 """Clock window opacity: platform probe, View-menu slider and shortcuts.
 
 The user controls opacity three ways: the slider in the View menu,
-Ctrl with the Up and Down arrows, and Ctrl with the mouse wheel. The
+Ctrl with the Up and Down arrows, plus Ctrl with the mouse wheel. The
 level persists in settings and is restored at launch (the fade-in
 animation ends at the configured level). Where the platform cannot set
 per-window opacity (the Flatpak sandbox) the View menu is hidden and
@@ -40,7 +40,11 @@ class WindowOpacityMixin:
             self.setWindowOpacity(OPACITY_PROBE_VALUE)
             self.setWindowOpacity(OPACITY_OPAQUE)
             return True
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # This is a probe: the call itself is the question being
+            # asked, so any failure is the answer no. Falls back to
+            # treating the platform as not supporting opacity, which
+            # hides the control rather than offering a dead one.
             return False
 
     # ------------------------------------------------------------------
