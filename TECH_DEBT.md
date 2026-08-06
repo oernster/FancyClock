@@ -2,19 +2,11 @@
 
 A standing reference to the project's outstanding technical debt. It records what is still open, weighs whether each item is worth doing and gives the rationale. Every item is a behaviour-preserving internal concern: nothing here proposes reverting a feature or changing any UI or UX behaviour. Scope is the whole repository (the `fancyclock` package, the bespoke installer, the delivery scripts, the bundled media and the 243 translation files) read against `ARCHITECTURE.md` and `tests/structural/test_architecture.py`.
 
-This is a well-kept repository, so this file is short. `VERSION` and `stamp_version.py` are correct, the media are in Git LFS, the structural suite covers domain purity, wall-clock access, all four layer directions and the composition root. Only four files in the whole tree exceed 350 lines, one of them an exempt build script. The items below are what is left.
+This is a well-kept repository, so this file is short. `VERSION` and `stamp_version.py` are correct, the media are in Git LFS, the structural suite covers domain purity, wall-clock access, all four layer directions, the composition root and the module size rule across the application package, the setup program and the tests. Two files in the whole tree exceed 350 lines: `installer/ops/install_ops.py` at 357, which is measured and under the cap, plus `builddmg.py` at 360, which is an exempt delivery script. The items below are what is left.
 
 ---
 
-## 1. `installer/ui/_main_window_actions.py` is over the cap and outside the test that would say so
-
-At 406 lines it exceeds the 400-line limit. `tests/structural/test_architecture.py` scopes itself to `PACKAGE_DIR` and `TESTS_DIR`, so `installer/` is never measured and nothing reports it.
-
-Six lines over is not an emergency; taking it to 350 by extracting one cohesive concern is a small piece of work. The more useful half is extending the structural test over `installer/` at the same time, so the installer is held to the same rule as everything else rather than being the one directory that quietly is not.
-
-`installer/ops/install_ops.py` at 357 is fine and would pass the moment the scope widens.
-
-## 2. Forty-two broad exception handlers, none with a stated reason
+## 1. Forty-two broad exception handlers, none with a stated reason
 
 `except Exception` (or bare `except`) across `fancyclock/`, with none of them saying why. They cluster and each cluster deserves a different answer:
 
@@ -25,13 +17,13 @@ Six lines over is not an emergency; taking it to 350 by extracting one cohesive 
 
 None of this changes behaviour. It makes each decision reviewable, which is the point.
 
-## 3. The UI layer is omitted from the gate in full
+## 2. The UI layer is omitted from the gate in full
 
 `.coveragerc` omits `fancyclock/ui/*` along with `main.py`, `application/ports.py` and `infrastructure/single_instance.py`. The last three are composition root, Protocol declarations and a platform lock; all three are correct omissions.
 
 The UI omission is the standard portfolio position and is correct for painting and layout. It is recorded here only so the omission is never read as "the UI has no logic": `window_locale.py`, `window_drag.py` and the alarm-badge composition carry real decisions. As those grow, they want pushing down into `fancyclock/application`, where the gate can see them.
 
-## 4. Four generator scripts at root with no single convention
+## 3. Four generator scripts at root with no single convention
 
 `generate_icons.py`, `generate_sounds.py`, `compose_alarm_badge.py` and `stamp_version.py` sit at root beside `helper_scripts/`. All four are legitimate build-time generators and all four are correctly exempt from the module cap.
 
@@ -41,7 +33,6 @@ The debt is only that `helper_scripts/` exists as well, so there are two answers
 
 ## Looks like debt, not worth touching
 
-- `tests/application/test_alarm_service.py` at 382 lines. Inside the danger band, so it wants taking to 350 when next touched. It is under the cap and the structural test covers `TESTS_DIR`, so the rule will catch it if it grows.
 - The 243 translation JSON files under `localization/translations/`. That is the i18n store and it is the intended design.
 - `localization/` sitting outside the `fancyclock` package. It is data bundled by the delivery scripts rather than importable code; the resource resolver already handles the dev, Nuitka, PyInstaller and Flatpak cases.
 - `timezone_locale_map.json` at root rather than under `localization/`. One file, referenced by one module, tested by `test_timezone_locale_map.py`.
@@ -52,7 +43,7 @@ The debt is only that `helper_scripts/` exists as well, so there are two answers
 
 These look like candidates but are correct as they stand; changing them would regress or add cost for nothing.
 
-- **`tests/structural/test_architecture.py`.** Domain purity, a wall-clock ban in the domain, all four layer directions and a composition-root whitelist. For a clock application, `test_domain_never_reads_the_wall_clock()` is exactly the right invariant and it is easy to imagine it being weakened for convenience. Do not.
+- **`tests/structural/test_architecture.py`.** Domain purity, a wall-clock ban in the domain, all four layer directions, a composition-root whitelist and the module size rule in two tiers: the 400-line cap, plus a danger band whose width is derived from the cap so the two numbers cannot drift apart. For a clock application, `test_domain_never_reads_the_wall_clock()` is exactly the right invariant and it is easy to imagine it being weakened for convenience. Do not.
 - **`VERSION` with `stamp_version.py` writing the delimited tokens** into `docs/` only, called from the build scripts. Correctly implemented single source of truth. The delivery side of this repository is in good order.
 - **The `media/*.mp4` skins in Git LFS.** The working tree is identical to a plain checkout and history no longer grows by tens of megabytes each time a backdrop is replaced. The one cost is that a fresh machine needs `git lfs install` before the videos are real files; that is documented in the README and the development guide.
 - **The JSON locale system and the custom localisation manager** rather than Qt Linguist. This is the portfolio's deliberate i18n approach and FancyClock is one of its two reference implementations.

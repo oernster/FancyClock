@@ -14,7 +14,8 @@ the build fails when one is violated.
 | Infrastructure never imports the UI | `test_infrastructure_never_imports_ui` |
 | UI is a client of the application layer only | `test_ui_never_imports_infrastructure` |
 | Only the composition root wires infrastructure | `test_composition_root_is_the_only_infrastructure_consumer` |
-| No module exceeds 400 lines (build scripts exempt) | `test_no_module_exceeds_the_line_limit` |
+| No module exceeds 400 lines, across the application package, the setup program and the tests (delivery scripts exempt) | `test_no_module_exceeds_the_line_limit` |
+| No module sits in the danger band just under that cap | `test_no_module_sits_in_the_danger_band` |
 
 ## Dependency direction
 

@@ -11,9 +11,20 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_DIR = PROJECT_ROOT / "fancyclock"
+INSTALLER_DIR = PROJECT_ROOT / "installer"
 TESTS_DIR = PROJECT_ROOT / "tests"
 
 MAX_MODULE_LINES = 400
+
+# The band just under the cap, where a file is one edit from breaking the rule.
+# The width is derived from the cap rather than written as a second literal, so
+# the two cannot drift apart if the cap ever moves.
+DANGER_BAND_FRACTION = 0.05
+DANGER_BAND_FLOOR = MAX_MODULE_LINES - int(MAX_MODULE_LINES * DANGER_BAND_FRACTION)
+# Where a module that reaches the band has to land. Deliberately well clear of
+# the floor, so the reduction is a real extraction rather than a trim.
+DANGER_BAND_TARGET = 350
+
 COMPOSITION_ROOT = PACKAGE_DIR / "main.py"
 
 DOMAIN_ALLOWED_STDLIB = {"__future__", "dataclasses", "datetime", "typing", "math"}
@@ -118,11 +129,42 @@ def test_composition_root_is_the_only_infrastructure_consumer() -> None:
             )
 
 
+def _measured_modules() -> list[Path]:
+    """Return every module the size rule applies to.
+
+    The setup program is measured alongside the application package and the
+    tests. It was the one directory the rule could not see, which is how a
+    module there passed the cap with nothing reporting it.
+    """
+    return (
+        sorted(PACKAGE_DIR.rglob("*.py"))
+        + sorted(INSTALLER_DIR.rglob("*.py"))
+        + sorted(TESTS_DIR.rglob("*.py"))
+    )
+
+
 def test_no_module_exceeds_the_line_limit() -> None:
-    """App package and test modules stay at or below the module line limit."""
-    for module in sorted(PACKAGE_DIR.rglob("*.py")) + sorted(TESTS_DIR.rglob("*.py")):
+    """Application, setup program and test modules stay at or below the limit."""
+    for module in _measured_modules():
         lines = len(module.read_text(encoding="utf-8").splitlines())
         assert lines <= MAX_MODULE_LINES, (
             f"{module.relative_to(PROJECT_ROOT)} has {lines} lines "
             f"(limit {MAX_MODULE_LINES})"
+        )
+
+
+def test_no_module_sits_in_the_danger_band() -> None:
+    """No module sits just under the cap, where the next edit would break it.
+
+    Shaving a file to one line under the limit buys nothing, because the next
+    change puts it back over and the same file is refactored again and again.
+    A module that reaches the band is taken to DANGER_BAND_TARGET instead, so
+    the reduction is real and happens once.
+    """
+    for module in _measured_modules():
+        lines = len(module.read_text(encoding="utf-8").splitlines())
+        assert not (DANGER_BAND_FLOOR < lines < MAX_MODULE_LINES), (
+            f"{module.relative_to(PROJECT_ROOT)} has {lines} lines, inside the "
+            f"danger band above {DANGER_BAND_FLOOR}. Take it to "
+            f"{DANGER_BAND_TARGET} or fewer by extracting a cohesive concern."
         )

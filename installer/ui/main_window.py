@@ -16,16 +16,18 @@ from installer.ui._header_fit import HeaderFitController
 from installer.ui._main_window_actions import (
     browse_install_dir,
     connect_signals,
-    on_app_running,
-    on_operation_finished,
-    on_progress,
     refresh_state,
-    request_operation,
     set_buttons_for_allowed_ops,
-    set_ui_busy,
     show_installer_licence,
 )
 from installer.ui._main_window_build import build_installer_main_window_ui
+from installer.ui._main_window_operations import (
+    on_app_running,
+    on_operation_finished,
+    on_progress,
+    request_operation,
+    set_ui_busy,
+)
 from installer.ui._main_window_types import UiSelections
 from installer.ui._main_window_uninstall import confirm_and_run_uninstall
 from installer.ui.icons import build_installer_window_icon
@@ -148,7 +150,7 @@ class InstallerMainWindow(QMainWindow):
         return validate_install_dir(path)
 
     def _current_selections(self) -> UiSelections:
-        from installer.ui._main_window_actions import current_selections
+        from installer.ui._main_window_operations import current_selections
 
         return current_selections(self)
 
@@ -186,7 +188,7 @@ class InstallerMainWindow(QMainWindow):
         on_operation_finished(self, op, result)
 
     def _operation_callable(self, op: Operation, selections: UiSelections):
-        from installer.ui._main_window_actions import operation_callable
+        from installer.ui._main_window_operations import operation_callable
 
         return operation_callable(self, op, selections)
 
