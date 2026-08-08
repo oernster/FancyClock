@@ -27,9 +27,9 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 - More than 70 languages across over 240 regional locales, detected automatically and overridable from the menu.
 - Nine skins: the procedural Starfield plus eight animated video backdrops. Or run it plain.
 - Adjustable window opacity from the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel (Windows and macOS; the Flatpak sandbox cannot set per-window opacity).
-- Optional NTP time correction, so the display stays honest when the machine clock has drifted.
+- Automatic NTP time correction at startup, so the display stays honest when the machine clock has drifted.
 - Alarms, covered below.
-- Local-first and offline: no account, no telemetry and no cloud. NTP is the only network call and it is optional.
+- Local-first: no account, no telemetry and no cloud. A single NTP query at startup is the only network call it makes, falling back to the system clock when no server answers.
 
 ## Alarms
 
