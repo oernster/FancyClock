@@ -150,3 +150,28 @@ class MediaLibrary(Protocol):
     def skin_files(self) -> tuple[str, ...]:
         """Return absolute paths of the available skin files, sorted."""
         ...
+
+
+@dataclass(frozen=True, slots=True)
+class ReleaseAsset:
+    """One downloadable file attached to a published release."""
+
+    name: str
+    download_url: str
+
+
+@dataclass(frozen=True, slots=True)
+class ReleaseInfo:
+    """A published release as the update check needs to see it."""
+
+    version: str
+    page_url: str
+    assets: tuple[ReleaseAsset, ...]
+
+
+class ReleaseSource(Protocol):
+    """Fetches the newest published release, or ``None`` when unreachable."""
+
+    def latest_release(self) -> ReleaseInfo | None:
+        """Return the latest published release, else ``None`` on any failure."""
+        ...

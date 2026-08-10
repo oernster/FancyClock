@@ -57,7 +57,7 @@ REGION_DEFAULT_LANGUAGE = {
     "PR": "es_PR",
     "CU": "es_CU",
     "BZ": "en_GB",  # Belize - English
-    # Europe (subset – enough to cover your remaining tzs)
+    # Europe (subset, enough to cover your remaining tzs)
     "ES": "es_ES",
     "PT": "pt_PT",
     "FR": "fr_FR",

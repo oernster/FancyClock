@@ -24,6 +24,7 @@ from fancyclock.application.settings import SettingsService
 from fancyclock.application.skins import SkinService
 from fancyclock.application.time_service import TimeService
 from fancyclock.application.timezones import TimezoneService
+from fancyclock.application.update import UpdateService, platform_key_for
 from fancyclock.infrastructure.autostart import (
     LaunchAgentAutostart,
     NullAutostart,
@@ -33,6 +34,7 @@ from fancyclock.infrastructure.autostart import (
     is_flatpak,
 )
 from fancyclock.infrastructure.clock import SystemClock
+from fancyclock.infrastructure.github_release_source import GitHubReleaseSource
 from fancyclock.infrastructure.json_alarm_store import (
     JsonAlarmPorter,
     JsonAlarmStore,
@@ -54,6 +56,7 @@ from fancyclock.infrastructure.timezone_locale_map import JsonTimezoneLocaleMap
 from fancyclock.infrastructure.translations_repo import JsonTranslationsRepository
 from fancyclock.ui import theme
 from fancyclock.ui.window import ClockWindow
+from fancyclock.version import __version__
 
 APP_ID = "uk.codecrafter.FancyClock"
 SINGLETON_NAME = "uk.codecrafter.FancyClock.singleton"
@@ -120,6 +123,11 @@ def _build_window() -> ClockWindow:
         license_file=find_license_file(),
         sounds_dir=get_sounds_dir_path(),
     )
+    update_service = UpdateService(
+        source=GitHubReleaseSource(),
+        current_version=__version__,
+        platform_key=platform_key_for(sys.platform),
+    )
     return ClockWindow(
         i18n_manager=i18n_manager,
         time_service=time_service,
@@ -129,6 +137,7 @@ def _build_window() -> ClockWindow:
         resources=resources,
         alarm_service=alarm_service,
         autostart=_build_autostart(),
+        update_service=update_service,
     )
 
 

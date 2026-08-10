@@ -12,6 +12,7 @@ from fancyclock.application.settings import (
     LOCALE_KEY,
     MIN_WINDOW_OPACITY,
     SKIN_NAME_KEY,
+    SKIPPED_UPDATE_VERSION_KEY,
     TIMEZONE_ID_KEY,
     WINDOW_OPACITY_KEY,
     SettingsService,
@@ -138,3 +139,23 @@ def test_window_opacity_ignores_invalid_stored_values() -> None:
     assert service.window_opacity() == DEFAULT_WINDOW_OPACITY
     store.data[WINDOW_OPACITY_KEY] = 0.01
     assert service.window_opacity() == DEFAULT_WINDOW_OPACITY
+
+
+def test_skipped_update_version_roundtrip() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    assert service.skipped_update_version() is None
+    service.set_skipped_update_version("2.3.0")
+    assert service.skipped_update_version() == "2.3.0"
+    assert store.data[SKIPPED_UPDATE_VERSION_KEY] == "2.3.0"
+
+
+def test_skipped_update_version_ignores_invalid_stored_values() -> None:
+    store = FakeStore()
+    service = SettingsService(store)
+
+    store.data[SKIPPED_UPDATE_VERSION_KEY] = 7
+    assert service.skipped_update_version() is None
+    store.data[SKIPPED_UPDATE_VERSION_KEY] = ""
+    assert service.skipped_update_version() is None

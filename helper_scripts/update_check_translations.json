@@ -1,0 +1,756 @@
+{
+  "languages": {
+    "am": {
+      "check_for_updates": "ዝማኔዎችን ፈልግ",
+      "update_available_title": "ዝማኔ አለ",
+      "update_available_text": "FancyClock {latest} ይገኛል። አሁን {current} እየተጠቀሙ ነው።",
+      "update_download": "አውርድ",
+      "update_skip": "ይህን ስሪት ዝለል",
+      "update_later": "በኋላ",
+      "update_up_to_date": "የቅርብ ጊዜውን ስሪት እየተጠቀሙ ነው።",
+      "update_check_failed": "የዝማኔ ፍተሻው GitHub ላይ መድረስ አልቻለም። እባክዎ ቆይተው እንደገና ይሞክሩ።"
+    },
+    "ar": {
+      "check_for_updates": "التحقق من التحديثات",
+      "update_available_title": "يتوفر تحديث",
+      "update_available_text": "FancyClock {latest} متوفر. أنت تستخدم {current}.",
+      "update_download": "تنزيل",
+      "update_skip": "تخطي هذا الإصدار",
+      "update_later": "لاحقًا",
+      "update_up_to_date": "أنت تستخدم أحدث إصدار.",
+      "update_check_failed": "تعذر على فحص التحديث الوصول إلى GitHub. يرجى المحاولة لاحقًا."
+    },
+    "az": {
+      "check_for_updates": "Yeniləmələri yoxla",
+      "update_available_title": "Yeniləmə mövcuddur",
+      "update_available_text": "FancyClock {latest} mövcuddur. Siz {current} istifadə edirsiniz.",
+      "update_download": "Yüklə",
+      "update_skip": "Bu versiyanı ötür",
+      "update_later": "Sonra",
+      "update_up_to_date": "Siz ən son versiyadan istifadə edirsiniz.",
+      "update_check_failed": "Yeniləmə yoxlaması GitHub-a çata bilmədi. Zəhmət olmasa sonra yenidən cəhd edin."
+    },
+    "be": {
+      "check_for_updates": "Праверыць абнаўленні",
+      "update_available_title": "Даступна абнаўленне",
+      "update_available_text": "Даступны FancyClock {latest}. Вы карыстаецеся {current}.",
+      "update_download": "Спампаваць",
+      "update_skip": "Прапусціць гэтую версію",
+      "update_later": "Пазней",
+      "update_up_to_date": "Вы карыстаецеся найноўшай версіяй.",
+      "update_check_failed": "Праверка абнаўлення не змагла звязацца з GitHub. Паспрабуйце пазней."
+    },
+    "bg": {
+      "check_for_updates": "Проверка за обновления",
+      "update_available_title": "Налично е обновление",
+      "update_available_text": "FancyClock {latest} е наличен. Използвате {current}.",
+      "update_download": "Изтегляне",
+      "update_skip": "Пропусни тази версия",
+      "update_later": "По-късно",
+      "update_up_to_date": "Използвате най-новата версия.",
+      "update_check_failed": "Проверката за обновление не успя да достигне GitHub. Опитайте отново по-късно."
+    },
+    "bn": {
+      "check_for_updates": "আপডেট খুঁজুন",
+      "update_available_title": "আপডেট উপলব্ধ",
+      "update_available_text": "FancyClock {latest} উপলব্ধ। আপনি {current} ব্যবহার করছেন।",
+      "update_download": "ডাউনলোড",
+      "update_skip": "এই সংস্করণটি এড়িয়ে যান",
+      "update_later": "পরে",
+      "update_up_to_date": "আপনি সর্বশেষ সংস্করণ ব্যবহার করছেন।",
+      "update_check_failed": "আপডেট পরীক্ষা GitHub-এ পৌঁছাতে পারেনি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"
+    },
+    "bs": {
+      "check_for_updates": "Provjeri ažuriranja",
+      "update_available_title": "Dostupno je ažuriranje",
+      "update_available_text": "FancyClock {latest} je dostupan. Koristite {current}.",
+      "update_download": "Preuzmi",
+      "update_skip": "Preskoči ovu verziju",
+      "update_later": "Kasnije",
+      "update_up_to_date": "Koristite najnoviju verziju.",
+      "update_check_failed": "Provjera ažuriranja nije mogla doći do GitHuba. Pokušajte ponovo kasnije."
+    },
+    "ca": {
+      "check_for_updates": "Comprova si hi ha actualitzacions",
+      "update_available_title": "Actualització disponible",
+      "update_available_text": "FancyClock {latest} és disponible. Esteu utilitzant {current}.",
+      "update_download": "Baixa",
+      "update_skip": "Omet aquesta versió",
+      "update_later": "Més tard",
+      "update_up_to_date": "Esteu utilitzant la versió més recent.",
+      "update_check_failed": "La comprovació d'actualitzacions no ha pogut contactar amb GitHub. Torneu-ho a provar més tard."
+    },
+    "cs": {
+      "check_for_updates": "Zkontrolovat aktualizace",
+      "update_available_title": "Je k dispozici aktualizace",
+      "update_available_text": "FancyClock {latest} je k dispozici. Používáte {current}.",
+      "update_download": "Stáhnout",
+      "update_skip": "Přeskočit tuto verzi",
+      "update_later": "Později",
+      "update_up_to_date": "Používáte nejnovější verzi.",
+      "update_check_failed": "Kontrola aktualizací se nemohla připojit ke GitHubu. Zkuste to prosím později."
+    },
+    "da": {
+      "check_for_updates": "Søg efter opdateringer",
+      "update_available_title": "Opdatering tilgængelig",
+      "update_available_text": "FancyClock {latest} er tilgængelig. Du bruger {current}.",
+      "update_download": "Hent",
+      "update_skip": "Spring denne version over",
+      "update_later": "Senere",
+      "update_up_to_date": "Du bruger den nyeste version.",
+      "update_check_failed": "Opdateringstjekket kunne ikke nå GitHub. Prøv igen senere."
+    },
+    "de": {
+      "check_for_updates": "Nach Updates suchen",
+      "update_available_title": "Update verfügbar",
+      "update_available_text": "FancyClock {latest} ist verfügbar. Sie verwenden {current}.",
+      "update_download": "Herunterladen",
+      "update_skip": "Diese Version überspringen",
+      "update_later": "Später",
+      "update_up_to_date": "Sie verwenden die neueste Version.",
+      "update_check_failed": "Die Updateprüfung konnte GitHub nicht erreichen. Bitte versuchen Sie es später erneut."
+    },
+    "dv": {
+      "check_for_updates": "އަޕްޑޭޓް ހޯދާ",
+      "update_available_title": "އަޕްޑޭޓެއް ލިބެން އެބަހުރި",
+      "update_available_text": "FancyClock {latest} ލިބެން އެބަހުރި. ތިޔަ ބޭނުންކުރަނީ {current}.",
+      "update_download": "ޑައުންލޯޑް",
+      "update_skip": "މި ވާޝަން ދޫކޮށްލާ",
+      "update_later": "ފަހުން",
+      "update_up_to_date": "ތިޔަ ބޭނުންކުރަނީ އެންމެ ފަހުގެ ވާޝަން.",
+      "update_check_failed": "އަޕްޑޭޓް ބެލުމަށް GitHub އަށް ގުޅޭގޮތެއް ނުވި. ފަހުން އަނެއްކާ މަސައްކަތްކުރައްވާ."
+    },
+    "dz": {
+      "check_for_updates": "དུས་མཐུན་ཚོལ།",
+      "update_available_title": "དུས་མཐུན་ཐོབ་ཚུགས།",
+      "update_available_text": "FancyClock {latest} ཐོབ་ཚུགས། ཁྱོད་ཀྱིས་ {current} ལག་ལེན་འཐབ་དོ།",
+      "update_download": "ཕབ་ལེན།",
+      "update_skip": "ཐོན་རིམ་འདི་གོམ་འགྱོ།",
+      "update_later": "ཤུལ་ལས།",
+      "update_up_to_date": "ཁྱོད་ཀྱིས་ཐོན་རིམ་གསར་ཤོས་ལག་ལེན་འཐབ་དོ།",
+      "update_check_failed": "དུས་མཐུན་ཞིབ་དཔྱད་ GitHub ལུ་ལྷོད་མ་ཚུགས། ཤུལ་ལས་ལོག་སྟེ་འབད་རྩོལ་བསྐྱེད་གནང་།"
+    },
+    "el": {
+      "check_for_updates": "Έλεγχος για ενημερώσεις",
+      "update_available_title": "Διαθέσιμη ενημέρωση",
+      "update_available_text": "Το FancyClock {latest} είναι διαθέσιμο. Χρησιμοποιείτε την έκδοση {current}.",
+      "update_download": "Λήψη",
+      "update_skip": "Παράλειψη αυτής της έκδοσης",
+      "update_later": "Αργότερα",
+      "update_up_to_date": "Χρησιμοποιείτε την πιο πρόσφατη έκδοση.",
+      "update_check_failed": "Ο έλεγχος ενημέρωσης δεν μπόρεσε να συνδεθεί με το GitHub. Δοκιμάστε ξανά αργότερα."
+    },
+    "en": {
+      "check_for_updates": "Check for updates",
+      "update_available_title": "Update available",
+      "update_available_text": "FancyClock {latest} is available. You are running {current}.",
+      "update_download": "Download",
+      "update_skip": "Skip this version",
+      "update_later": "Later",
+      "update_up_to_date": "You are running the latest version.",
+      "update_check_failed": "The update check could not reach GitHub. Please try again later."
+    },
+    "es": {
+      "check_for_updates": "Buscar actualizaciones",
+      "update_available_title": "Actualización disponible",
+      "update_available_text": "FancyClock {latest} está disponible. Está utilizando {current}.",
+      "update_download": "Descargar",
+      "update_skip": "Omitir esta versión",
+      "update_later": "Más tarde",
+      "update_up_to_date": "Está utilizando la versión más reciente.",
+      "update_check_failed": "La comprobación de actualizaciones no pudo conectar con GitHub. Inténtelo de nuevo más tarde."
+    },
+    "et": {
+      "check_for_updates": "Otsi uuendusi",
+      "update_available_title": "Uuendus on saadaval",
+      "update_available_text": "FancyClock {latest} on saadaval. Kasutate versiooni {current}.",
+      "update_download": "Laadi alla",
+      "update_skip": "Jäta see versioon vahele",
+      "update_later": "Hiljem",
+      "update_up_to_date": "Kasutate uusimat versiooni.",
+      "update_check_failed": "Uuenduste kontroll ei saanud GitHubiga ühendust. Palun proovige hiljem uuesti."
+    },
+    "fa": {
+      "check_for_updates": "بررسی به‌روزرسانی‌ها",
+      "update_available_title": "به‌روزرسانی موجود است",
+      "update_available_text": "FancyClock {latest} موجود است. شما از {current} استفاده می‌کنید.",
+      "update_download": "بارگیری",
+      "update_skip": "رد شدن از این نسخه",
+      "update_later": "بعداً",
+      "update_up_to_date": "شما از جدیدترین نسخه استفاده می‌کنید.",
+      "update_check_failed": "بررسی به‌روزرسانی نتوانست به GitHub دسترسی پیدا کند. لطفاً بعداً دوباره تلاش کنید."
+    },
+    "fi": {
+      "check_for_updates": "Tarkista päivitykset",
+      "update_available_title": "Päivitys saatavilla",
+      "update_available_text": "FancyClock {latest} on saatavilla. Käytössäsi on {current}.",
+      "update_download": "Lataa",
+      "update_skip": "Ohita tämä versio",
+      "update_later": "Myöhemmin",
+      "update_up_to_date": "Käytössäsi on uusin versio.",
+      "update_check_failed": "Päivitystarkistus ei saanut yhteyttä GitHubiin. Yritä myöhemmin uudelleen."
+    },
+    "fo": {
+      "check_for_updates": "Kanna eftir dagføringum",
+      "update_available_title": "Dagføring tøk",
+      "update_available_text": "FancyClock {latest} er tøk. Tú brúkar {current}.",
+      "update_download": "Tak niður",
+      "update_skip": "Leyp hesa útgávuna um",
+      "update_later": "Seinni",
+      "update_up_to_date": "Tú brúkar nýggjastu útgávuna.",
+      "update_check_failed": "Dagføringskanningin fekk ikki samband við GitHub. Royn aftur seinni."
+    },
+    "fr": {
+      "check_for_updates": "Rechercher des mises à jour",
+      "update_available_title": "Mise à jour disponible",
+      "update_available_text": "FancyClock {latest} est disponible. Vous utilisez {current}.",
+      "update_download": "Télécharger",
+      "update_skip": "Ignorer cette version",
+      "update_later": "Plus tard",
+      "update_up_to_date": "Vous utilisez la version la plus récente.",
+      "update_check_failed": "La vérification des mises à jour n'a pas pu joindre GitHub. Veuillez réessayer plus tard."
+    },
+    "he": {
+      "check_for_updates": "בדיקת עדכונים",
+      "update_available_title": "עדכון זמין",
+      "update_available_text": "FancyClock {latest} זמין. אתם משתמשים בגרסה {current}.",
+      "update_download": "הורדה",
+      "update_skip": "דילוג על גרסה זו",
+      "update_later": "מאוחר יותר",
+      "update_up_to_date": "אתם משתמשים בגרסה העדכנית ביותר.",
+      "update_check_failed": "בדיקת העדכון לא הצליחה להגיע ל-GitHub. נסו שוב מאוחר יותר."
+    },
+    "hi": {
+      "check_for_updates": "अपडेट जाँचें",
+      "update_available_title": "अपडेट उपलब्ध है",
+      "update_available_text": "FancyClock {latest} उपलब्ध है। आप {current} उपयोग कर रहे हैं।",
+      "update_download": "डाउनलोड करें",
+      "update_skip": "यह संस्करण छोड़ें",
+      "update_later": "बाद में",
+      "update_up_to_date": "आप नवीनतम संस्करण उपयोग कर रहे हैं।",
+      "update_check_failed": "अपडेट जाँच GitHub तक नहीं पहुँच सकी। कृपया बाद में पुनः प्रयास करें।"
+    },
+    "hr": {
+      "check_for_updates": "Provjeri ažuriranja",
+      "update_available_title": "Dostupno je ažuriranje",
+      "update_available_text": "FancyClock {latest} je dostupan. Koristite {current}.",
+      "update_download": "Preuzmi",
+      "update_skip": "Preskoči ovu verziju",
+      "update_later": "Kasnije",
+      "update_up_to_date": "Koristite najnoviju verziju.",
+      "update_check_failed": "Provjera ažuriranja nije mogla doći do GitHuba. Pokušajte ponovno kasnije."
+    },
+    "hu": {
+      "check_for_updates": "Frissítések keresése",
+      "update_available_title": "Frissítés érhető el",
+      "update_available_text": "A FancyClock {latest} elérhető. Ön a {current} verziót használja.",
+      "update_download": "Letöltés",
+      "update_skip": "Verzió kihagyása",
+      "update_later": "Később",
+      "update_up_to_date": "Ön a legújabb verziót használja.",
+      "update_check_failed": "A frissítés-ellenőrzés nem érte el a GitHubot. Kérjük, próbálja újra később."
+    },
+    "hy": {
+      "check_for_updates": "Ստուգել թարմացումները",
+      "update_available_title": "Հասանելի է թարմացում",
+      "update_available_text": "FancyClock {latest}-ը հասանելի է։ Դուք օգտագործում եք {current}-ը։",
+      "update_download": "Ներբեռնել",
+      "update_skip": "Բաց թողնել այս տարբերակը",
+      "update_later": "Ավելի ուշ",
+      "update_up_to_date": "Դուք օգտագործում եք ամենավերջին տարբերակը։",
+      "update_check_failed": "Թարմացման ստուգումը չկարողացավ կապ հաստատել GitHub-ի հետ։ Խնդրում ենք փորձել ավելի ուշ։"
+    },
+    "id": {
+      "check_for_updates": "Periksa pembaruan",
+      "update_available_title": "Pembaruan tersedia",
+      "update_available_text": "FancyClock {latest} tersedia. Anda menggunakan {current}.",
+      "update_download": "Unduh",
+      "update_skip": "Lewati versi ini",
+      "update_later": "Nanti",
+      "update_up_to_date": "Anda menggunakan versi terbaru.",
+      "update_check_failed": "Pemeriksaan pembaruan tidak dapat menjangkau GitHub. Silakan coba lagi nanti."
+    },
+    "is": {
+      "check_for_updates": "Leita að uppfærslum",
+      "update_available_title": "Uppfærsla í boði",
+      "update_available_text": "FancyClock {latest} er í boði. Þú notar {current}.",
+      "update_download": "Sækja",
+      "update_skip": "Sleppa þessari útgáfu",
+      "update_later": "Seinna",
+      "update_up_to_date": "Þú notar nýjustu útgáfuna.",
+      "update_check_failed": "Uppfærsluathugunin náði ekki sambandi við GitHub. Reyndu aftur seinna."
+    },
+    "it": {
+      "check_for_updates": "Controlla aggiornamenti",
+      "update_available_title": "Aggiornamento disponibile",
+      "update_available_text": "FancyClock {latest} è disponibile. Stai usando {current}.",
+      "update_download": "Scarica",
+      "update_skip": "Salta questa versione",
+      "update_later": "Più tardi",
+      "update_up_to_date": "Stai usando la versione più recente.",
+      "update_check_failed": "Il controllo degli aggiornamenti non è riuscito a raggiungere GitHub. Riprova più tardi."
+    },
+    "ja": {
+      "check_for_updates": "更新を確認",
+      "update_available_title": "更新があります",
+      "update_available_text": "FancyClock {latest} が利用できます。現在 {current} を使用しています。",
+      "update_download": "ダウンロード",
+      "update_skip": "このバージョンをスキップ",
+      "update_later": "後で",
+      "update_up_to_date": "最新バージョンを使用しています。",
+      "update_check_failed": "更新の確認で GitHub に接続できませんでした。後でもう一度お試しください。"
+    },
+    "ka": {
+      "check_for_updates": "განახლებების შემოწმება",
+      "update_available_title": "ხელმისაწვდომია განახლება",
+      "update_available_text": "ხელმისაწვდომია FancyClock {latest}. თქვენ იყენებთ {current}-ს.",
+      "update_download": "ჩამოტვირთვა",
+      "update_skip": "ამ ვერსიის გამოტოვება",
+      "update_later": "მოგვიანებით",
+      "update_up_to_date": "თქვენ იყენებთ უახლეს ვერსიას.",
+      "update_check_failed": "განახლების შემოწმებამ GitHub-თან დაკავშირება ვერ შეძლო. გთხოვთ, სცადოთ მოგვიანებით."
+    },
+    "kk": {
+      "check_for_updates": "Жаңартуларды тексеру",
+      "update_available_title": "Жаңарту қолжетімді",
+      "update_available_text": "FancyClock {latest} қолжетімді. Сіз {current} қолданудасыз.",
+      "update_download": "Жүктеп алу",
+      "update_skip": "Бұл нұсқаны өткізіп жіберу",
+      "update_later": "Кейінірек",
+      "update_up_to_date": "Сіз ең соңғы нұсқаны қолданудасыз.",
+      "update_check_failed": "Жаңартуды тексеру GitHub-қа қосыла алмады. Кейінірек қайталап көріңіз."
+    },
+    "kl": {
+      "check_for_updates": "Nutarterinernik misissuineq",
+      "update_available_title": "Nutarterineq pissarsiarineqarsinnaavoq",
+      "update_available_text": "FancyClock {latest} pissarsiarineqarsinnaavoq. {current} atorpat.",
+      "update_download": "Aaguk",
+      "update_skip": "Versioni una qaangeruk",
+      "update_later": "Kingusinnerusukkut",
+      "update_up_to_date": "Versioni nutaanerpaaq atorpat.",
+      "update_check_failed": "Nutarterinermik misissuineq GitHub-imut attaveqarsinnaanngilaq. Kingusinnerusukkut misileqqiguk."
+    },
+    "km": {
+      "check_for_updates": "ពិនិត្យរកបច្ចុប្បន្នភាព",
+      "update_available_title": "មានបច្ចុប្បន្នភាព",
+      "update_available_text": "FancyClock {latest} អាចប្រើបានហើយ។ អ្នកកំពុងប្រើ {current}។",
+      "update_download": "ទាញយក",
+      "update_skip": "រំលងកំណែនេះ",
+      "update_later": "ពេលក្រោយ",
+      "update_up_to_date": "អ្នកកំពុងប្រើកំណែចុងក្រោយបំផុត។",
+      "update_check_failed": "ការពិនិត្យបច្ចុប្បន្នភាពមិនអាចភ្ជាប់ទៅ GitHub បានទេ។ សូមព្យាយាមម្ដងទៀតនៅពេលក្រោយ។"
+    },
+    "ko": {
+      "check_for_updates": "업데이트 확인",
+      "update_available_title": "업데이트 있음",
+      "update_available_text": "FancyClock {latest} 버전을 사용할 수 있습니다. 현재 {current} 버전을 사용 중입니다.",
+      "update_download": "다운로드",
+      "update_skip": "이 버전 건너뛰기",
+      "update_later": "나중에",
+      "update_up_to_date": "최신 버전을 사용 중입니다.",
+      "update_check_failed": "업데이트 확인이 GitHub에 연결하지 못했습니다. 나중에 다시 시도해 주세요."
+    },
+    "ky": {
+      "check_for_updates": "Жаңыртууларды текшерүү",
+      "update_available_title": "Жаңыртуу жеткиликтүү",
+      "update_available_text": "FancyClock {latest} жеткиликтүү. Сиз {current} колдонуп жатасыз.",
+      "update_download": "Жүктөп алуу",
+      "update_skip": "Бул версияны өткөрүп жиберүү",
+      "update_later": "Кийинчерээк",
+      "update_up_to_date": "Сиз эң акыркы версияны колдонуп жатасыз.",
+      "update_check_failed": "Жаңыртууну текшерүү GitHub менен байланыша алган жок. Кийинчерээк кайра аракет кылыңыз."
+    },
+    "lo": {
+      "check_for_updates": "ກວດຫາອັບເດດ",
+      "update_available_title": "ມີອັບເດດ",
+      "update_available_text": "FancyClock {latest} ພ້ອມໃຫ້ໃຊ້ແລ້ວ. ທ່ານກຳລັງໃຊ້ {current}.",
+      "update_download": "ດາວໂຫຼດ",
+      "update_skip": "ຂ້າມເວີຊັນນີ້",
+      "update_later": "ພາຍຫຼັງ",
+      "update_up_to_date": "ທ່ານກຳລັງໃຊ້ເວີຊັນຫຼ້າສຸດ.",
+      "update_check_failed": "ການກວດອັບເດດບໍ່ສາມາດເຊື່ອມຕໍ່ GitHub ໄດ້. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ."
+    },
+    "lt": {
+      "check_for_updates": "Tikrinti, ar yra atnaujinimų",
+      "update_available_title": "Yra atnaujinimas",
+      "update_available_text": "Galima atsisiųsti FancyClock {latest}. Naudojate {current}.",
+      "update_download": "Atsisiųsti",
+      "update_skip": "Praleisti šią versiją",
+      "update_later": "Vėliau",
+      "update_up_to_date": "Naudojate naujausią versiją.",
+      "update_check_failed": "Atnaujinimo patikra nepasiekė GitHub. Bandykite dar kartą vėliau."
+    },
+    "lv": {
+      "check_for_updates": "Meklēt atjauninājumus",
+      "update_available_title": "Pieejams atjauninājums",
+      "update_available_text": "Ir pieejams FancyClock {latest}. Jūs izmantojat {current}.",
+      "update_download": "Lejupielādēt",
+      "update_skip": "Izlaist šo versiju",
+      "update_later": "Vēlāk",
+      "update_up_to_date": "Jūs izmantojat jaunāko versiju.",
+      "update_check_failed": "Atjauninājuma pārbaude nevarēja sazināties ar GitHub. Lūdzu, mēģiniet vēlāk vēlreiz."
+    },
+    "mg": {
+      "check_for_updates": "Hijery fanavaozana",
+      "update_available_title": "Misy fanavaozana",
+      "update_available_text": "Efa azo ny FancyClock {latest}. Mampiasa {current} ianao.",
+      "update_download": "Alaivo",
+      "update_skip": "Dinganina ity kinova ity",
+      "update_later": "Aoriana",
+      "update_up_to_date": "Mampiasa ny kinova farany ianao.",
+      "update_check_failed": "Tsy nahatratra ny GitHub ny fanamarinana fanavaozana. Andramo indray aoriana azafady."
+    },
+    "mk": {
+      "check_for_updates": "Провери за ажурирања",
+      "update_available_title": "Достапно е ажурирање",
+      "update_available_text": "FancyClock {latest} е достапен. Користите {current}.",
+      "update_download": "Преземи",
+      "update_skip": "Прескокни ја оваа верзија",
+      "update_later": "Подоцна",
+      "update_up_to_date": "Ја користите најновата верзија.",
+      "update_check_failed": "Проверката за ажурирање не можеше да стигне до GitHub. Обидете се повторно подоцна."
+    },
+    "mn": {
+      "check_for_updates": "Шинэчлэлт шалгах",
+      "update_available_title": "Шинэчлэлт бэлэн байна",
+      "update_available_text": "FancyClock {latest} бэлэн байна. Та {current} ашиглаж байна.",
+      "update_download": "Татах",
+      "update_skip": "Энэ хувилбарыг алгасах",
+      "update_later": "Дараа",
+      "update_up_to_date": "Та хамгийн сүүлийн хувилбарыг ашиглаж байна.",
+      "update_check_failed": "Шинэчлэлтийн шалгалт GitHub-тай холбогдож чадсангүй. Дараа дахин оролдоно уу."
+    },
+    "ms": {
+      "check_for_updates": "Semak kemas kini",
+      "update_available_title": "Kemas kini tersedia",
+      "update_available_text": "FancyClock {latest} tersedia. Anda menggunakan {current}.",
+      "update_download": "Muat turun",
+      "update_skip": "Langkau versi ini",
+      "update_later": "Kemudian",
+      "update_up_to_date": "Anda menggunakan versi terkini.",
+      "update_check_failed": "Semakan kemas kini tidak dapat menghubungi GitHub. Sila cuba lagi kemudian."
+    },
+    "mt": {
+      "check_for_updates": "Iċċekkja għall-aġġornamenti",
+      "update_available_title": "Aġġornament disponibbli",
+      "update_available_text": "FancyClock {latest} huwa disponibbli. Qed tuża {current}.",
+      "update_download": "Niżżel",
+      "update_skip": "Aqbeż din il-verżjoni",
+      "update_later": "Aktar tard",
+      "update_up_to_date": "Qed tuża l-aħħar verżjoni.",
+      "update_check_failed": "Il-verifika tal-aġġornament ma setgħetx tilħaq lil GitHub. Jekk jogħġbok erġa' pprova aktar tard."
+    },
+    "my": {
+      "check_for_updates": "အပ်ဒိတ်များ စစ်ဆေးရန်",
+      "update_available_title": "အပ်ဒိတ် ရနိုင်ပါပြီ",
+      "update_available_text": "FancyClock {latest} ရနိုင်ပါပြီ။ သင်သည် {current} ကို အသုံးပြုနေပါသည်။",
+      "update_download": "ဒေါင်းလုဒ်",
+      "update_skip": "ဤဗားရှင်းကို ကျော်ရန်",
+      "update_later": "နောက်မှ",
+      "update_up_to_date": "သင်သည် နောက်ဆုံးဗားရှင်းကို အသုံးပြုနေပါသည်။",
+      "update_check_failed": "အပ်ဒိတ်စစ်ဆေးမှုသည် GitHub သို့ မရောက်နိုင်ပါ။ နောက်မှ ထပ်ကြိုးစားပါ။"
+    },
+    "nb": {
+      "check_for_updates": "Se etter oppdateringer",
+      "update_available_title": "Oppdatering tilgjengelig",
+      "update_available_text": "FancyClock {latest} er tilgjengelig. Du bruker {current}.",
+      "update_download": "Last ned",
+      "update_skip": "Hopp over denne versjonen",
+      "update_later": "Senere",
+      "update_up_to_date": "Du bruker den nyeste versjonen.",
+      "update_check_failed": "Oppdateringssjekken fikk ikke kontakt med GitHub. Prøv igjen senere."
+    },
+    "ne": {
+      "check_for_updates": "अपडेट जाँच गर्नुहोस्",
+      "update_available_title": "अपडेट उपलब्ध छ",
+      "update_available_text": "FancyClock {latest} उपलब्ध छ। तपाईं {current} प्रयोग गर्दै हुनुहुन्छ।",
+      "update_download": "डाउनलोड गर्नुहोस्",
+      "update_skip": "यो संस्करण छोड्नुहोस्",
+      "update_later": "पछि",
+      "update_up_to_date": "तपाईं नवीनतम संस्करण प्रयोग गर्दै हुनुहुन्छ।",
+      "update_check_failed": "अपडेट जाँचले GitHub सम्म पुग्न सकेन। कृपया पछि फेरि प्रयास गर्नुहोस्।"
+    },
+    "nl": {
+      "check_for_updates": "Controleren op updates",
+      "update_available_title": "Update beschikbaar",
+      "update_available_text": "FancyClock {latest} is beschikbaar. U gebruikt {current}.",
+      "update_download": "Downloaden",
+      "update_skip": "Deze versie overslaan",
+      "update_later": "Later",
+      "update_up_to_date": "U gebruikt de nieuwste versie.",
+      "update_check_failed": "De updatecontrole kon GitHub niet bereiken. Probeer het later opnieuw."
+    },
+    "pl": {
+      "check_for_updates": "Sprawdź aktualizacje",
+      "update_available_title": "Dostępna aktualizacja",
+      "update_available_text": "FancyClock {latest} jest dostępny. Używasz {current}.",
+      "update_download": "Pobierz",
+      "update_skip": "Pomiń tę wersję",
+      "update_later": "Później",
+      "update_up_to_date": "Używasz najnowszej wersji.",
+      "update_check_failed": "Sprawdzanie aktualizacji nie mogło połączyć się z GitHubem. Spróbuj ponownie później."
+    },
+    "pt": {
+      "check_for_updates": "Procurar atualizações",
+      "update_available_title": "Atualização disponível",
+      "update_available_text": "O FancyClock {latest} está disponível. Está a usar {current}.",
+      "update_download": "Transferir",
+      "update_skip": "Ignorar esta versão",
+      "update_later": "Mais tarde",
+      "update_up_to_date": "Está a usar a versão mais recente.",
+      "update_check_failed": "A verificação de atualizações não conseguiu contactar o GitHub. Tente novamente mais tarde."
+    },
+    "ro": {
+      "check_for_updates": "Caută actualizări",
+      "update_available_title": "Actualizare disponibilă",
+      "update_available_text": "FancyClock {latest} este disponibil. Folosiți {current}.",
+      "update_download": "Descarcă",
+      "update_skip": "Omite această versiune",
+      "update_later": "Mai târziu",
+      "update_up_to_date": "Folosiți cea mai recentă versiune.",
+      "update_check_failed": "Verificarea actualizărilor nu a putut contacta GitHub. Încercați din nou mai târziu."
+    },
+    "ru": {
+      "check_for_updates": "Проверить обновления",
+      "update_available_title": "Доступно обновление",
+      "update_available_text": "Доступен FancyClock {latest}. Вы используете {current}.",
+      "update_download": "Скачать",
+      "update_skip": "Пропустить эту версию",
+      "update_later": "Позже",
+      "update_up_to_date": "Вы используете самую новую версию.",
+      "update_check_failed": "Проверка обновлений не смогла связаться с GitHub. Повторите попытку позже."
+    },
+    "rw": {
+      "check_for_updates": "Reba niba hari amavugurura",
+      "update_available_title": "Ivugururwa rirahari",
+      "update_available_text": "FancyClock {latest} irahari. Urimo ukoresha {current}.",
+      "update_download": "Kurura",
+      "update_skip": "Simbuka iyi verisiyo",
+      "update_later": "Nyuma",
+      "update_up_to_date": "Urimo ukoresha verisiyo iheruka.",
+      "update_check_failed": "Isuzuma ry'ivugururwa ntiryashoboye kugera kuri GitHub. Ongera ugerageze nyuma."
+    },
+    "si": {
+      "check_for_updates": "යාවත්කාලීන පරීක්ෂා කරන්න",
+      "update_available_title": "යාවත්කාලීනයක් ඇත",
+      "update_available_text": "FancyClock {latest} ලබාගත හැකිය. ඔබ {current} භාවිතා කරයි.",
+      "update_download": "බාගන්න",
+      "update_skip": "මෙම අනුවාදය මඟ හරින්න",
+      "update_later": "පසුව",
+      "update_up_to_date": "ඔබ නවතම අනුවාදය භාවිතා කරයි.",
+      "update_check_failed": "යාවත්කාලීන පරීක්ෂාවට GitHub වෙත ළඟා විය නොහැකි විය. කරුණාකර පසුව නැවත උත්සාහ කරන්න."
+    },
+    "sk": {
+      "check_for_updates": "Skontrolovať aktualizácie",
+      "update_available_title": "K dispozícii je aktualizácia",
+      "update_available_text": "FancyClock {latest} je k dispozícii. Používate {current}.",
+      "update_download": "Stiahnuť",
+      "update_skip": "Preskočiť túto verziu",
+      "update_later": "Neskôr",
+      "update_up_to_date": "Používate najnovšiu verziu.",
+      "update_check_failed": "Kontrola aktualizácií sa nemohla pripojiť ku GitHubu. Skúste to znova neskôr."
+    },
+    "sl": {
+      "check_for_updates": "Preveri posodobitve",
+      "update_available_title": "Na voljo je posodobitev",
+      "update_available_text": "FancyClock {latest} je na voljo. Uporabljate {current}.",
+      "update_download": "Prenesi",
+      "update_skip": "Preskoči to različico",
+      "update_later": "Pozneje",
+      "update_up_to_date": "Uporabljate najnovejšo različico.",
+      "update_check_failed": "Preverjanje posodobitev ni moglo doseči GitHuba. Poskusite znova pozneje."
+    },
+    "so": {
+      "check_for_updates": "Hubi cusboonaysiinta",
+      "update_available_title": "Cusboonaysiin ayaa la heli karaa",
+      "update_available_text": "FancyClock {latest} waa la heli karaa. Waxaad isticmaashaa {current}.",
+      "update_download": "Soo degso",
+      "update_skip": "Ka bood nooca kan",
+      "update_later": "Hadhow",
+      "update_up_to_date": "Waxaad isticmaashaa nooca ugu dambeeyay.",
+      "update_check_failed": "Hubinta cusboonaysiintu ma gaari karin GitHub. Fadlan mar kale isku day hadhow."
+    },
+    "sq": {
+      "check_for_updates": "Kontrollo për përditësime",
+      "update_available_title": "Përditësim i disponueshëm",
+      "update_available_text": "FancyClock {latest} është i disponueshëm. Po përdorni {current}.",
+      "update_download": "Shkarko",
+      "update_skip": "Kapërce këtë version",
+      "update_later": "Më vonë",
+      "update_up_to_date": "Po përdorni versionin më të ri.",
+      "update_check_failed": "Kontrolli i përditësimit nuk arriti të lidhej me GitHub. Provoni përsëri më vonë."
+    },
+    "sr": {
+      "check_for_updates": "Proveri ažuriranja",
+      "update_available_title": "Dostupno je ažuriranje",
+      "update_available_text": "FancyClock {latest} je dostupan. Koristite {current}.",
+      "update_download": "Preuzmi",
+      "update_skip": "Preskoči ovu verziju",
+      "update_later": "Kasnije",
+      "update_up_to_date": "Koristite najnoviju verziju.",
+      "update_check_failed": "Provera ažuriranja nije mogla da stigne do GitHub-a. Pokušajte ponovo kasnije."
+    },
+    "sv": {
+      "check_for_updates": "Sök efter uppdateringar",
+      "update_available_title": "Uppdatering tillgänglig",
+      "update_available_text": "FancyClock {latest} är tillgänglig. Du använder {current}.",
+      "update_download": "Ladda ned",
+      "update_skip": "Hoppa över den här versionen",
+      "update_later": "Senare",
+      "update_up_to_date": "Du använder den senaste versionen.",
+      "update_check_failed": "Uppdateringskontrollen kunde inte nå GitHub. Försök igen senare."
+    },
+    "tg": {
+      "check_for_updates": "Санҷиши навсозиҳо",
+      "update_available_title": "Навсозӣ дастрас аст",
+      "update_available_text": "FancyClock {latest} дастрас аст. Шумо {current}-ро истифода мебаред.",
+      "update_download": "Боргирӣ",
+      "update_skip": "Ин версияро гузарондан",
+      "update_later": "Дертар",
+      "update_up_to_date": "Шумо версияи навтаринро истифода мебаред.",
+      "update_check_failed": "Санҷиши навсозӣ ба GitHub пайваст шуда натавонист. Лутфан дертар боз кӯшиш кунед."
+    },
+    "th": {
+      "check_for_updates": "ตรวจหาการอัปเดต",
+      "update_available_title": "มีการอัปเดต",
+      "update_available_text": "FancyClock {latest} พร้อมใช้งานแล้ว คุณกำลังใช้ {current}",
+      "update_download": "ดาวน์โหลด",
+      "update_skip": "ข้ามเวอร์ชันนี้",
+      "update_later": "ภายหลัง",
+      "update_up_to_date": "คุณกำลังใช้เวอร์ชันล่าสุด",
+      "update_check_failed": "การตรวจสอบการอัปเดตไม่สามารถเชื่อมต่อ GitHub ได้ โปรดลองอีกครั้งภายหลัง"
+    },
+    "ti": {
+      "check_for_updates": "ምሕዳሳት ኣረጋግጽ",
+      "update_available_title": "ምሕዳስ ኣሎ",
+      "update_available_text": "FancyClock {latest} ይርከብ እዩ። ንስኻ {current} ትጥቀም ኣለኻ።",
+      "update_download": "ኣውርድ",
+      "update_skip": "ነዚ ስሪት ዝለሎ",
+      "update_later": "ደሓር",
+      "update_up_to_date": "ንስኻ እቲ ዝሓደሰ ስሪት ትጥቀም ኣለኻ።",
+      "update_check_failed": "ናይ ምሕዳስ ምርመራ ናብ GitHub ክበጽሕ ኣይከኣለን። በጃኻ ደሓር ደጊምካ ፈትን።"
+    },
+    "tk": {
+      "check_for_updates": "Täzelenmeleri barla",
+      "update_available_title": "Täzelenme elýeterli",
+      "update_available_text": "FancyClock {latest} elýeterli. Siz {current} ulanýarsyňyz.",
+      "update_download": "Ýükläp al",
+      "update_skip": "Bu wersiýany geç",
+      "update_later": "Soňra",
+      "update_up_to_date": "Siz iň soňky wersiýany ulanýarsyňyz.",
+      "update_check_failed": "Täzelenme barlagy GitHub-a ýetip bilmedi. Soňra gaýtadan synanyşyň."
+    },
+    "to": {
+      "check_for_updates": "Vakai ki he ngaahi fakafoʻou",
+      "update_available_title": "ʻOku ʻi ai ha fakafoʻou",
+      "update_available_text": "ʻOku ʻatā ʻa e FancyClock {latest}. ʻOkú ke ngāueʻaki ʻa e {current}.",
+      "update_download": "Hikiʻi hifo",
+      "update_skip": "Laka atu ʻi he paaki ko ʻení",
+      "update_later": "ʻAmui",
+      "update_up_to_date": "ʻOkú ke ngāueʻaki ʻa e paaki fakamuimuí.",
+      "update_check_failed": "Naʻe ʻikai lava ʻe he vakaiʻi ʻo e fakafoʻoú ʻo aʻu ki he GitHub. Kātaki ʻo toe ʻahiʻahi ʻamui."
+    },
+    "tr": {
+      "check_for_updates": "Güncellemeleri denetle",
+      "update_available_title": "Güncelleme var",
+      "update_available_text": "FancyClock {latest} kullanılabilir. Şu anda {current} kullanıyorsunuz.",
+      "update_download": "İndir",
+      "update_skip": "Bu sürümü atla",
+      "update_later": "Daha sonra",
+      "update_up_to_date": "En son sürümü kullanıyorsunuz.",
+      "update_check_failed": "Güncelleme denetimi GitHub'a ulaşamadı. Lütfen daha sonra yeniden deneyin."
+    },
+    "uk": {
+      "check_for_updates": "Перевірити оновлення",
+      "update_available_title": "Доступне оновлення",
+      "update_available_text": "Доступний FancyClock {latest}. Ви використовуєте {current}.",
+      "update_download": "Завантажити",
+      "update_skip": "Пропустити цю версію",
+      "update_later": "Пізніше",
+      "update_up_to_date": "Ви використовуєте найновішу версію.",
+      "update_check_failed": "Перевірка оновлень не змогла з'єднатися з GitHub. Спробуйте пізніше."
+    },
+    "ur": {
+      "check_for_updates": "اپ ڈیٹس چیک کریں",
+      "update_available_title": "اپ ڈیٹ دستیاب ہے",
+      "update_available_text": "FancyClock {latest} دستیاب ہے۔ آپ {current} استعمال کر رہے ہیں۔",
+      "update_download": "ڈاؤن لوڈ کریں",
+      "update_skip": "یہ ورژن چھوڑ دیں",
+      "update_later": "بعد میں",
+      "update_up_to_date": "آپ تازہ ترین ورژن استعمال کر رہے ہیں۔",
+      "update_check_failed": "اپ ڈیٹ کی جانچ GitHub تک نہیں پہنچ سکی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔"
+    },
+    "uz": {
+      "check_for_updates": "Yangilanishlarni tekshirish",
+      "update_available_title": "Yangilanish mavjud",
+      "update_available_text": "FancyClock {latest} mavjud. Siz {current} dan foydalanmoqdasiz.",
+      "update_download": "Yuklab olish",
+      "update_skip": "Bu versiyani oʻtkazib yuborish",
+      "update_later": "Keyinroq",
+      "update_up_to_date": "Siz eng soʻnggi versiyadan foydalanmoqdasiz.",
+      "update_check_failed": "Yangilanish tekshiruvi GitHub bilan bogʻlana olmadi. Keyinroq qayta urinib koʻring."
+    },
+    "vi": {
+      "check_for_updates": "Kiểm tra bản cập nhật",
+      "update_available_title": "Có bản cập nhật",
+      "update_available_text": "FancyClock {latest} đã có sẵn. Bạn đang dùng {current}.",
+      "update_download": "Tải xuống",
+      "update_skip": "Bỏ qua phiên bản này",
+      "update_later": "Để sau",
+      "update_up_to_date": "Bạn đang dùng phiên bản mới nhất.",
+      "update_check_failed": "Quá trình kiểm tra cập nhật không thể kết nối tới GitHub. Vui lòng thử lại sau."
+    },
+    "zh": {
+      "check_for_updates": "检查更新",
+      "update_available_title": "有可用更新",
+      "update_available_text": "FancyClock {latest} 已发布。您正在使用 {current}。",
+      "update_download": "下载",
+      "update_skip": "跳过此版本",
+      "update_later": "以后再说",
+      "update_up_to_date": "您正在使用最新版本。",
+      "update_check_failed": "更新检查无法连接 GitHub。请稍后重试。"
+    }
+  },
+  "locale_overrides": {
+    "pt_BR": {
+      "check_for_updates": "Verificar atualizações",
+      "update_available_title": "Atualização disponível",
+      "update_available_text": "O FancyClock {latest} está disponível. Você está usando {current}.",
+      "update_download": "Baixar",
+      "update_skip": "Ignorar esta versão",
+      "update_later": "Mais tarde",
+      "update_up_to_date": "Você está usando a versão mais recente.",
+      "update_check_failed": "A verificação de atualizações não conseguiu acessar o GitHub. Tente novamente mais tarde."
+    },
+    "zh_HK": {
+      "check_for_updates": "檢查更新",
+      "update_available_title": "有可用更新",
+      "update_available_text": "FancyClock {latest} 已發佈。您正在使用 {current}。",
+      "update_download": "下載",
+      "update_skip": "略過此版本",
+      "update_later": "稍後再說",
+      "update_up_to_date": "您正在使用最新版本。",
+      "update_check_failed": "更新檢查無法連線 GitHub。請稍後再試。"
+    },
+    "zh_MO": {
+      "check_for_updates": "檢查更新",
+      "update_available_title": "有可用更新",
+      "update_available_text": "FancyClock {latest} 已發佈。您正在使用 {current}。",
+      "update_download": "下載",
+      "update_skip": "略過此版本",
+      "update_later": "稍後再說",
+      "update_up_to_date": "您正在使用最新版本。",
+      "update_check_failed": "更新檢查無法連線 GitHub。請稍後再試。"
+    },
+    "zh_TW": {
+      "check_for_updates": "檢查更新",
+      "update_available_title": "有可用更新",
+      "update_available_text": "FancyClock {latest} 已發佈。您正在使用 {current}。",
+      "update_download": "下載",
+      "update_skip": "略過此版本",
+      "update_later": "稍後再說",
+      "update_up_to_date": "您正在使用最新版本。",
+      "update_check_failed": "更新檢查無法連線 GitHub。請稍後再試。"
+    }
+  }
+}

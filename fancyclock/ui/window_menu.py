@@ -58,6 +58,16 @@ class WindowMenuMixin:
         self.license_action.triggered.connect(self.show_license_dialog)
         self.help_menu.addAction(self.license_action)
 
+        self.check_updates_action = None
+        if self.update_controller is not None:
+            self.check_updates_action = QAction(
+                self.i18n_manager.get_translation("check_for_updates"), self
+            )
+            self.check_updates_action.triggered.connect(
+                self.update_controller.check_manually
+            )
+            self.help_menu.addAction(self.check_updates_action)
+
     def _create_alarms_menu(self, menu_bar) -> None:
         """Build the Alarms menu backed by the alarms controller."""
         controller = self.alarms_controller

@@ -56,7 +56,7 @@ def main():
             new_val = "Автор"
         else:
             # 2) other locales:
-            #    – if missing / "." / "" → fall back to English "Author"
+            #    if missing / "." / "": fall back to English "Author"
             if old_val in (None, "", "."):
                 new_val = english_default
             else:

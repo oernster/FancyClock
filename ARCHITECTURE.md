@@ -38,9 +38,12 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   `LocalizationService`, `TimeService`, `SettingsService`, `SkinService`,
   `TimezoneService`, `AlarmService` (CRUD, tick evaluation and its
   consequences, snooze episodes with budgets, import/export, the
-  NTP-corrected now) and the `ResourcePaths` value object. Ports are
+  NTP-corrected now), `UpdateService` in `update.py` (version comparison,
+  platform asset selection and the skip rule for the update check) and the
+  `ResourcePaths` value object. Ports are
   `typing.Protocol` interfaces in `ports.py` (including `AlarmStore`,
-  `AlarmPorter` and `AutostartManager`); services receive their
+  `AlarmPorter`, `AutostartManager` and `ReleaseSource` with its
+  `ReleaseInfo`/`ReleaseAsset` values); services receive their
   dependencies by constructor injection. `AlarmStore.load` returns an
   `AlarmLoad`: the state beside a count of what could not be read, so a
   tolerant load reports its losses at the boundary instead of keeping
@@ -54,14 +57,22 @@ UI  -->  Application  -->  Domain  <--  Infrastructure
   autostart, null under Flatpak), the per-locale translation repository,
   the timezone-to-locale map, the system locale probe, the pytz timezone
   catalog (fold-aware tzinfo via zoneinfo for alarm scheduling), the media
-  library, the resource path resolver and the Qt single-instance guard.
+  library, the resource path resolver, the GitHub releases adapter for the
+  update check (`github_release_source.py`: stdlib urllib with the opener
+  injected, a 5 second timeout and every failure reading as "no release
+  visible") and the Qt single-instance guard.
 - **UI** (`fancyclock/ui/`): PySide6 widgets. The clock window and its
   behaviour mixins (menu, skin, time, animation, locale, drag and the
   View-menu opacity control with its Ctrl shortcuts), the analog and
   digital clock widgets, the galaxy effect, the dialogs and the alarm
   suite (`ui/alarms/`: controller, tray icon, manager and editor dialogs,
   the clock-face time picker, the persistent firing window, the
-  missed-alarms summary, toasts and the sound player). Localisation rule:
+  missed-alarms summary, toasts and the sound player) and the update-check
+  controller (`ui/update_check.py`: a launch check about 3 seconds after
+  the window shows plus a 24 hour re-check, the worker thread whose result
+  crosses back through a Signal bound to a UI-thread QObject method, the
+  Download / Skip this version / Later prompt and the manual Help menu
+  path that ignores the skip and reports every outcome). Localisation rule:
   anything built once and kept alive (the tray menu and the menu bar
   including Alarms, View and Skins) is retitled by `retranslate_ui()` on a
   locale change; everything else (dialogs, toasts, notifications)
@@ -117,6 +128,8 @@ app identity constants shared with the Windows installer.
 | The tray degrades to a plain window | `QSystemTrayIcon.isSystemTrayAvailable()` is false on some Linux desktops (vanilla GNOME); close-to-tray disables rather than hiding an unrecoverable window |
 | The installer and the app share one Run value | Both write `HKCU\...\Run\FancyClock`, so the sign-in checkbox and the Alarms menu toggle can never disagree |
 | The `media/*.mp4` skins are tracked with Git LFS | They are large binaries whose every revision would otherwise live in history forever; LFS keeps the working tree identical and the clone small, at the cost of one `git lfs install` on a fresh machine |
+| The update check asks `releases/latest` only | That endpoint returns only published, non-draft, non-prerelease releases, so a tag pushed mid-development can never prompt; the guard is the endpoint's own contract |
+| A skipped release version persists in the settings JSON | `skipped_update_version` rides the existing `SettingsService`/`JsonSettingsStore` path; the manual Help menu check ignores it, so a skip is never a dead end |
 
 ## Quality enforcement
 
@@ -128,8 +141,10 @@ app identity constants shared with the Windows installer.
 - `ruff` selects `BLE`, so a blind `except Exception` fails the lint rather than
   waiting for review to notice it. The rule carries no per-file ignore, so the
   setup program is held to it exactly as the application package is. Handlers
-  name the type that actually occurs; the three that cannot are marked
-  `# noqa: BLE001` with the fallback beside them and listed in `TECH_DEBT.md`.
+  name the type that actually occurs; where one genuinely cannot be named
+  (Qt paint paths, tolerant JSON loads, the update worker whose every failure
+  must stay silent) the handler is marked `# noqa: BLE001` with the fallback
+  written beside it, a set discussed in `TECH_DEBT.md`.
 - The version is never hardcoded outside the VERSION file. The runtime reads it
   through `fancyclock.version`, packaging through the dynamic version in
   `pyproject.toml` and the build scripts through `stamp_version.read_version()`.
@@ -144,6 +159,11 @@ app identity constants shared with the Windows installer.
 | Windows | `buildexe.py` then `buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
 | macOS | `builddmg.py` | `fancyclock-macos-<arch>.dmg` |
 | Linux | `build_flatpak.sh` | `dist/FancyClock.flatpak` |
+
+The Flatpak's finish-args in `uk.codecrafter.FancyClock.yml` grant
+`--share=network` so the update check (and the NTP correction) can leave the
+sandbox; an existing install keeps its old permissions until reinstalled from
+a rebuilt bundle.
 
 All icon assets derive from the 1024px plain master `fancyclock_plain.png`
 via `generate_icons.py`: it zooms the artwork so the clock dominates the

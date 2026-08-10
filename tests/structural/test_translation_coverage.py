@@ -211,6 +211,8 @@ ACCEPTED_ENGLISH: dict[str, frozenset[str]] = {
     ),
     # Malay, Turkmen and Uzbek use the English "Import".
     "alarm_import": frozenset(["ms_BN", "ms_MY", "tk_TM", "uz_UZ"]),
+    # Dutch writes "Later" exactly as English does.
+    "update_later": frozenset(["nl_AW", "nl_BE", "nl_CW", "nl_NL", "nl_SR", "nl_SX"]),
     # Indonesian uses "Edit" as its own verb.
     "alarm_edit": frozenset(["id_ID"]),
     # Same verb as the entry above.

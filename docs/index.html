@@ -571,7 +571,7 @@
                 </div>
                 <div class="faq-item">
                     <h3>Does Fancy Clock work offline?</h3>
-                    <p>Yes. It is local-first and runs entirely offline. The only optional network use is fetching accurate time from an NTP server, which you can leave off.</p>
+                    <p>Yes. It is local-first and everything works offline. Its only network use is fetching accurate time from an NTP server at startup and an anonymous daily check of GitHub releases for a newer version; both fail silently when no network is available.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Which platforms does Fancy Clock run on?</h3>
@@ -664,7 +664,9 @@
         locales, optional NTP time accuracy, nine animated video skins including Starfield, adjustable window opacity
         with a View menu slider and keyboard and wheel shortcuts, a system tray mode with
         optional start at sign-in and a frameless draggable window. Built with Python and PySide6,
-        it runs entirely offline with no cloud dependency and is open source under the LGPL-3.0 licence.
+        it works fully offline with no cloud dependency (its only network calls are an NTP time query at
+        startup and an anonymous daily update check against GitHub releases) and is open source under the
+        LGPL-3.0 licence.
     </p>
 
     <footer>
@@ -714,7 +716,7 @@
             "installUrl": "https://github.com/oernster/FancyClock/releases",
             "releaseNotes": "https://github.com/oernster/FancyClock/releases",
             "softwareHelp": "https://github.com/oernster/FancyClock#readme",
-            "softwareVersion": "2.2.0",
+            "softwareVersion": "2.3.0",
             "inLanguage": "en-GB",
             "image": "https://ernster.dev/FancyClock/fancyclock-512.png",
             "screenshot": "https://ernster.dev/FancyClock/fancyclock-screenshot.png",
@@ -737,7 +739,8 @@
                 "Nine animated video skins including Starfield",
                 "Adjustable window opacity via a View menu slider, Ctrl+arrows and Ctrl+wheel (Windows and macOS)",
                 "Frameless, draggable, single-instance window",
-                "Local-first, fully offline, no cloud dependency"
+                "In-app update check with download, skip and daily re-check",
+                "Local-first: works fully offline, no cloud dependency"
             ]
         },
         {
@@ -752,7 +755,7 @@
                 {
                     "@type": "Question",
                     "name": "Does Fancy Clock work offline?",
-                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is local-first and runs entirely offline. The only optional network use is fetching accurate time from an NTP server, which you can leave off." }
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is local-first and everything works offline. Its only network use is fetching accurate time from an NTP server at startup and an anonymous daily check of GitHub releases for a newer version; both fail silently when no network is available." }
                 },
                 {
                     "@type": "Question",

@@ -29,7 +29,8 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 - Adjustable window opacity from the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel (Windows and macOS; the Flatpak sandbox cannot set per-window opacity).
 - Automatic NTP time correction at startup, so the display stays honest when the machine clock has drifted.
 - Alarms, covered below.
-- Local-first: no account, no telemetry and no cloud. A single NTP query at startup is the only network call it makes, falling back to the system clock when no server answers.
+- An update check that respects you: shortly after launch and once a day while running, the app asks GitHub anonymously whether a newer published release exists, with Help > Check for updates doing the same on demand. Download, Skip this version or Later; a skipped version never prompts again and a failed check stays silent.
+- Local-first: no account, no telemetry and no cloud. Its only network calls are a single NTP query at startup (falling back to the system clock when no server answers) and the anonymous daily update check against GitHub releases.
 
 ## Alarms
 

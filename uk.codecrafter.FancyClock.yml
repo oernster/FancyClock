@@ -10,6 +10,9 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=host-etc:ro
+  # Network access for the daily update check (GitHub releases) and the
+  # NTP correction at startup; without it both silently do nothing.
+  - --share=network
 
 modules:
   # Native dependency that provides libgssapi_krb5.so.2 for QtNetwork/QtMultimedia

@@ -118,6 +118,10 @@ class WindowLocaleMixin:
         self.help_menu.setTitle(self.i18n_manager.get_translation("help"))
         self.about_action.setText(self.i18n_manager.get_translation("about"))
         self.license_action.setText(self.i18n_manager.get_translation("license"))
+        if self.check_updates_action is not None:
+            self.check_updates_action.setText(
+                self.i18n_manager.get_translation("check_for_updates")
+            )
 
     def _retranslate_skins_menu(self) -> None:
         label = self.i18n_manager.get_translation(_SKINS_KEY)

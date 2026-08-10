@@ -19,9 +19,11 @@ from fancyclock.application.settings import SettingsService
 from fancyclock.application.skins import SkinService
 from fancyclock.application.time_service import TimeService
 from fancyclock.application.timezones import TimezoneService
+from fancyclock.application.update import UpdateService
 from fancyclock.ui.alarms.controller import AlarmsUiController
 from fancyclock.ui.analog_clock import AnalogClock
 from fancyclock.ui.digital_clock import DigitalClock
+from fancyclock.ui.update_check import UpdateCheckController
 from fancyclock.ui.window_animation import WindowAnimationMixin
 from fancyclock.ui.window_drag import WindowDragMixin
 from fancyclock.ui.window_locale import WindowLocaleMixin
@@ -70,6 +72,7 @@ class ClockWindow(
         resources: ResourcePaths,
         alarm_service: AlarmService | None = None,
         autostart=None,
+        update_service: UpdateService | None = None,
         parent: QWidget | None = None,
     ):
         super().__init__(parent)
@@ -109,6 +112,10 @@ class ClockWindow(
                 timezone_service=timezone_service,
                 resources=resources,
             )
+
+        self.update_controller = None
+        if update_service is not None:
+            self.update_controller = UpdateCheckController(self, update_service)
 
         self._create_menu_bar()
         try:

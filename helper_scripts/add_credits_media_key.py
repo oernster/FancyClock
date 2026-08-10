@@ -11,7 +11,7 @@ TRANSLATION_DIR = Path("localization/translations")
 OVERWRITE_EXISTING = False
 
 # ---- TRANSLATIONS FOR "credits_media" ---------------------------------
-# Meaning: "Credits: (Media)" – heading in the About dialog.
+# Meaning: "Credits: (Media)", heading in the About dialog.
 # For any language not listed here, we fall back to English.
 
 CREDITS_MEDIA_TRANSLATIONS = {

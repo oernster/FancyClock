@@ -10,6 +10,7 @@ LOCALE_KEY = "locale"
 ALARM_VOLUME_KEY = "alarm_volume"
 CLOSE_TO_TRAY_KEY = "close_to_tray"
 WINDOW_OPACITY_KEY = "window_opacity"
+SKIPPED_UPDATE_VERSION_KEY = "skipped_update_version"
 
 DEFAULT_ALARM_VOLUME = 0.8
 MIN_VOLUME = 0.0
@@ -87,3 +88,12 @@ class SettingsService:
         """Persist the window opacity, clamped to [0.2, 1]."""
         clamped = min(MAX_WINDOW_OPACITY, max(MIN_WINDOW_OPACITY, float(opacity)))
         self._store.set(WINDOW_OPACITY_KEY, clamped)
+
+    def skipped_update_version(self) -> str | None:
+        """Return the release version the user chose to skip, or ``None``."""
+        value = self._store.get(SKIPPED_UPDATE_VERSION_KEY, None)
+        return value if isinstance(value, str) and value else None
+
+    def set_skipped_update_version(self, version: str) -> None:
+        """Persist the release version the user chose to skip."""
+        self._store.set(SKIPPED_UPDATE_VERSION_KEY, version)
