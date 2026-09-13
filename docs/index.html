@@ -147,6 +147,13 @@
         .secondary { border: 1px solid var(--border); color: var(--text); }
         .secondary:hover { border-color: var(--accent); transform: translateY(-1px); }
 
+        /* The donate button carries artwork before its label. Scoped to itself so the
+           shared inline-block action rule is left alone. The mark is sized in em against
+           the button's own type; at one line box the artwork could not be read, so it
+           takes 2.7em and the button is deliberately taller than a text-only one. */
+        .actions a.donate { display: inline-flex; align-items: center; gap: 10px; }
+        .actions a.donate img { display: block; height: 2.7em; width: auto; }
+
         .minor-detail {
             margin-top: 28px;
             font-size: 14px;
@@ -653,6 +660,20 @@
                 &nbsp;·&nbsp;
                 <a href="https://github.com/oernster/FancyClock">Source on GitHub</a>
             </p>
+        </section>
+
+        <!-- Supporting the project -->
+        <section class="section" id="support" aria-labelledby="support-h">
+            <h2 id="support-h">Supporting Fancy Clock</h2>
+            <p class="section-sub">Fancy Clock is free and stays free. There is no paid tier, no licence key and
+                no feature held back behind a donation. If you like it, a contribution supports its
+                maintenance and continued development.</p>
+            <div class="actions">
+                <a class="secondary donate" href="https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6">
+                    <img src="donate.png" alt="">
+                    Donate
+                </a>
+            </div>
         </section>
 
     </main>
