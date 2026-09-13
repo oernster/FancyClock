@@ -20,6 +20,8 @@ Fancy Clock is a cross-platform desktop clock with analog and digital modes, aut
 
 Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 
+> **Commercial licences available.** Fancy Clock is free and open source under LGPL-3.0. If those terms do not suit what you are building, a commercial licence can be bought from me separately. It covers my own code; PySide6 keeps its own LGPL-3.0 licence. See [commercial licensing](https://ernster.dev/commercial-licensing.html).
+
 ## What it does
 
 - Analog and digital modes, frameless and draggable, with the mode, position, skin and timezone all remembered between sessions.
@@ -109,9 +111,17 @@ Prerequisites, troubleshooting and the Flatpak `vendor/` wheel cache are in [`DE
 
 The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md). [`TECH_DEBT.md`](TECH_DEBT.md) records what is still open, what is deliberately left and what only looks like debt.
 
+## Supporting the project
+
+Fancy Clock is free and stays free. If you like it, a donation supports its maintenance and continued development.
+
+<a href="https://www.paypal.com/ncp/payment/Z36XJEEA4MNV6"><img src="docs/donate.png" alt="Donate to Fancy Clock" width="120"></a>
+
 ## Licence
 
 GNU Lesser General Public License v3.0 only. The full text is in [`LICENSE`](LICENSE).
+
+A commercial licence for my own code is also available, separately from the open-source licence: see [commercial licensing](https://ernster.dev/commercial-licensing.html).
 
 ## English
 Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield.  
