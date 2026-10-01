@@ -50,7 +50,7 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 | Platform | Package | Notes |
 |---|---|---|
 | Windows | `FancyClockSetup.exe` | Setup wizard; per-user install, no admin; uninstall from Settings > Apps |
-| macOS | `fancyclock-macos-arm64.dmg` | Open and drag Fancy Clock to Applications |
+| macOS | `FancyClock.dmg` | Open and drag Fancy Clock to Applications |
 | Linux | `FancyClock.flatpak` | `flatpak install FancyClock.flatpak` |
 
 All packages are on the [releases page](https://github.com/oernster/FancyClock/releases).
@@ -100,7 +100,7 @@ The suite runs unit, integration and structural tests behind a hard 100% coverag
 | Target | Command | Output |
 |---|---|---|
 | Windows installer | `python buildexe.py` then `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
-| macOS DMG | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
+| macOS DMG | `python builddmg.py` | `FancyClock.dmg` |
 | Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus the full `assets/` set from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/`, synthesised deterministically |

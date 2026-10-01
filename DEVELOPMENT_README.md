@@ -87,7 +87,7 @@ surviving cases are documented in [`TECH_DEBT.md`](TECH_DEBT.md).
 |---|---|---|
 | Windows app bundle | `python buildexe.py` | `dist-pyinstaller/FancyClock/` |
 | Windows installer | `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
-| macOS DMG (run on a Mac) | `python builddmg.py` | `fancyclock-macos-<arch>.dmg` |
+| macOS DMG (run on a Mac) | `python builddmg.py` | `FancyClock.dmg` |
 | Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus `assets/` from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/` (deterministic stdlib synthesis) |

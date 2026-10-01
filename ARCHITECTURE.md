@@ -157,7 +157,7 @@ app identity constants shared with the Windows installer.
 | Platform | Entry point | Output |
 |---|---|---|
 | Windows | `buildexe.py` then `buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
-| macOS | `builddmg.py` | `fancyclock-macos-<arch>.dmg` |
+| macOS | `builddmg.py` | `FancyClock.dmg` |
 | Linux | `build_flatpak.sh` | `dist/FancyClock.flatpak` |
 
 The Flatpak's finish-args in `uk.codecrafter.FancyClock.yml` grant
