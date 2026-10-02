@@ -149,8 +149,9 @@ app identity constants shared with the Windows installer.
   through `fancyclock.version`, packaging through the dynamic version in
   `pyproject.toml` and the build scripts through `stamp_version.read_version()`.
   The gh-pages site under `docs/` cannot read it at render time, so
-  `stamp_version.py` writes it into that tree (and only that tree) before every
-  package is built. No tracked markdown carries a version at all.
+  `stamp_version.py` writes it into that tree (and only that tree) before the
+  Windows and macOS packages are built; `build_flatpak.sh` does not stamp it.
+  No tracked markdown carries a version at all.
 
 ## Delivery
 

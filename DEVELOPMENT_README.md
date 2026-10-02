@@ -106,7 +106,8 @@ linear recipe of flags and steps costs more to split than it saves.
 
 **`helper_scripts/`: one-shot corpus maintenance.** Tooling for the 243
 translation files: adding a key across every locale, repairing values, auditing
-for suspicious translations, driving the LibreTranslate client. Each is run by
+for suspicious translations, translating the timezone names through a
+LibreTranslate server (`translate_timezones.py`). Each is run by
 hand when the locale corpus needs something done to it, never by a build, with
 most never run twice. Keeping them out of the root is what stops the four
 delivery scripts being lost among twenty maintenance ones.
