@@ -109,7 +109,7 @@ Prerequisites, troubleshooting and the Flatpak `vendor/` wheel cache are in [`DE
 
 ## Development
 
-The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md). [`TECH_DEBT.md`](TECH_DEBT.md) records what is still open, what is deliberately left and what only looks like debt.
+The codebase follows a clean-architecture layout: `fancyclock/{domain,application,infrastructure,ui}` with an explicit composition root and structural tests enforcing the boundaries. See [`ARCHITECTURE.md`](ARCHITECTURE.md). [`TECH_DEBT.md`](TECH_DEBT.md) records what is still open, what is deliberately left and what only looks like debt. [`DECISIONS-TRADEOFFS.md`](DECISIONS-TRADEOFFS.md) sets out the decisions Fancy Clock rests on, with what each one gains and what it costs.
 
 ## Supporting the project
 
