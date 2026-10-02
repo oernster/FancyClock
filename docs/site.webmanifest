@@ -1,7 +1,7 @@
 {
     "name": "Fancy Clock",
     "short_name": "Fancy Clock",
-    "description": "A free, private desktop clock with analog and digital modes, automatic timezone localization, animated skins and adjustable opacity.",
+    "description": "A free, private desktop clock with an analog dial and a digital readout, automatic timezone localization, animated skins and adjustable opacity.",
     "start_url": "/FancyClock/",
     "scope": "/FancyClock/",
     "display": "standalone",

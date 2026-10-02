@@ -73,7 +73,7 @@ modules:
         cat > /app/share/applications/uk.codecrafter.FancyClock.desktop << 'EOF'
         [Desktop Entry]
         Name=Fancy Clock
-        Comment=Cross-platform desktop clock with analog and digital modes
+        Comment=Cross-platform desktop clock with an analog dial and a digital readout
         Exec=fancyclock
         Icon=uk.codecrafter.FancyClock
         Terminal=false

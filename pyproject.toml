@@ -8,7 +8,7 @@ name = "fancyclock"
 # time (the runtime reads the same file via fancyclock.version). Never
 # hardcode a version here.
 dynamic = ["version"]
-description = "Cross-platform desktop clock with analog and digital modes"
+description = "Cross-platform desktop clock with an analog dial and a digital readout"
 authors = [{name = "Oliver Ernster", email = "oernster@codecrafter.uk"}]
 license = {text = "LGPL-3.0-only"}
 requires-python = ">=3.11"
