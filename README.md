@@ -105,7 +105,7 @@ The suite runs unit, integration and structural tests behind a hard 100% coverag
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus the full `assets/` set from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/`, synthesised deterministically |
 
-Prerequisites, troubleshooting and the Flatpak `vendor/` wheel cache are in [`DEVELOPMENT_README.md`](DEVELOPMENT_README.md). The build script fills that cache for you; pass `--no-fetch` to demand a pre-populated one for an air-gapped build.
+Prerequisites, troubleshooting and the Flatpak `vendor/` wheel cache are in [`DEVELOPMENT.md`](DEVELOPMENT.md). The build script fills that cache for you; pass `--no-fetch` to demand a pre-populated one for an air-gapped build.
 
 ## Development
 
