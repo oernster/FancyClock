@@ -6,7 +6,11 @@ from pathlib import PurePath
 
 from PySide6.QtGui import QAction
 
-from fancyclock.domain.skins import DEFAULT_SKIN_STEM, skin_stem
+from fancyclock.domain.skins import (
+    DEFAULT_SKIN_STEM,
+    STARFIELD_SKIN_NAME,
+    skin_stem,
+)
 
 
 class WindowSkinMixin:
@@ -15,6 +19,9 @@ class WindowSkinMixin:
     def _apply_startup_skin(self) -> None:
         """Apply the saved skin, defaulting to the standard skin if unset."""
         saved_name = self.settings.skin_name()
+        if saved_name == STARFIELD_SKIN_NAME:
+            self.analog_clock.set_video_skin(None)
+            return
         if saved_name:
             path = self.skin_service.find_by_stem(saved_name)
             if path:
@@ -32,7 +39,7 @@ class WindowSkinMixin:
         if path:
             self.settings.set_skin_name(skin_stem(PurePath(path).name))
         else:
-            self.settings.set_skin_name(None)
+            self.settings.set_skin_name(STARFIELD_SKIN_NAME)
 
     def _skin_label(self, entry) -> str:
         """Return the localized skin name, falling back to the file name."""

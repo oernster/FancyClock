@@ -69,7 +69,9 @@ python -m ruff check .
 
 `pytest` carries a hard 100% coverage gate over the domain, application and
 infrastructure layers (see `.coveragerc` for the measured surface) plus
-structural tests that enforce the architecture. A coverage-gated run prints the
+structural tests that enforce the architecture. The `tests/ui` suite drives the
+real window under an offscreen `QApplication`; it sets `QT_QPA_PLATFORM` to
+`offscreen` itself, so no window appears. A coverage-gated run prints the
 coverage table last, so read the exit code rather than the tail of the output.
 
 `ruff` selects `BLE` on top of the defaults, so a blind `except Exception`

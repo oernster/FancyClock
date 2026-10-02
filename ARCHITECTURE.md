@@ -119,7 +119,8 @@ app identity constants shared with the Windows installer.
 | Unmapped timezones fall back to `en_US` | Preserves the original behaviour when a timezone has no locale mapping |
 | pytz (not zoneinfo) for the timezone catalog | The timezone dialog and the offset labels match the shipped behaviour; migration is possible but out of scope for the refactor |
 | `SettingsService` mirrors Qt's AppConfigLocation layout | The installer's uninstall can remove the same per-user tree via platformdirs |
-| Coverage omits `ui/*`, `main.py`, `ports.py` and the single-instance guard | UI and Qt IPC are deliberately untested (no Qt mocking); Protocol bodies and the composition root have no behaviour of their own |
+| Coverage omits `ui/*`, `main.py`, `ports.py` and the single-instance guard | Qt is never mocked, so the UI sits outside the floor; where a promise rests on the UI (the skin surviving a restart) `tests/ui` drives the real window under an offscreen `QApplication`. Protocol bodies and the composition root have no behaviour of their own |
+| Starfield is saved as the name `starfield`, not as an absent setting | Starfield has no video file; an absent setting means a first run, which starts on the default video skin, so the two need different saved values |
 | Alarm scheduling uses zoneinfo fold semantics, not pytz | The DST policy (nonexistent wall times step to the first valid instant; ambiguous times fire once, on the earlier instant) needs PEP 495 folds, which pytz ignores; the catalog resolves the same IANA ids through zoneinfo for alarms only |
 | Alarms fire on the NTP-corrected clock | The firing instant must match what the on-screen clocks show, so `AlarmService.now_utc()` applies the same offset the display uses |
 | One missed-alarm mechanism covers sleep, quit and crash | The store persists a `last_evaluated_utc` watermark (throttled to one write a minute); every tick evaluates `(watermark, now]`, so wake-from-suspend and machine-off-between-runs are the same code path |
@@ -163,8 +164,9 @@ app identity constants shared with the Windows installer.
 
 The Flatpak's finish-args in `uk.codecrafter.FancyClock.yml` grant
 `--share=network` so the update check (and the NTP correction) can leave the
-sandbox; an existing install keeps its old permissions until reinstalled from
-a rebuilt bundle.
+sandbox, plus `--socket=pulseaudio` so the alarm sounds reach the speakers. An
+existing install keeps its old permissions until reinstalled from a rebuilt
+bundle.
 
 All icon assets derive from the 1024px plain master `fancyclock_plain.png`
 via `generate_icons.py`: it zooms the artwork so the clock dominates the

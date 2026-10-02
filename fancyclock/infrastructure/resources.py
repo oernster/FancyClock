@@ -17,6 +17,9 @@ APP_ICON_ICO = "fancyclock.ico"
 APP_ICON_PNG_256 = "fancyclock_icon_256.png"
 ABOUT_ICON_PNG = "fancyclock_icon_256.png"
 LICENSE_FILENAMES: tuple[str, ...] = ("LICENSE", "LICENSE.txt")
+TRANSLATIONS_RELATIVE_DIR = "localization/translations"
+TIMEZONE_MAP_FILENAME = "timezone_locale_map.json"
+MEDIA_RELATIVE_DIR = "media"
 
 
 def resource_path(relative_path: str) -> str:
@@ -27,7 +30,7 @@ def resource_path(relative_path: str) -> str:
 
 
 def find_license_file() -> str | None:
-    """Return the path of the bundled licence text, or ``None``."""
+    """Return the path of the bundled licence text; ``None`` when absent."""
     for name in LICENSE_FILENAMES:
         path = Path(resource_path(name))
         if path.is_file():

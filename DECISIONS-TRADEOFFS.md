@@ -403,7 +403,8 @@ per-user startup entry.
 The Flatpak build fetches the missing Python wheels itself before it starts
 and installs the result without asking Flathub for anything. An air-gapped
 build can demand a cache filled beforehand. The sandbox is granted the
-network for the NTP query and the update check.
+network for the NTP query and the update check, plus the sound server for the
+alarm sounds.
 
 - **Rather than:** a Flathub listing; filling the wheel cache by hand.
 - **Gains:** a first build on a new machine works; installing touches no

@@ -43,6 +43,9 @@ from fancyclock.infrastructure.json_settings_store import JsonSettingsStore
 from fancyclock.infrastructure.media_library import FilesystemMediaLibrary
 from fancyclock.infrastructure.ntp_time_source import NtpTimeSource
 from fancyclock.infrastructure.resources import (
+    MEDIA_RELATIVE_DIR,
+    TIMEZONE_MAP_FILENAME,
+    TRANSLATIONS_RELATIVE_DIR,
     find_license_file,
     get_about_icon_path,
     get_app_icon_path,
@@ -62,9 +65,6 @@ APP_ID = "uk.codecrafter.FancyClock"
 SINGLETON_NAME = "uk.codecrafter.FancyClock.singleton"
 ORGANIZATION_NAME = "OliverErnster"
 APPLICATION_NAME = "FancyClock"
-TRANSLATIONS_RELATIVE_DIR = "localization/translations"
-TIMEZONE_MAP_FILENAME = "timezone_locale_map.json"
-MEDIA_RELATIVE_DIR = "media"
 LOG_FILTER_RULES = (
     "qt.text.font.db=false\n"
     "qt.multimedia.ffmpeg=false\n"

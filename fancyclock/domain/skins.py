@@ -4,6 +4,10 @@ from __future__ import annotations
 
 SKIN_FILE_SUFFIX = ".mp4"
 DEFAULT_SKIN_STEM = "mesmerize"
+# The saved skin name meaning the built-in Starfield, which has no video file.
+# It is a name of its own rather than an absent setting, because absent means
+# a first run, which starts on the default skin.
+STARFIELD_SKIN_NAME = "starfield"
 
 
 def is_skin_filename(filename: str) -> bool:

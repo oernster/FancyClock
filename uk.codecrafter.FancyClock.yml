@@ -10,6 +10,9 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=host-etc:ro
+  # The sound server, so alarms and their previews are heard; without it
+  # QtMultimedia has no output device inside the sandbox.
+  - --socket=pulseaudio
   # Network access for the daily update check (GitHub releases) and the
   # NTP correction at startup; without it both silently do nothing.
   - --share=network
