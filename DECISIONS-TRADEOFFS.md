@@ -42,6 +42,15 @@ next runs.
 - **Costs:** an alarm set on a sleeping machine does not ring on time. The
   limit is stated in the README rather than hidden.
 
+### Free, with nothing held back
+
+Every copy is the whole program. There is no paid tier, no licence key and
+no feature kept behind a donation; a donation link is offered instead.
+
+- **Rather than:** a paid version or features unlocked by paying.
+- **Gains:** everybody runs the same clock; nothing in it nags for money.
+- **Costs:** its upkeep rests on voluntary donations and commercial licences.
+
 ## Time and the network
 
 ### NTP correction is automatic and has no switch
@@ -140,7 +149,7 @@ A bad entry is skipped so the clock always starts. The number lost is shown
 once at startup, in every language. An unreadable file counts as wholly
 lost. A missing file is a first run, not damage.
 
-- **Rather than:** refusing to start; skipping in silence, which it once did.
+- **Rather than:** refusing to start; skipping in silence.
 - **Gains:** an alarm that will not ring is something the user is told about
   rather than discovers by oversleeping.
 - **Costs:** one interruption at startup when it happens.
@@ -250,8 +259,7 @@ ships the English text without an exemption naming that one language. An
 exemption that is no longer English fails too, so the list can only shrink.
 
 - **Rather than:** relying on the English fallback.
-- **Gains:** a value left in English by accident cannot ship; ninety-two
-  wrong values across thirty-two files were found and repaired this way.
+- **Gains:** a value left in English by accident cannot ship.
 - **Costs:** a new key has to be translated into every language before it can
   land.
 
@@ -265,7 +273,7 @@ since arrive through scripts that carry their own table of translations.
 - **Gains:** more than seventy languages at no cost; by default no text goes
   to a third party.
 - **Costs:** machine translation leaves debris that only review or a test
-  catches, as the repair above showed.
+  catches.
 
 ### The timezone list comes from pytz
 
@@ -334,8 +342,9 @@ others.
 ### Skins are the video files that ship
 
 A video skin is any MP4 file in the media folder; the menu is built from
-what is there. Starfield is drawn by the program itself and needs no file.
-The videos are held in Git LFS.
+what is there. Starfield is drawn by the program itself and needs no file;
+choosing it is remembered as a choice of its own, since an empty setting means
+a first run. The videos are held in Git LFS.
 
 - **Rather than:** a list of skins written into the program; videos committed
   directly to history.
@@ -414,10 +423,11 @@ alarm sounds.
 ### macOS releases are notarised or not built
 
 The disk image build signs and notarises by default and stops if
-notarisation fails. A password given in the environment is checked for the
-right shape before the build starts. An unnotarised image is built only when
-a local test build is asked for by name. The stored keychain profile is a
-fixed name rather than one derived from the application's display name.
+notarisation fails. The Apple credential comes from the keychain unless one is
+given in the environment; such a password is checked for the right shape
+before the build starts. The keychain entry is named outright rather than
+derived from the application's name. An unnotarised image is built only when
+a local test build is asked for by name.
 
 - **Rather than:** shipping unsigned; finding a bad password at the last step.
 - **Gains:** a mistyped password costs seconds, not a full build; renaming
@@ -452,8 +462,8 @@ answers; when it does not, the page still works. The site carries no dates.
 
 - **Rather than:** links rewritten at every release.
 - **Gains:** a release needs no site edit to be downloadable.
-- **Costs:** a renamed package breaks its button, as happened once when the
-  macOS image changed name.
+- **Costs:** renaming a package breaks its button until the site is changed
+  to match.
 
 ## Engineering
 
@@ -509,8 +519,7 @@ setup program. Handlers name what actually occurs; the few that genuinely
 cannot say why beside them.
 
 - **Rather than:** catching everything and saying nothing.
-- **Gains:** a deliberate tolerance can be told from an oversight; dead
-  defensive code that could only hide a wiring fault was removed.
+- **Gains:** a deliberate tolerance can be told from an oversight.
 - **Costs:** each new handler has to justify itself.
 
 ### Tests with real parts
@@ -540,6 +549,5 @@ locale corpus live in their own folder. The test is whether deleting it would
 break a release.
 
 - **Rather than:** one scripts folder.
-- **Gains:** the handful of delivery scripts are not lost among twenty
-  maintenance ones.
+- **Gains:** the delivery scripts are not lost among the maintenance ones.
 - **Costs:** two places to look.

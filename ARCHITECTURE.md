@@ -160,7 +160,7 @@ app identity constants shared with the Windows installer.
 |---|---|---|
 | Windows | `buildexe.py` then `buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
 | macOS | `builddmg.py` | `FancyClock.dmg` |
-| Linux | `build_flatpak.sh` | `dist/FancyClock.flatpak` |
+| Linux | `build_flatpak.sh` | `FancyClock.flatpak` in the repository root |
 
 The Flatpak's finish-args in `uk.codecrafter.FancyClock.yml` grant
 `--share=network` so the update check (and the NTP correction) can leave the

@@ -12,9 +12,9 @@
 
 # Fancy Clock
 
-Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization, nine UI skins including Starfield, adjustable window opacity and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
+Fancy Clock is a cross-platform desktop clock: an analog dial with a digital date and time readout beneath it, automatic timezone localization, nine UI skins including Starfield, adjustable window opacity and full alarm support with snooze, colours and sounds. It is lightweight, clear and designed to stay unobtrusive on any desktop.
 
-**Who it is for:** anyone who wants a calm, frameless, always-visible clock on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's.
+**Who it is for:** anyone who wants a calm clock in a window of its own on Windows, macOS or Linux, with correct local time wherever they are and alarms that behave like a phone's.
 
 **Who it is not for:** anyone after a calendar, a timer or stopwatch, a widget platform or a scheduler that can wake a sleeping machine. Fancy Clock never wakes a suspended or powered-off computer; it reports what it missed instead.
 
@@ -24,10 +24,10 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 
 ## What it does
 
-- Analog and digital modes, frameless and draggable, with the mode, position, skin and timezone all remembered between sessions.
+- An analog dial and a digital readout together in one window, which can be dragged by its face; the skin, timezone, language and opacity are remembered between sessions.
 - Automatic timezone localization: the system timezone drives the display and region names and numerals are translated into the local language.
 - More than 70 languages across over 240 regional locales, detected automatically and overridable from the menu.
-- Nine skins: the procedural Starfield plus eight animated video backdrops. Or run it plain.
+- Nine skins: the procedural Starfield plus eight animated video backdrops.
 - Adjustable window opacity from the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel (Windows and macOS; the Flatpak sandbox cannot set per-window opacity).
 - Automatic NTP time correction at startup, so the display stays honest when the machine clock has drifted.
 - Alarms, covered below.
@@ -42,7 +42,7 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 - A persistent firing window plus a best-effort system notification; a missed-alarms summary covers anything that fired while the machine was asleep or the app was closed.
 - System tray icon with next-alarm tooltip, master switch and close-to-tray; optional start at sign-in (installer checkbox on Windows, in-app toggle everywhere it is supported).
 - Alarms fire on the same NTP-corrected time the clocks display and handle DST transitions correctly; import and export as JSON.
-- A damaged alarms file is reported rather than quietly costing you an alarm. Unreadable entries are still skipped so the app always starts. What is new is that the count is shown once at startup, so an alarm that will not ring is something you are told about rather than something you discover by oversleeping.
+- A damaged alarms file is reported rather than quietly costing you an alarm. Unreadable entries are skipped so the app always starts; the count is shown once at startup, so an alarm that will not ring is something you are told about rather than something you discover by oversleeping.
 - Honest limits: a suspended or powered-off machine is never woken; missed alarms are reported on the next launch or wake instead.
 
 ## Downloads
@@ -101,7 +101,7 @@ The suite runs unit, integration and structural tests behind a hard 100% coverag
 |---|---|---|
 | Windows installer | `python buildexe.py` then `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
 | macOS DMG | `python builddmg.py` | `FancyClock.dmg` |
-| Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
+| Linux Flatpak | `./build_flatpak.sh` | `FancyClock.flatpak` in the repository root |
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus the full `assets/` set from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/`, synthesised deterministically |
 
@@ -113,7 +113,7 @@ The codebase follows a clean-architecture layout: `fancyclock/{domain,applicatio
 
 ## Supporting the project
 
-Fancy Clock is free and stays free. If you like it, a donation supports its maintenance and continued development.
+Fancy Clock is free and stays free. There is no paid tier, no licence key and no feature held back behind a donation. If you like it, a donation supports its maintenance and continued development.
 
 <a href="https://www.paypal.com/ncp/payment/M7XJUDDW6MMA8"><img src="docs/donate.png" alt="Donate to Fancy Clock" width="120"></a>
 
@@ -124,7 +124,7 @@ GNU Lesser General Public License v3.0 only. The full text is in [`LICENSE`](LIC
 A commercial licence for my own code is also available, separately from the open-source licence: see [commercial licensing](https://ernster.dev/commercial-licensing.html).
 
 ## English
-Fancy Clock is a cross-platform desktop clock with analog and digital modes, automatic timezone localization and multiple UI skins including Starfield.  
+Fancy Clock is a cross-platform desktop clock with an analog dial and a digital readout, automatic timezone localization and multiple UI skins including Starfield.  
 It is lightweight, clear and designed to stay unobtrusive on any desktop.
 ### If you like it please buy me a coffee: [Donation link](https://www.paypal.com/ncp/payment/M7XJUDDW6MMA8)
 

@@ -80,8 +80,8 @@ does the most privileged work in the product: exempting it would announce a
 rule while excusing the code that most needs it. Catch the type that actually
 occurs (`OSError` for filesystem and registry work, `RuntimeError` where a Qt
 wrapper can outlive its C++ half) and reach for `# noqa: BLE001` only when the
-type genuinely cannot be named, writing the fallback beside it. The three
-surviving cases are documented in [`TECH_DEBT.md`](TECH_DEBT.md).
+type genuinely cannot be named, writing the fallback beside it. The kinds of
+surviving case are set out in [`TECH_DEBT.md`](TECH_DEBT.md).
 
 ## 4. Build entry points
 
@@ -90,7 +90,7 @@ surviving cases are documented in [`TECH_DEBT.md`](TECH_DEBT.md).
 | Windows app bundle | `python buildexe.py` | `dist-pyinstaller/FancyClock/` |
 | Windows installer | `python buildinstaller.py` | `dist-installer/FancyClockSetup.exe` |
 | macOS DMG (run on a Mac) | `python builddmg.py` | `FancyClock.dmg` |
-| Linux Flatpak | `./build_flatpak.sh` | `dist/FancyClock.flatpak` |
+| Linux Flatpak | `./build_flatpak.sh` | `FancyClock.flatpak` in the repository root |
 | Icon assets | `python generate_icons.py` | badged `fancyclock.png` plus `assets/` from the `fancyclock_plain.png` master |
 | Alarm sounds | `python generate_sounds.py` | `assets/sounds/` (deterministic stdlib synthesis) |
 
@@ -111,8 +111,8 @@ translation files: adding a key across every locale, repairing values, auditing
 for suspicious translations, translating the timezone names through a
 LibreTranslate server (`translate_timezones.py`). Each is run by
 hand when the locale corpus needs something done to it, never by a build, with
-most never run twice. Keeping them out of the root is what stops the four
-delivery scripts being lost among twenty maintenance ones.
+most never run twice. Keeping them out of the root is what stops the delivery
+scripts being lost among the maintenance ones.
 
 The test for which a new script is: would a release break if it were deleted?
 If yes it belongs at the root, otherwise in `helper_scripts/`.
@@ -202,8 +202,8 @@ installs the result. Run it without flags in an interactive terminal and it
 prompts for the install scope; choose the system option and it prints the exact
 `sudo flatpak install --system ...` command and offers to run it.
 
-Outputs are the bundle at `dist/FancyClock.flatpak` and a local OSTree repo at
-`dist/repo`.
+Outputs are the bundle at `FancyClock.flatpak` in the repository root and a
+local OSTree repo at `dist/repo`.
 
 **No Flathub, offline by default:** the script installs with
 `flatpak install --bundle --no-deps --no-related`, which stops Flatpak reaching
@@ -222,13 +222,13 @@ will not start after an offline install, that is almost always what is missing.
 Install an already-built bundle:
 
 ```bash
-flatpak install dist/FancyClock.flatpak
+flatpak install FancyClock.flatpak
 ```
 
 Or system-wide, offline:
 
 ```bash
-sudo flatpak install --system --reinstall --no-deps ./dist/FancyClock.flatpak
+sudo flatpak install --system --reinstall --no-deps ./FancyClock.flatpak
 ```
 
 Run it:
