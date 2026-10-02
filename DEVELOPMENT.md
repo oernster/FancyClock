@@ -6,7 +6,8 @@ no second development document; if a build note belongs anywhere, it belongs
 here.
 
 For the shape of the code itself (layers, invariants and the tests that enforce
-them) see [`ARCHITECTURE.md`](ARCHITECTURE.md). For what is still open see
+them) see [`ARCHITECTURE.md`](ARCHITECTURE.md). For running and writing the
+tests see [`TESTING.md`](TESTING.md). For what is still open see
 [`TECH_DEBT.md`](TECH_DEBT.md).
 
 ## 1. Clone and Git LFS
@@ -67,12 +68,8 @@ python -m flake8 .
 python -m ruff check .
 ```
 
-`pytest` carries a hard 100% coverage gate over the domain, application and
-infrastructure layers (see `.coveragerc` for the measured surface) plus
-structural tests that enforce the architecture. The `tests/ui` suite drives the
-real window under an offscreen `QApplication`; it sets `QT_QPA_PLATFORM` to
-`offscreen` itself, so no window appears. A coverage-gated run prints the
-coverage table last, so read the exit code rather than the tail of the output.
+How to read a run, what the gate holds and leaves out and how a new test or
+guard is written are in [`TESTING.md`](TESTING.md).
 
 `ruff` selects `BLE` on top of the defaults, so a blind `except Exception`
 fails the lint. There is no per-file ignore, including for `installer/`, which
@@ -255,3 +252,8 @@ release candidate.
 | The build cannot reach PyPI | Intentional. Rebuild `vendor/` as in section 5.2. |
 | The installed Flatpak will not launch | The KDE runtime is not present locally. Install it as in section 5.1. |
 | Opacity control missing on Linux | Expected. The Flatpak sandbox cannot set per-window opacity, so the View menu control is hidden there. |
+
+---
+
+See also [README.md](README.md), [ARCHITECTURE.md](ARCHITECTURE.md) and
+[TESTING.md](TESTING.md).

@@ -183,3 +183,8 @@ The Windows build scripts clear their output trees through
 `build_utils.clear_tree`, which renames a doomed tree aside before
 deleting it so a pending-delete zombie can never swallow a directory
 recreated on the same path mid-build.
+
+---
+
+See also [README.md](README.md), [TESTING.md](TESTING.md) and
+[DEVELOPMENT.md](DEVELOPMENT.md).
