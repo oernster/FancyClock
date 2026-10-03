@@ -4,7 +4,7 @@ A standing reference to the project's outstanding technical debt. It records wha
 
 This is a well-kept repository, so this file is short. `VERSION` and `stamp_version.py` are correct, the media are in Git LFS, the structural suite covers domain purity, wall-clock access, all four layer directions, the composition root and the module size rule across the application package, the setup program and the tests. One file in the whole tree exceeds 350 lines, `builddmg.py`, which is an exempt delivery script. The largest measured module is `helper_scripts/translate_timezones.py` at 341, comfortably under the cap and clear of the danger band.
 
-**Nothing is currently open.** What follows is the standing set of judgements about what looks like debt here and is not, so the same questions do not get reopened. A new item is added above this line when one is found.
+There is no open technical debt. What follows is the standing set of judgements about what looks like debt here and is not, so the same questions do not get reopened. A new item is added above this line when one is found.
 
 ---
 

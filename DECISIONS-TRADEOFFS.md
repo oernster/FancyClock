@@ -490,9 +490,10 @@ time. Every rule is handed the moment it works on.
 
 ### Complete coverage where it means something
 
-Line coverage must be total over the domain, application and infrastructure
-layers. The interface, the composition root, the port declarations and the
-single-instance lock are left out.
+Line and branch coverage must be total over the domain, application and
+infrastructure layers and over the Qt-free half of the setup program. The
+interface, the setup program's Qt client, the composition root, the port
+declarations and the single-instance lock are left out.
 
 - **Rather than:** one figure over the whole program, which could only be met
   by mocking Qt.

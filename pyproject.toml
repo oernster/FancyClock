@@ -48,5 +48,8 @@ select = ["E4", "E7", "E9", "F", "I", "BLE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --cov=fancyclock --cov-report=term-missing --cov-fail-under=100 --cov-config=.coveragerc"
+# The hard gate covers the application package and the Qt-free half of the
+# setup program, lines and branches both. What stays outside it is listed by
+# name in .coveragerc with the reason beside each entry.
+addopts = "-q --cov=fancyclock --cov=installer --cov-branch --cov-report=term-missing --cov-fail-under=100 --cov-config=.coveragerc"
 pythonpath = ["."]

@@ -93,7 +93,7 @@ python main.py
 python -m pytest
 ```
 
-The suite runs unit, integration and structural tests behind a hard 100% line coverage gate over the `fancyclock` package, less its interface. `black --check .`, `flake8 .` and `ruff check .` are standing steps alongside it. [`TESTING.md`](TESTING.md) says what sits outside the gate (the setup program among it) and how a test is written. Ruff selects `BLE`, so a blind `except Exception` fails the lint everywhere in the tree, the setup program included.
+The suite runs unit, integration and structural tests behind a hard 100% line and branch coverage gate over the `fancyclock` package (less its interface) and the setup program's Qt-free half. `black --check .`, `flake8 .` and `ruff check .` are standing steps alongside it. [`TESTING.md`](TESTING.md) says what sits outside the gate (the setup program's Qt client among it) and how a test is written. Ruff selects `BLE`, so a blind `except Exception` fails the lint everywhere in the tree, the setup program included.
 
 ## Build
 

@@ -47,8 +47,6 @@ SUPPORTED_LOCALES: tuple[str, ...] = (
     "lt_LT",
 )
 
-_LOCALE_PARTS = 2
-
 
 def is_supported(locale_code: str) -> bool:
     """Return True when the locale code is one of the supported locales."""
@@ -83,16 +81,17 @@ def normalize_locale(locale_str: str | None) -> str:
 
     for separator in ("_", "-"):
         if separator in locale_str:
+            # A string that contains the separator always splits into at least
+            # two parts, so the country part is always present here.
             parts = locale_str.split(separator)
-            if len(parts) >= _LOCALE_PARTS:
-                lang = parts[0].lower()
-                country = parts[1].upper()
-                normalized = f"{lang}_{country}"
-                if is_supported(normalized):
-                    return normalized
-                variant = _variant_for_language(lang)
-                if variant:
-                    return variant
+            lang = parts[0].lower()
+            country = parts[1].upper()
+            normalized = f"{lang}_{country}"
+            if is_supported(normalized):
+                return normalized
+            variant = _variant_for_language(lang)
+            if variant:
+                return variant
             break
 
     variant = _variant_for_language(locale_str.lower())

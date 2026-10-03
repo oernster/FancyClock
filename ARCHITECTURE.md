@@ -119,7 +119,7 @@ app identity constants shared with the Windows installer.
 | Unmapped timezones fall back to `en_US` | Preserves the original behaviour when a timezone has no locale mapping |
 | pytz (not zoneinfo) for the timezone catalog | The timezone dialog and the offset labels match the shipped behaviour; migration is possible but out of scope for the refactor |
 | `SettingsService` mirrors Qt's AppConfigLocation layout | The installer's uninstall can remove the same per-user tree via platformdirs |
-| Coverage omits `ui/*`, `main.py`, `ports.py` and the single-instance guard | Qt is never mocked, so the UI sits outside the floor; where a promise rests on the UI (the skin surviving a restart) `tests/ui` drives the real window under an offscreen `QApplication`. Protocol bodies and the composition root have no behaviour of their own |
+| Coverage omits `ui/*`, `main.py`, `ports.py`, the single-instance guard and the setup program's Qt client | Qt is never mocked, so the UI sits outside the floor; where a promise rests on the UI (the skin surviving a restart) `tests/ui` drives the real window under an offscreen `QApplication`. Protocol bodies and the composition root have no behaviour of their own |
 | Starfield is saved as the name `starfield`, not as an absent setting | Starfield has no video file; an absent setting means a first run, which starts on the default video skin, so the two need different saved values |
 | Alarm scheduling uses zoneinfo fold semantics, not pytz | The DST policy (nonexistent wall times step to the first valid instant; ambiguous times fire once, on the earlier instant) needs PEP 495 folds, which pytz ignores; the catalog resolves the same IANA ids through zoneinfo for alarms only |
 | Alarms fire on the NTP-corrected clock | The firing instant must match what the on-screen clocks show, so `AlarmService.now_utc()` applies the same offset the display uses |
@@ -135,7 +135,9 @@ app identity constants shared with the Windows installer.
 ## Quality enforcement
 
 - `pytest` runs unit, integration and structural tests with a hard
-  `--cov-fail-under=100` gate (see `.coveragerc` for the measured surface).
+  `--cov-fail-under=100` gate over lines and branches, covering `fancyclock`
+  and the Qt-free half of `installer` (see `.coveragerc` for the measured
+  surface).
 - No mock libraries: hand-written fakes implement the ports; infrastructure
   tests use real temp files and a real local UDP server.
 - `black --check`, `flake8` and `ruff check` are standing steps.

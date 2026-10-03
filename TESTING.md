@@ -25,8 +25,8 @@ coverage measurement and the floor, so nothing else needs passing to it. Add
 formatting or lint regression passes `pytest` untouched. Run all four and read
 the exit code of each.
 
-**A full run takes a few seconds.** Measured on 2026-10-02: 260 tests passed in
-5 seconds on Windows.
+**A full run takes a few seconds.** Measured on 2026-10-03: 388 tests on
+Windows, all passing, in 4 seconds.
 
 **Read the exit code, never the text.** The run prints the coverage table then
 one summary line. A search of the output for a result word is still not safe,
@@ -37,11 +37,18 @@ with one.
 
 ## What the gate holds
 
-The floor is 100% LINE coverage over the `fancyclock` package
-(`--cov-fail-under=100` in `pyproject.toml`). It is not measured by branch:
-`.coveragerc` does not switch branch measurement on. Nothing in `fancyclock/`
-carries a `# pragma: no cover`, so every line inside the floor is reached by a
-test.
+The floor is 100% coverage of lines AND branches over the `fancyclock` package
+and the Qt-free half of the setup program (`--cov=fancyclock --cov=installer
+--cov-branch --cov-fail-under=100` in `pyproject.toml`; `branch = True` in
+`.coveragerc`). A line that ran is not enough: both arms of every decision must
+run too. Nothing in either package carries a `# pragma: no cover`.
+
+Inside the floor from `installer/`: the install, upgrade, reinstall, repair and
+uninstall operations, the payload and manifest access, the uninstall registry
+entry and the Run value, shortcut paths and removal, process detection, version
+comparison, the operation rules, the CLI, logging setup and the payload
+builder. The three `installer/ui` modules that never import PySide6 (`themes`,
+`_main_window_types` and `lgpl3_license_text`) are inside it too.
 
 Outside the floor, stated in full so the number is not read as more than it is:
 
@@ -51,14 +58,9 @@ Outside the floor, stated in full so the number is not read as more than it is:
 | `fancyclock/ui/*` | the Qt client; one suite drives the real window (below) but it is not measured |
 | `fancyclock/application/ports.py` | Protocol definitions with nothing to execute |
 | `fancyclock/infrastructure/single_instance.py` | the single-instance lock |
-| `installer/` | the setup program: outside the coverage source and **not tested at all** |
+| `installer/app.py` and the eleven `installer/ui` modules that import PySide6, each named in `.coveragerc` | the setup program's Qt client, on the same grounds as `fancyclock/ui` |
+| `create_shortcut` in `installer/ops/shortcuts.py`, excluded by name in `.coveragerc` | it writes a `.lnk` through the Shell Link COM API, so it can only act on the real machine; tests replace it with a recorder |
 | the root build scripts and `helper_scripts/` | build and corpus maintenance tooling |
-
-The setup program is the gap worth knowing about. It does the most privileged
-work in the product (the install itself, registry writes, shortcuts and
-uninstall) and nothing exercises it short of building and running it. The lint
-holds it to the same blind-handler rule as everything else; see
-[DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Running it by hand
 
@@ -71,6 +73,13 @@ holds it to the same blind-handler rule as everything else; see
   default folder, only to check the path it resolves; it writes nothing. This
   holds by convention: no fixture redirects the real folder and no guard checks
   it, so a new test has to keep to it.
+- **The setup program's tests never touch the real machine.** An autouse
+  fixture in `tests/installer/conftest.py` redirects `USERPROFILE`,
+  `LOCALAPPDATA` and `APPDATA` into `tmp_path`, swaps `winreg` for an in-memory
+  hive and replaces the COM shortcut writer, process detection, the detached
+  PowerShell delete helper and the retry sleep with recorders. No test in that
+  folder writes the registry, the Start Menu, the Desktop or the real profile.
+  None starts a process.
 - **Nothing leaves the machine.** The NTP source is tested against a real UDP
   server on the loopback address; the release source is handed a stand-in
   opener, with `urlopen` patched where the default opener is checked; the
@@ -79,13 +88,15 @@ holds it to the same blind-handler rule as everything else; see
 
 ## Where the tests live
 
-`tests/` mirrors the package, one directory a layer:
+`tests/` mirrors the package, one directory a layer, plus one for the setup
+program:
 
 | Directory | What it tests | Against |
 |---|---|---|
 | `domain/` | alarms, schedules, dates, digits, locales, skins, time sync, timezones, pure | values built in the test |
 | `application/` | the services and the update check | hand-written fakes of every port (`tests/application/alarm_fakes.py` holds the alarm ones) |
 | `infrastructure/` | the JSON stores, the clock, the NTP source, the release source, the catalogues and the translations | real files in a temporary folder, the shipped data files, a loopback UDP server, a stand-in HTTP opener |
+| `installer/` | the setup program's operations, state and supporting modules | real files and folders in `tmp_path`, with hand-written fakes at the operating-system seams (`tests/installer/installer_fakes.py`) |
 | `ui/` | the chosen skin surviving a restart | the real `ClockWindow` over a real `QApplication`, offscreen |
 | `structural/` | the rules no single test can see | the source tree and the shipped locale files |
 | `tests/` root | the package export and the version module | the package itself |

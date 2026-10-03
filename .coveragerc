@@ -1,15 +1,45 @@
 [run]
-source = fancyclock
+source =
+    fancyclock
+    installer
+# Branch coverage: a line that ran is not enough; both arms of every decision
+# must run too.
+branch = True
 
 [report]
 show_missing = True
 skip_covered = False
 fail_under = 100
 
+# exclude_also adds to coverage's default exclusion rather than replacing it.
+# create_shortcut is the one installer function that can only act on the real
+# machine: it writes a .lnk through the Shell Link COM API (pythoncom and
+# win32com). Tests never run it; the isolation fixture in
+# tests/installer/conftest.py swaps it for a recorder, so it stays outside the
+# gate by name.
+exclude_also =
+    if __name__ == .__main__.:
+    def create_shortcut\(
+
+# The setup program's Qt client and its Qt entry point are named one by one,
+# on the same grounds as fancyclock/ui: their correctness lives in a real Qt
+# event loop. The three installer/ui modules that never import PySide6
+# (themes, _main_window_types and lgpl3_license_text) stay inside the gate.
 omit =
     fancyclock/main.py
     fancyclock/ui/*
     fancyclock/application/ports.py
     fancyclock/infrastructure/single_instance.py
+    installer/app.py
+    installer/ui/_header_fit.py
+    installer/ui/_main_window_actions.py
+    installer/ui/_main_window_build.py
+    installer/ui/_main_window_operations.py
+    installer/ui/_main_window_uninstall.py
+    installer/ui/_safe_label.py
+    installer/ui/icons.py
+    installer/ui/licence_dialog.py
+    installer/ui/main_window.py
+    installer/ui/worker.py
     */__pycache__/*
     */venv/*
