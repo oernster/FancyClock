@@ -11,7 +11,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QApplication
 
 from fancyclock.version import APP_DISPLAY_NAME, __version__
-from installer.cli import parse_args, wants_remove_user_data
+from installer.cli import parse_args
 from installer.shared.logging_setup import setup_installer_logging
 from installer.ui.icons import (
     build_installer_window_icon,
@@ -38,11 +38,9 @@ def main(argv: list[str] | None = None) -> int:
 
     sys.excepthook = _excepthook
 
+    # The window reads the user-data flags from these arguments when it builds
+    # the uninstall, so --keep-user-data and --remove-user-data take effect.
     args = parse_args(list(argv) if argv is not None else sys.argv[1:])
-
-    # When invoked as uninstaller from Settings, we can optionally run without UI
-    # in the future. For now, always show UI.
-    _ = wants_remove_user_data(args)
 
     app = QApplication([f"{APP_DISPLAY_NAME} Setup"])
     app.setApplicationName(f"{APP_DISPLAY_NAME} Setup")

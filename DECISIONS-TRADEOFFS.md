@@ -391,15 +391,16 @@ that cannot be done, it is kept and its folder named.
 - **Costs:** the setup program is Fancy Clock's own to maintain; an old copy
   held open by another program can be left behind beside the new one.
 
-### Removal takes everything
+### Removal takes everything by default
 
 Uninstalling removes the program, its shortcuts, its start-at-sign-in entry
-and the user's settings and alarms.
+and the user's settings and alarms. Started with `--keep-user-data`, the setup
+program keeps the settings and alarms; its confirmation says which will happen.
 
-- **Rather than:** leaving user data behind.
+- **Rather than:** leaving user data behind by default.
 - **Gains:** nothing of the clock remains on the machine.
-- **Costs:** the setup program offers no way to keep the alarms; export them
-  first to reinstall later.
+- **Costs:** the window itself offers no way to keep the alarms; only the
+  command-line flag does, so most users export them first to reinstall later.
 
 ### One sign-in entry shared by the installer and the app
 

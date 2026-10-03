@@ -25,15 +25,17 @@ coverage measurement and the floor, so nothing else needs passing to it. Add
 formatting or lint regression passes `pytest` untouched. Run all four and read
 the exit code of each.
 
-**A full run takes a few seconds.** Measured on 2026-10-03: 388 tests on
+**A full run takes a few seconds.** Measured on 2026-10-03: 392 tests on
 Windows, all passing, in about 8 seconds.
 
 **Read the exit code, never the text.** The run prints the coverage table then
 one summary line. A search of the output for a result word is still not safe,
 since coverage rows are named after modules. `0` means the tests passed AND the
 floor was met; anything else means read the failures above the table. For a
-count of tests without running them, `python -m pytest --co -q --no-cov` ends
-with one.
+count of tests without running them, run `python -m pytest --co --no-cov`: it
+lists one test ID per line and ends with a `N tests collected` total. Adding
+`-q` there gives no total; `addopts` already holds one `-q`, so the second
+makes it quieter still and it prints only a count per test file.
 
 ## What the gate holds
 

@@ -19,6 +19,7 @@ from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMessageBox
 
 from fancyclock.version import APP_DISPLAY_NAME
+from installer.cli import wants_remove_user_data
 from installer.ops.errors import InstallerOperationError
 from installer.ops.install_ops import InstallOptions, install_new, upgrade_or_reinstall
 from installer.ops.repair_ops import RepairOptions, repair
@@ -230,7 +231,9 @@ def operation_callable(
             uninstall_with_feedback,
             {
                 "identity": window._identity,
-                "opts": UninstallOptions(remove_user_data=True),
+                "opts": UninstallOptions(
+                    remove_user_data=wants_remove_user_data(window._cli_args)
+                ),
             },
         )
 

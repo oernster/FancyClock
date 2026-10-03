@@ -121,8 +121,9 @@ class ClockWindow(
         try:
             self.synchronize_time()
         except Exception:  # noqa: BLE001
-            # Falls back to the system clock, which is what the app shows
-            # until the next sync succeeds. A clock that will not open
+            # Falls back to the system clock: the offset stays at zero. This
+            # is the only sync, so the app shows the system clock for the
+            # rest of the session. A clock that will not open
             # because a time server was unreachable is the worse outcome.
             pass
 
