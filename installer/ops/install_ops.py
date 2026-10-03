@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import sys
 import uuid
@@ -27,6 +26,10 @@ from installer.ops.running_app import is_app_running
 
 logger = logging.getLogger("installer.install")
 
+# Hex characters of a random id appended to the folder an existing install is
+# moved aside to, enough to never collide with an earlier leftover.
+BACKUP_SUFFIX_HEX_CHARS = 8
+
 
 def _progress(progress, *, pct: int | None, message: str) -> None:  # noqa: ANN001
     if not progress:
@@ -46,11 +49,6 @@ class InstallOptions:
     create_desktop_shortcut: bool
     create_start_menu_shortcut: bool
     start_on_signin: bool = False
-
-
-def _installer_staging_root() -> Path:
-    local = os.getenv("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    return Path(local) / "FancyClockInstaller" / "staging"
 
 
 def _extract_payload_to(
@@ -73,57 +71,90 @@ def _extract_payload_to(
         )
 
 
+def _move_aside(target_dir: Path) -> Path | None:
+    """Rename an existing install out of the way; None when there is none."""
+    if not target_dir.exists():
+        return None
+    suffix = uuid.uuid4().hex[:BACKUP_SUFFIX_HEX_CHARS]
+    backup_dir = target_dir.with_name(f"{target_dir.name}.old.{suffix}")
+    try:
+        target_dir.rename(backup_dir)
+    except OSError as exc:
+        # A locked file, a permission refusal or a vanished volume all arrive
+        # as OSError, all meaning the same thing to the user: the existing
+        # install cannot be moved aside, so stop before anything is touched.
+        raise InstallerOperationError(
+            f"Unable to replace existing install at {target_dir}. Close any "
+            "program using files in that folder and run setup again."
+        ) from exc
+    return backup_dir
+
+
+def _place_new_bundle(staging_dir: Path, target_dir: Path) -> None:
+    try:
+        staging_dir.rename(target_dir)
+    except OSError:
+        # Likely cross-volume move. Copy instead.
+        shutil.copytree(staging_dir, target_dir, dirs_exist_ok=False)
+        shutil.rmtree(staging_dir, ignore_errors=True)
+
+
+def _roll_back(
+    target_dir: Path, backup_dir: Path | None, exc: Exception
+) -> InstallerOperationError:
+    """Undo a failed placement and return the error that tells the user.
+
+    Anything at target_dir now was written by the failed placement (the old
+    install was moved aside first), so it is removed before the previous
+    install goes back. When that cannot be done the backup is left untouched
+    and the message says where it is.
+    """
+    failed = f"Could not put the new files in place at {target_dir} ({exc})"
+    shutil.rmtree(target_dir, ignore_errors=True)
+    if backup_dir is None:
+        return InstallerOperationError(
+            f"{failed}. Nothing was installed; run setup again once the cause "
+            "is fixed."
+        )
+    try:
+        backup_dir.rename(target_dir)
+    except OSError:
+        return InstallerOperationError(
+            f"{failed}. The previous install could not be moved back; it is "
+            f"kept unchanged at {backup_dir}. Rename that folder to "
+            f"{target_dir.name} to restore it."
+        )
+    return InstallerOperationError(
+        f"{failed}. The previous install has been put back unchanged; run "
+        "setup again once the cause is fixed."
+    )
+
+
 def _swap_in_bundle(staging_dir: Path, target_dir: Path) -> None:
     """Replace target_dir with staging_dir.
 
     Uses a same-volume rename when possible; falls back to copytree when
-    installing across different volumes.
+    installing across different volumes. The previous install is deleted only
+    once the new one is in place; any failure before that restores it or keeps
+    it intact and names where it is.
     """
 
     target_dir = target_dir.resolve()
     target_dir.parent.mkdir(parents=True, exist_ok=True)
     logger.info("Swapping bundle into %s (staging=%s)", target_dir, staging_dir)
 
-    backup_dir: Path | None = None
-    if target_dir.exists():
-        backup_dir = target_dir.with_name(
-            target_dir.name + f".old.{uuid.uuid4().hex[:8]}"
-        )
-        try:
-            target_dir.rename(backup_dir)
-        except OSError as exc:
-            # A locked file, a permission refusal or a vanished volume all
-            # arrive as OSError, all meaning the same thing to the user: the
-            # existing install cannot be moved aside, so stop before anything
-            # is overwritten.
-            raise InstallerOperationError(
-                f"Unable to replace existing install at {target_dir}"
-            ) from exc
-
+    backup_dir = _move_aside(target_dir)
     try:
-        try:
-            staging_dir.rename(target_dir)
-        except OSError:
-            # Likely cross-volume move. Copy instead.
-            shutil.copytree(staging_dir, target_dir, dirs_exist_ok=False)
-            shutil.rmtree(staging_dir, ignore_errors=True)
-    except OSError:
-        # The move and the cross-volume copy both fail as OSError, including
-        # shutil.Error, which derives from it. Put the previous install back
-        # before re-raising, so a failed upgrade leaves a working application
-        # rather than nothing at all.
-        if backup_dir and backup_dir.exists() and not target_dir.exists():
-            try:
-                backup_dir.rename(target_dir)
-            except OSError:
-                # The rollback itself failed. Nothing further can be done here
-                # and the original failure is the one worth reporting, so let
-                # it propagate untouched.
-                pass
-        raise
-    finally:
-        if backup_dir and backup_dir.exists():
-            shutil.rmtree(backup_dir, ignore_errors=True)
+        _place_new_bundle(staging_dir, target_dir)
+    except Exception as exc:  # noqa: BLE001
+        # The move and the copy mostly fail as OSError (shutil.Error derives
+        # from it) but any failure here must still bring the old install back.
+        raise _roll_back(target_dir, backup_dir, exc) from exc
+    if backup_dir is not None:
+        # The new install is in place, so only now may the previous one go.
+        # A file held open inside it leaves the folder behind; the new install
+        # still works and the leftover does no harm.
+        shutil.rmtree(backup_dir, ignore_errors=True)
 
 
 def _check_cancel(cancel_event) -> None:  # noqa: ANN001
