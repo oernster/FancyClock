@@ -57,3 +57,25 @@ def test_normalize_empty_and_none_return_default() -> None:
 
 def test_normalize_single_part_with_separator() -> None:
     assert normalize_locale("en_") == "en_US"
+
+
+def test_a_script_subtag_is_read_through_to_the_region() -> None:
+    assert normalize_locale("zh-Hant-TW") == "zh_TW"
+    assert normalize_locale("zh-Hans-CN") == "zh_CN"
+    assert normalize_locale("zh_Hant_HK") == "zh_TW"
+
+
+def test_a_script_alone_picks_the_variant_written_in_it() -> None:
+    assert normalize_locale("zh-Hant") == "zh_TW"
+    assert normalize_locale("zh-Hans") == "zh_CN"
+
+
+def test_the_norwegian_macrolanguage_reads_as_bokmal() -> None:
+    assert normalize_locale("no_NO") == "nb_NO"
+    assert normalize_locale("no") == "nb_NO"
+
+
+def test_windows_bcp47_names_resolve_to_their_locale() -> None:
+    assert normalize_locale("fr-FR") == "fr_FR"
+    assert normalize_locale("de-DE") == "de_DE"
+    assert normalize_locale("ja-JP") == "ja_JP"

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from fancyclock.application.ports import TimezoneCatalog
 from fancyclock.domain.timezones import format_timezone_entry
@@ -35,3 +36,18 @@ class TimezoneService:
         ]
         items.sort(key=lambda entry: entry.display)
         return tuple(items)
+
+    def utc_offset_seconds_at(self, tz_id: str, instant_utc: datetime) -> int | None:
+        """Return the UTC offset of ``tz_id`` at ``instant_utc``, else ``None``.
+
+        Resolved through the same tzinfo the alarms schedule by, so the face
+        and the alarms can never disagree about what time it is in a zone.
+        ``None`` means the zone is unknown to that data.
+        """
+        try:
+            zone = self._catalog.tzinfo_for(tz_id)
+        except (KeyError, TypeError, ValueError):
+            # The port raises for an unknown zone; the caller keeps its own
+            # conversion rather than showing a time from no data at all.
+            return None
+        return int(instant_utc.astimezone(zone).utcoffset().total_seconds())

@@ -94,6 +94,11 @@ class AlarmService:
         """
         return self._load.lost_entries
 
+    @property
+    def damaged_copy_path(self) -> Path | None:
+        """Return the untouched copy of a damaged alarms file, if one was kept."""
+        return self._load.kept_aside
+
     # ------------------------------------------------------------------
     # Time and lookups
     # ------------------------------------------------------------------

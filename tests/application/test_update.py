@@ -55,6 +55,12 @@ class TestIsNewer:
         assert is_newer("2.2.0.1", CURRENT) is True
         assert is_newer("2.3", CURRENT) is True
 
+    def test_trailing_zero_components_name_the_same_version(self) -> None:
+        assert is_newer("2.4.0", "2.4") is False
+        assert is_newer("2.4.0.0", "2.4.0") is False
+        assert is_newer("2.4", "2.4.0") is False
+        assert is_newer("2.4.0.1", "2.4") is True
+
     def test_malformed_is_never_newer(self) -> None:
         assert is_newer("not-a-version", CURRENT) is False
         assert is_newer("2.3.0", "garbage") is False

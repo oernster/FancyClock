@@ -95,6 +95,9 @@ class ClockWindow(
         self.setWindowTitle(title)
 
         self.time_zone = QTimeZone.systemTimeZone()
+        # Kept as text too: a QTimeZone Qt does not recognise reports an empty
+        # id, which would lose the zone the user chose.
+        self.time_zone_id = bytes(self.time_zone.id()).decode("utf-8")
 
         self._opacity_supported = self._supports_window_opacity()
 
@@ -220,12 +223,20 @@ class ClockWindow(
         )
 
     def _show_alarm_load_warning(self, lost: int) -> None:
-        """Show the modal naming how many saved entries could not be read."""
+        """Show the modal naming how many saved entries could not be read.
+
+        When the damaged file was kept aside its path follows on a line of
+        its own: a path needs no translation and is what a hand repair needs.
+        """
         text = self.i18n_manager.get_translation(ALARM_LOAD_FAILED_TEXT_KEY)
+        text = text.replace(COUNT_PLACEHOLDER, self.i18n_manager.format_number(lost))
+        kept = self.alarm_service.damaged_copy_path
+        if kept is not None:
+            text = f"{text}\n\n{kept}"
         QMessageBox.warning(
             self,
             self.i18n_manager.get_translation(ALARM_LOAD_FAILED_TITLE_KEY),
-            text.replace(COUNT_PLACEHOLDER, self.i18n_manager.format_number(lost)),
+            text,
         )
 
     def keyPressEvent(self, event):  # noqa: N802 (Qt override)

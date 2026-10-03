@@ -25,8 +25,8 @@ coverage measurement and the floor, so nothing else needs passing to it. Add
 formatting or lint regression passes `pytest` untouched. Run all four and read
 the exit code of each.
 
-**A full run takes a few seconds.** Measured on 2026-10-03: 392 tests on
-Windows, all passing, in about 8 seconds.
+**A full run takes a few seconds.** Measured on 2026-10-03: 433 tests on
+Windows, all passing, in about 6 seconds.
 
 **Read the exit code, never the text.** The run prints the coverage table then
 one summary line. A search of the output for a result word is still not safe,
@@ -85,8 +85,9 @@ Outside the floor, stated in full so the number is not read as more than it is:
   folder writes the registry, the Start Menu, the Desktop or the real profile.
   None starts a process.
 - **Nothing leaves the machine.** The NTP source is tested against a real UDP
-  server on the loopback address; the release source is handed a stand-in
-  opener, with `urlopen` patched where the default opener is checked; the
+  server on the loopback address; its reply checks run against synthetic
+  packets handed in through an injected exchange that opens no socket. The
+  release source is handed a stand-in opener, with `urlopen` patched where the default opener is checked; the
   window suite replaces the reference time source so it never reaches an NTP
   server.
 
@@ -101,7 +102,7 @@ program:
 | `application/` | the services and the update check | hand-written fakes of every port (`tests/application/alarm_fakes.py` holds the alarm ones) |
 | `infrastructure/` | the JSON stores, the clock, the NTP source, the release source, the catalogues and the translations | real files in a temporary folder, the shipped data files, a loopback UDP server, a stand-in HTTP opener |
 | `installer/` | the setup program's operations, state and supporting modules | real files and folders in `tmp_path`, with hand-written fakes at the operating-system seams (`tests/installer/installer_fakes.py`) |
-| `ui/` | the chosen skin surviving a restart | the real `ClockWindow` over a real `QApplication`, offscreen |
+| `ui/` | the chosen skin surviving a restart; the face showing the zone the alarms ring by | the real `ClockWindow` over a real `QApplication`, offscreen |
 | `structural/` | the rules no single test can see | the source tree and the shipped locale files |
 | `tests/` root | the package export and the version module | the package itself |
 

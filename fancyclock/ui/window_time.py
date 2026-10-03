@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from PySide6.QtCore import QDateTime
 
 
@@ -13,10 +15,21 @@ class WindowTimeMixin:
         self.time_service.synchronize()
 
     def _current_time(self) -> QDateTime:
-        """Compute current time with the clock offset and selected timezone."""
+        """Compute current time with the clock offset and selected timezone.
+
+        The zone's offset comes from the same data the alarms ring by, so the
+        face cannot show one hour while an alarm rings by another. Qt's own
+        zone data is used only for a zone that data does not know.
+        """
         offset = int(self.time_service.offset_seconds)
         qdt = QDateTime.currentDateTimeUtc().addSecs(offset)
-        return qdt.toTimeZone(self.time_zone)
+        instant = datetime.fromtimestamp(qdt.toSecsSinceEpoch(), tz=timezone.utc)
+        zone_offset = self.timezone_service.utc_offset_seconds_at(
+            self.time_zone_id, instant
+        )
+        if zone_offset is None:
+            return qdt.toTimeZone(self.time_zone)
+        return qdt.toOffsetFromUtc(zone_offset)
 
     def update_time(self) -> None:
         """Slot called by the tick timer once per second."""

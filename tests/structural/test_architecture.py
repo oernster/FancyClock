@@ -30,7 +30,24 @@ COMPOSITION_ROOT = PACKAGE_DIR / "main.py"
 DOMAIN_ALLOWED_STDLIB = {"__future__", "dataclasses", "datetime", "typing", "math"}
 APPLICATION_ALLOWED_STDLIB = DOMAIN_ALLOWED_STDLIB | {"pathlib"}
 
-DOMAIN_FORBIDDEN_CALLS = ("datetime.now", "date.today", "datetime.utcnow")
+# Every call name that reads a clock in the stdlib, matched by name whatever
+# object it is reached through.
+DOMAIN_FORBIDDEN_CALLS = frozenset(
+    {
+        "now",
+        "today",
+        "utcnow",
+        "time",
+        "time_ns",
+        "monotonic",
+        "monotonic_ns",
+        "perf_counter",
+        "perf_counter_ns",
+        "localtime",
+        "gmtime",
+    }
+)
+DOMAIN_FORBIDDEN_BUILTINS = frozenset({"__import__"})
 
 
 def _modules(subdir: str) -> list[Path]:
@@ -69,14 +86,44 @@ def test_domain_is_pure() -> None:
                 )
 
 
+def _wall_clock_reads(tree: ast.AST) -> list[str]:
+    """Return each wall-clock reach in ``tree``, however the clock was named.
+
+    Any attribute with a clock name is refused, called or not, so an alias
+    (``clock = datetime; clock.now()``), a renamed import or a bound method
+    kept for later (``f = datetime.now``) cannot hide the read. ``getattr``
+    with a literal clock name and ``__import__`` are refused too, since both
+    reach the clock without naming it as an attribute. A bare ``time(...)``
+    is left alone: it is the ``datetime.time`` constructor, because the
+    ``time`` module itself is outside the domain import whitelist.
+    """
+    found: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Attribute) and node.attr in DOMAIN_FORBIDDEN_CALLS:
+            found.append(f".{node.attr} at line {node.lineno}")
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Name):
+            continue
+        if node.func.id in DOMAIN_FORBIDDEN_BUILTINS:
+            found.append(f"{node.func.id}() at line {node.lineno}")
+        elif node.func.id == "getattr" and any(
+            isinstance(arg, ast.Constant) and arg.value in DOMAIN_FORBIDDEN_CALLS
+            for arg in node.args
+        ):
+            found.append(f"getattr(..., clock name) at line {node.lineno}")
+    return found
+
+
 def test_domain_never_reads_the_wall_clock() -> None:
-    """Domain code never calls the wall clock directly."""
+    """Domain code never reaches the wall clock, under any name.
+
+    The cost is that a domain use of an attribute with one of these names (a
+    datetime's own ``.time()``, say) is refused too; build the value from its
+    fields instead, which also says more plainly what is meant.
+    """
     for module in _modules("domain"):
-        source = module.read_text(encoding="utf-8")
-        for forbidden in DOMAIN_FORBIDDEN_CALLS:
-            assert (
-                f"{forbidden}(" not in source
-            ), f"{module.name} calls {forbidden}(): inject time instead"
+        tree = ast.parse(module.read_text(encoding="utf-8"))
+        reads = _wall_clock_reads(tree)
+        assert not reads, f"{module.name} reads the clock: {reads}; inject time"
 
 
 def test_application_depends_on_domain_only() -> None:

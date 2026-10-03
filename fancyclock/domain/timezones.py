@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 SECONDS_PER_HOUR = 3600
+# Whole and half hours are stated exactly by one decimal of an hour; anything
+# finer (the 45 minute zones such as Kathmandu) needs two.
+HALF_HOUR_SECONDS = SECONDS_PER_HOUR // 2
 
 
 def format_offset_label(offset_seconds: float) -> str:
     """Return a UTC offset label such as ``UTC+1.0`` for the given seconds."""
     offset_hours = offset_seconds / SECONDS_PER_HOUR
+    if offset_seconds % HALF_HOUR_SECONDS:
+        return f"UTC{offset_hours:+.2f}"
     return f"UTC{offset_hours:+.1f}"
 
 

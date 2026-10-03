@@ -25,8 +25,8 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 ## What it does
 
 - An analog dial and a digital readout together in one window, which can be dragged by its face; the skin, timezone, language and opacity are remembered between sessions.
-- Automatic timezone localization: the system timezone drives the display and region names and numerals are translated into the local language.
-- More than 70 languages across over 240 regional locales, detected automatically and overridable from the menu.
+- Automatic timezone localization: the system timezone drives the display; choosing a timezone moves the interface, numerals included, into that place's language when it is one of the supported locales. Timezones are listed by their IANA names (such as `Asia/Tokyo`), which are not translated.
+- 36 languages across 40 regional locales, detected from the system on first launch and changed by choosing a timezone. Translation files for a further 200 or so locales ship with the app but cannot be selected yet; a zone whose language is one of those shows the closest supported locale or English.
 - Nine skins: the procedural Starfield plus eight animated video backdrops.
 - Adjustable window opacity from the View menu slider, Ctrl with the arrow keys or Ctrl with the mouse wheel (Windows and macOS; the Flatpak sandbox cannot set per-window opacity).
 - Automatic NTP time correction at startup, so the display stays honest when the machine clock has drifted.
@@ -42,7 +42,7 @@ Website: [ernster.dev/FancyClock](https://ernster.dev/FancyClock/)
 - A persistent firing window plus a best-effort system notification; a missed-alarms summary covers anything that fired while the machine was asleep or the app was closed.
 - System tray icon with next-alarm tooltip, master switch and close-to-tray; optional start at sign-in (installer checkbox on Windows, in-app toggle everywhere it is supported).
 - Alarms fire on the same NTP-corrected time the clocks display and handle DST transitions correctly; import and export as JSON.
-- A damaged alarms file is reported rather than quietly costing you an alarm. Unreadable entries are skipped so the app always starts; the count is shown once at startup, so an alarm that will not ring is something you are told about rather than something you discover by oversleeping.
+- A damaged alarms file is reported rather than quietly costing you an alarm. Unreadable entries are skipped so the app always starts; the count is shown once at startup, so an alarm that will not ring is something you are told about rather than something you discover by oversleeping. The damaged file is first copied aside untouched (the warning names the copy), so nothing in it is lost to the next save.
 - Honest limits: a suspended or powered-off machine is never woken; missed alarms are reported on the next launch or wake instead.
 
 ## Downloads

@@ -8,6 +8,8 @@ raises ``AlarmImportError`` so the user learns their file is bad.
 from __future__ import annotations
 
 import json
+import shutil
+from dataclasses import replace
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -20,6 +22,7 @@ from fancyclock.domain.alarms import (
     AlarmsState,
     SnoozeState,
 )
+from fancyclock.infrastructure.damaged_copy import CopyFile, keep_aside
 from fancyclock.infrastructure.json_settings_store import default_config_dir
 
 ALARMS_FILE_NAME = "alarms.json"
@@ -28,6 +31,9 @@ DOCUMENT_VERSION = 1
 # Reported when the document itself could not be read, so the count stands for
 # "the file", not for a number of entries: nothing inside it could be counted.
 _WHOLE_FILE = 1
+# Reported for a snooze section of the wrong shape, for the same reason.
+_WHOLE_SECTION = 1
+NOTHING_LOST = 0
 
 
 def _alarm_to_dict(alarm: Alarm) -> dict[str, Any]:
@@ -88,8 +94,16 @@ def _snooze_from_dict(data: dict[str, Any]) -> SnoozeState:
 class JsonAlarmStore:
     """Persists the alarm document with an atomic temp-file swap."""
 
-    def __init__(self, config_dir: Path | None = None) -> None:
+    def __init__(
+        self,
+        config_dir: Path | None = None,
+        copy_file: CopyFile = shutil.copyfile,
+    ) -> None:
         self._config_dir = config_dir if config_dir else default_config_dir()
+        self._copy_file = copy_file
+        # Set when a damaged file could not be copied aside: saving would then
+        # destroy the only copy of what the load could not read.
+        self._save_refused = False
 
     def alarms_path(self) -> Path:
         """Return the alarms file path, creating the directory if needed."""
@@ -102,12 +116,32 @@ class JsonAlarmStore:
         Every tolerated failure is counted rather than merely survived. The
         caller is told how many entries were unreadable so it can say so once,
         because an alarm silently dropped from the list is an alarm that will
-        not ring at the time the user set.
+        not ring at the time the user set. A load that lost anything first
+        copies the file aside untouched, because the next save replaces it
+        with only what could be read.
         """
         path = self.alarms_path()
         if not path.exists():
             # No file yet: a first run, not damage. Nothing was lost.
             return AlarmLoad(state=AlarmsState.empty())
+        loaded = self._read(path)
+        if loaded.lost_entries == NOTHING_LOST:
+            return loaded
+        return replace(loaded, kept_aside=self._keep_aside(path))
+
+    def _keep_aside(self, path: Path) -> Path | None:
+        """Copy ``path`` aside under a fresh numbered name and return it.
+
+        When the copy cannot be made the store refuses to save for the rest of
+        the session, so the original stays on disk for a hand repair.
+        """
+        target = keep_aside(path, self._copy_file)
+        if target is None:
+            self._save_refused = True
+        return target
+
+    def _read(self, path: Path) -> AlarmLoad:
+        """Read the document at ``path`` tolerantly, counting what is lost."""
         try:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -120,9 +154,22 @@ class JsonAlarmStore:
             # fallback: an empty document, with the whole file reported lost.
             return AlarmLoad(state=AlarmsState.empty(), skipped_alarms=_WHOLE_FILE)
 
+        raw_alarms = data.get("alarms", [])
+        if not isinstance(raw_alarms, list):
+            # The alarm section is present but is not a list, so how many
+            # alarms it held cannot be told: the whole file is reported lost.
+            return AlarmLoad(state=AlarmsState.empty(), skipped_alarms=_WHOLE_FILE)
+        raw_snoozes = data.get("snooze_states", [])
+        skipped_snoozes = 0
+        if not isinstance(raw_snoozes, list):
+            # A snooze section of the wrong shape loses only the snoozes; the
+            # alarms behind them still load.
+            raw_snoozes = []
+            skipped_snoozes = _WHOLE_SECTION
+
         alarms: list[Alarm] = []
         skipped_alarms = 0
-        for entry in data.get("alarms", ()):
+        for entry in raw_alarms:
             try:
                 alarms.append(_alarm_from_dict(entry))
             except Exception:  # noqa: BLE001
@@ -132,8 +179,7 @@ class JsonAlarmStore:
                 skipped_alarms += 1
         known = {alarm.alarm_id for alarm in alarms}
         snoozes: list[SnoozeState] = []
-        skipped_snoozes = 0
-        for entry in data.get("snooze_states", ()):
+        for entry in raw_snoozes:
             try:
                 state = _snooze_from_dict(entry)
             except Exception:  # noqa: BLE001
@@ -152,6 +198,11 @@ class JsonAlarmStore:
             # An unparseable watermark falls back to None, which makes the next
             # tick treat the session as fresh. Not counted: no alarm is lost.
             watermark = None
+        if watermark is not None and watermark.tzinfo is None:
+            # A watermark with no offset cannot be placed on the timeline and
+            # would raise on every tick against the aware clock. Dropped, like
+            # an unparseable one, so the session starts fresh.
+            watermark = None
 
         return AlarmLoad(
             state=AlarmsState(
@@ -165,7 +216,9 @@ class JsonAlarmStore:
         )
 
     def save(self, state: AlarmsState) -> None:
-        """Persist ``state`` atomically."""
+        """Persist ``state`` atomically, unless a damaged file is unprotected."""
+        if self._save_refused:
+            return
         document = {
             "version": DOCUMENT_VERSION,
             "master_enabled": state.master_enabled,
