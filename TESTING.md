@@ -26,7 +26,7 @@ formatting or lint regression passes `pytest` untouched. Run all four and read
 the exit code of each.
 
 **A full run takes a few seconds.** Measured on 2026-10-03: 388 tests on
-Windows, all passing, in 4 seconds.
+Windows, all passing, in about 8 seconds.
 
 **Read the exit code, never the text.** The run prints the coverage table then
 one summary line. A search of the output for a result word is still not safe,
@@ -41,7 +41,9 @@ The floor is 100% coverage of lines AND branches over the `fancyclock` package
 and the Qt-free half of the setup program (`--cov=fancyclock --cov=installer
 --cov-branch --cov-fail-under=100` in `pyproject.toml`; `branch = True` in
 `.coveragerc`). A line that ran is not enough: both arms of every decision must
-run too. Nothing in either package carries a `# pragma: no cover`.
+run too. Nothing inside the measured surface carries a `# pragma: no cover`;
+the only four in the tree guard `TYPE_CHECKING` imports in `installer/ui`
+modules that are omitted anyway.
 
 Inside the floor from `installer/`: the install, upgrade, reinstall, repair and
 uninstall operations, the payload and manifest access, the uninstall registry
@@ -58,7 +60,7 @@ Outside the floor, stated in full so the number is not read as more than it is:
 | `fancyclock/ui/*` | the Qt client; one suite drives the real window (below) but it is not measured |
 | `fancyclock/application/ports.py` | Protocol definitions with nothing to execute |
 | `fancyclock/infrastructure/single_instance.py` | the single-instance lock |
-| `installer/app.py` and the eleven `installer/ui` modules that import PySide6, each named in `.coveragerc` | the setup program's Qt client, on the same grounds as `fancyclock/ui` |
+| `installer/app.py` and the ten `installer/ui` modules that import PySide6, each named in `.coveragerc` | the setup program's Qt client, on the same grounds as `fancyclock/ui` |
 | `create_shortcut` in `installer/ops/shortcuts.py`, excluded by name in `.coveragerc` | it writes a `.lnk` through the Shell Link COM API, so it can only act on the real machine; tests replace it with a recorder |
 | the root build scripts and `helper_scripts/` | build and corpus maintenance tooling |
 

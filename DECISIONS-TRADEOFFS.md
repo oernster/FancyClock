@@ -381,12 +381,15 @@ registry.
 Install, repair and removal on Windows are one bespoke program. Its payload
 carries a fingerprint for every file; repair rewrites only the files whose
 fingerprint no longer matches. It refuses to install or remove while the
-clock is running.
+clock is running. An upgrade moves the previous install aside and deletes it
+only once the new one is in place. A failure before then puts it back; where
+that cannot be done, it is kept and its folder named.
 
-- **Rather than:** a generic installer.
+- **Rather than:** a generic installer; overwriting the old install in place.
 - **Gains:** a repair that touches only what is damaged; no file is replaced
-  under a running copy.
-- **Costs:** the setup program is Fancy Clock's own to maintain.
+  under a running copy; a failed upgrade never leaves the user with no clock.
+- **Costs:** the setup program is Fancy Clock's own to maintain; an old copy
+  held open by another program can be left behind beside the new one.
 
 ### Removal takes everything
 

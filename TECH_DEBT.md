@@ -2,7 +2,7 @@
 
 A standing reference to the project's outstanding technical debt. It records what is still open, weighs whether each item is worth doing and gives the rationale. Every item is a behaviour-preserving internal concern: nothing here proposes reverting a feature or changing any UI or UX behaviour. Scope is the whole repository (the `fancyclock` package, the bespoke installer, the delivery scripts, the bundled media and the 243 translation files) read against `ARCHITECTURE.md` and `tests/structural/test_architecture.py`.
 
-This is a well-kept repository, so this file is short. `VERSION` and `stamp_version.py` are correct, the media are in Git LFS, the structural suite covers domain purity, wall-clock access, all four layer directions, the composition root and the module size rule across the application package, the setup program and the tests. One file in the whole tree exceeds 350 lines, `builddmg.py`, which is an exempt delivery script. The largest measured module is `helper_scripts/translate_timezones.py` at 341, comfortably under the cap and clear of the danger band.
+This is a well-kept repository, so this file is short. `VERSION` and `stamp_version.py` are correct, the media are in Git LFS, the structural suite covers domain purity, wall-clock access, all four layer directions, the composition root and the module size rule across the application package, the setup program and the tests. One file in the whole tree exceeds 350 lines, `builddmg.py`, which is an exempt delivery script. The next largest is `helper_scripts/translate_timezones.py` at 341, which the size rule does not measure. The largest measured module is `fancyclock/application/alarms.py` at 331, comfortably under the cap and clear of the danger band.
 
 There is no open technical debt. What follows is the standing set of judgements about what looks like debt here and is not, so the same questions do not get reopened. A new item is added above this line when one is found.
 
@@ -11,7 +11,7 @@ There is no open technical debt. What follows is the standing set of judgements 
 ## Looks like debt, not worth touching
 
 - The 243 translation JSON files under `localization/translations/`. That is the i18n store and it is the intended design.
-- `localization/` sitting outside the `fancyclock` package. It is data bundled by the delivery scripts rather than importable code; the resource resolver already handles the dev, Nuitka, PyInstaller and Flatpak cases.
+- `localization/` sitting outside the `fancyclock` package. It is data bundled by the delivery scripts rather than importable code; the resource resolver already handles the dev, PyInstaller and Flatpak cases.
 - `timezone_locale_map.json` at root rather than under `localization/`. One file, referenced by one module, tested by `test_timezone_locale_map.py`.
 - `FancyClock.spec` and `FancyClockSetup.spec` at root are PyInstaller artefacts and are untracked.
 - The icon PNGs under `assets/`, the badged `fancyclock.png`, the `.ico` and the `.icns`. Emitted by `generate_icons.py` from a single master and consumed by named packaging paths.
