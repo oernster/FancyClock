@@ -219,7 +219,7 @@ class AlarmsUiController(QObject):
         saved = self._settings.timezone_id()
         if saved:
             return saved
-        return bytes(self._window.time_zone.id()).decode("utf-8")
+        return self._window.time_zone_id
 
     # ------------------------------------------------------------------
     # Close-to-tray and quitting

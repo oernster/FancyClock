@@ -18,6 +18,9 @@ TEST_UNIX_TIMESTAMP = 1_700_000_000
 TEST_TIMEOUT_SECONDS = 2.0
 FALLBACK_TOLERANCE = timedelta(seconds=60)
 NTP_FIELD_COUNT = 12
+# First word of a reply from a synchronised stratum 1 server: leap 0,
+# version 4, mode 4 (server), stratum 1.
+SYNCHRONISED_SERVER_HEADER = 0x24010000
 
 
 def _serve_one_datagram(payload_builder):
@@ -41,6 +44,7 @@ def _serve_one_datagram(payload_builder):
 def test_successful_query_returns_server_time() -> None:
     def build_response(_request: bytes) -> bytes:
         fields = [0] * NTP_FIELD_COUNT
+        fields[0] = SYNCHRONISED_SERVER_HEADER
         fields[TRANSMIT_SECONDS_INDEX] = TEST_UNIX_TIMESTAMP + NTP_TIMESTAMP_DELTA
         return struct.pack(NTP_RESPONSE_FORMAT, *fields)
 

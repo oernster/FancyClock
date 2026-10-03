@@ -60,7 +60,14 @@ def is_newer(candidate: str, current: str) -> bool:
     current_tuple = _version_tuple(current)
     if candidate_tuple is None or current_tuple is None:
         return False
-    return candidate_tuple > current_tuple
+    # Pad the shorter with zeros so "2.4" and "2.4.0" name the same release.
+    width = max(len(candidate_tuple), len(current_tuple))
+    return _padded(candidate_tuple, width) > _padded(current_tuple, width)
+
+
+def _padded(parts: tuple[int, ...], width: int) -> tuple[int, ...]:
+    """Return ``parts`` extended with zero components to ``width``."""
+    return parts + (0,) * (width - len(parts))
 
 
 def platform_key_for(sys_platform: str) -> str:
@@ -90,7 +97,7 @@ class UpdateService:
         self._platform_key = platform_key
 
     def check(self, skipped_version: str | None = None) -> UpdateStatus | None:
-        """Return the check's conclusion, or ``None`` when unreachable.
+        """Return the check's conclusion; ``None`` when unreachable.
 
         A release equal to ``skipped_version`` is reported as seen but not
         available, which is what keeps a skipped version from prompting

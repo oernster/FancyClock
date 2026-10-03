@@ -88,11 +88,16 @@ class AlarmLoad:
     worst thing an alarm clock can do. The counts travel back beside the state
     so the caller can say so once, rather than the store deciding on its own
     that nobody needs to know.
+
+    ``kept_aside`` names an untouched copy of the damaged file, made before
+    anything could save over it, so what the load could not read can still be
+    repaired by hand. It is ``None`` when the load lost nothing.
     """
 
     state: AlarmsState
     skipped_alarms: int = 0
     skipped_snoozes: int = 0
+    kept_aside: Path | None = None
 
     @property
     def lost_entries(self) -> int:
@@ -170,7 +175,7 @@ class ReleaseInfo:
 
 
 class ReleaseSource(Protocol):
-    """Fetches the newest published release, or ``None`` when unreachable."""
+    """Fetches the newest published release; ``None`` when unreachable."""
 
     def latest_release(self) -> ReleaseInfo | None:
         """Return the latest published release, else ``None`` on any failure."""

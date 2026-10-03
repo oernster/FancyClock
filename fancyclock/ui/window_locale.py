@@ -53,6 +53,7 @@ class WindowLocaleMixin:
             # failure worth abandoning the change for: there is no timezone to
             # move to, so persisting or retranslating would record a lie.
             return
+        self.time_zone_id = tz_id
 
         for step in (
             lambda: self.settings.set_timezone_id(tz_id),

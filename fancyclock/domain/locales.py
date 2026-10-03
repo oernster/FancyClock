@@ -48,6 +48,21 @@ SUPPORTED_LOCALES: tuple[str, ...] = (
 )
 
 
+# A BCP-47 script subtag is always four letters (``Hant``); a region is two
+# letters or three digits, so the length alone tells them apart.
+SCRIPT_SUBTAG_LENGTH = 4
+
+# The supported locale written in a given script, for when the region alone
+# does not name one (``zh-Hant-HK``) or is absent (``zh-Hant``).
+SCRIPT_VARIANTS: dict[tuple[str, str | None], str] = {
+    ("zh", "Hant"): "zh_TW",
+    ("zh", "Hans"): "zh_CN",
+}
+
+# Macrolanguage codes some systems report, mapped to the language shipped.
+LANGUAGE_ALIASES: dict[str, str] = {"no": "nb"}
+
+
 def is_supported(locale_code: str) -> bool:
     """Return True when the locale code is one of the supported locales."""
     return locale_code in SUPPORTED_LOCALES
@@ -71,31 +86,28 @@ def normalize_locale(locale_str: str | None) -> str:
     """Normalise a raw locale string to a supported locale code.
 
     Handles encodings and modifiers (``en_GB.UTF-8``), dash separators
-    (``en-gb``) and bare language codes (``fr``). Unknown input falls back
-    to DEFAULT_LOCALE.
+    (``en-gb``), BCP-47 script subtags (``zh-Hant-TW``, as Windows reports
+    them), macrolanguage codes (``no`` for Norwegian Bokmål) and bare
+    language codes (``fr``). Unknown input falls back to DEFAULT_LOCALE.
     """
     if not locale_str:
         return DEFAULT_LOCALE
 
     locale_str = locale_str.split(".")[0].split("@")[0]
+    parts = locale_str.replace("-", "_").split("_")
+    lang = parts[0].lower()
+    lang = LANGUAGE_ALIASES.get(lang, lang)
+    rest = parts[1:]
+    script = None
+    if rest and len(rest[0]) == SCRIPT_SUBTAG_LENGTH:
+        script = rest[0].title()
+        rest = rest[1:]
 
-    for separator in ("_", "-"):
-        if separator in locale_str:
-            # A string that contains the separator always splits into at least
-            # two parts, so the country part is always present here.
-            parts = locale_str.split(separator)
-            lang = parts[0].lower()
-            country = parts[1].upper()
-            normalized = f"{lang}_{country}"
-            if is_supported(normalized):
-                return normalized
-            variant = _variant_for_language(lang)
-            if variant:
-                return variant
-            break
-
-    variant = _variant_for_language(locale_str.lower())
-    if variant:
-        return variant
-
-    return DEFAULT_LOCALE
+    if rest and rest[0]:
+        normalized = f"{lang}_{rest[0].upper()}"
+        if is_supported(normalized):
+            return normalized
+    scripted = SCRIPT_VARIANTS.get((lang, script))
+    if scripted:
+        return scripted
+    return _variant_for_language(lang) or DEFAULT_LOCALE

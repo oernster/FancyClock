@@ -56,14 +56,21 @@ no feature kept behind a donation; a donation link is offered instead.
 ### NTP correction is automatic and has no switch
 
 At startup the clock asks the public NTP pool once, trying four servers with a
-short timeout each. It keeps the difference from the system clock. When none
-answers it shows the system clock. There is no setting to turn this off.
+short timeout each. A reply is believed only when it says it comes from a
+synchronised server (not leap indicator 3, mode 4, stratum 1 to 15, a transmit
+time present); any other reply moves on to the next server. It keeps the
+difference from the system clock. When no server gives a usable answer it
+shows the system clock. There is no setting to turn this off.
 
 - **Rather than:** trusting the system clock; an optional correction.
 - **Gains:** the display is right on a machine whose clock has drifted; a clock
   that cannot reach a server still opens.
 - **Costs:** one unprompted request at every launch. The correction is taken
-  once per run and is not refreshed while the clock stays open.
+  once per run and is not refreshed while the clock stays open, so when the
+  operating system later corrects its own clock the kept difference is
+  applied twice: the face and the alarms then run ahead or behind by that
+  amount until the next launch. A server that answers with a well-formed but
+  wrong time is believed.
 
 ### Two ways out and no more
 
@@ -146,8 +153,13 @@ reported as missed rather than rung.
 ### A damaged alarm file is reported, never quietly shortened
 
 A bad entry is skipped so the clock always starts. The number lost is shown
-once at startup, in every language. An unreadable file counts as wholly
-lost. A missing file is a first run, not damage.
+once at startup, in every language. An unreadable file counts as wholly lost,
+as does one whose alarm list is not a list (reported as one, since nothing in
+it could be counted). A missing file is a first run, not damage. Before
+anything can save over a damaged file it is copied, untouched, to
+`alarms.damaged-<n>.json` beside it, the first free number, so an earlier
+copy is never replaced; the warning names that copy. If the copy cannot be
+made, nothing is saved for the rest of the run, so the original stays.
 
 - **Rather than:** refusing to start; skipping in silence.
 - **Gains:** an alarm that will not ring is something the user is told about
@@ -161,7 +173,11 @@ word.
 
 - **Rather than:** the same warning the alarm file gives.
 - **Gains:** no interruption for a lost skin or opacity level.
-- **Costs:** a damaged settings file resets those choices unannounced.
+- **Costs:** a damaged settings file resets those choices unannounced. The
+  first change saved afterwards writes a file holding only that change; the
+  damaged file is copied first, untouched, to `settings.damaged-<n>.json`
+  beside it, so the lost choices can still be recovered by hand. If that copy
+  cannot be made, the change is not saved.
 
 ### Every write is all or nothing
 
@@ -231,14 +247,18 @@ the same script always gives the same files.
 ### The language follows the place
 
 Choosing a timezone also switches the language to the one mapped to that
-zone; a zone with no mapping falls back to American English. On first launch
-the system's own locale is used if it reports one; the timezone map is the
-fallback.
+zone, narrowed to the 40 supported locales: a mapped locale outside them
+becomes the first supported variant of its language; when its language has
+none, it becomes British English. A zone with no mapping falls back to American English.
+On first launch the system's own locale is used if it reports one (on
+Windows, the BCP-47 name the system reports, such as `fr-FR`); the timezone
+map is the fallback.
 
 - **Rather than:** language and timezone set separately.
-- **Gains:** picking a place gives its names and numerals in one step.
-- **Costs:** somebody who wants another zone in their own language has to
-  set the language again afterwards.
+- **Gains:** picking a place gives its interface language and numerals in one
+  step.
+- **Costs:** there is no separate language setting, so somebody who wants
+  another zone in their own language cannot have it.
 
 ### Its own JSON locale store
 
@@ -265,9 +285,11 @@ exemption that is no longer English fails too, so the list can only shrink.
 
 ### Machine translation, checked by tests
 
-The timezone names are translated by a maintenance tool that drives a
-LibreTranslate server, by default one running on the same machine. Keys added
-since arrive through scripts that carry their own table of translations.
+The maintenance tooling under `helper_scripts/` drives a LibreTranslate
+server, by default one running on the same machine. Keys added since arrive
+through scripts that carry their own table of translations. Timezone, region
+and city names are not translated: the shipped locale files hold none of
+them, so the timezone dialog lists IANA names as they are.
 
 - **Rather than:** human translators for each language; a hosted service.
 - **Gains:** more than seventy languages at no cost; by default no text goes
